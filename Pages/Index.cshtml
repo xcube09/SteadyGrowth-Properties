@@ -1,0 +1,122 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home - SteadyGrowth";
+}
+<!-- SEO Meta Tags -->
+<meta name="description" content="SteadyGrowth - Discover, invest, and grow with trusted real estate properties." />
+<meta property="og:title" content="SteadyGrowth - Home" />
+<meta property="og:description" content="Discover, invest, and grow with trusted real estate properties." />
+<meta property="og:type" content="website" />
+
+<!-- Hero Section -->
+<section class="py-5 bg-primary text-white text-center animate__animated animate__fadeInDown">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Find Your Next Investment Property</h1>
+        <p class="lead">SteadyGrowth connects you with vetted, high-potential real estate opportunities.</p>
+        <a href="/Properties" class="btn btn-lg btn-light mt-3 shadow">Browse Properties</a>
+    </div>
+</section>
+
+<!-- Featured Properties -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-4 text-center">Featured Properties</h2>
+        <div id="featured-properties-loading" class="text-center d-none">
+            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="featured-properties">
+            <!-- Property cards will be loaded here via AJAX -->
+        </div>
+        <div id="featured-properties-error" class="alert alert-danger d-none mt-3"></div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-3">
+                <h3 class="fw-bold" id="stat-total-properties">0</h3>
+                <p>Total Properties</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h3 class="fw-bold" id="stat-total-users">0</h3>
+                <p>Registered Users</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h3 class="fw-bold" id="stat-success-stories">0</h3>
+                <p>Success Stories</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-4 text-center">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="mb-3"><i class="bi bi-search display-5 text-primary"></i></div>
+                <h5>Browse</h5>
+                <p>Explore a curated list of vetted properties.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3"><i class="bi bi-cash-coin display-5 text-success"></i></div>
+                <h5>Invest</h5>
+                <p>Connect with property owners and make secure investments.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3"><i class="bi bi-graph-up-arrow display-5 text-info"></i></div>
+                <h5>Grow</h5>
+                <p>Track your portfolio and watch your wealth grow.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">What Our Users Say</h2>
+        <div id="testimonials-loading" class="text-center d-none">
+            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+        </div>
+        <div class="row g-4" id="testimonials">
+            <!-- Testimonials will be loaded here via AJAX -->
+        </div>
+        <div id="testimonials-error" class="alert alert-danger d-none mt-3"></div>
+    </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="mb-3 text-center">Stay Updated</h2>
+                <form id="newsletter-form" class="row g-3" method="post" novalidate>
+                    <div class="col-md-9">
+                        <input type="email" class="form-control form-control-lg" name="email" placeholder="Enter your email" required />
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button type="submit" class="btn btn-lg btn-light">Subscribe</button>
+                    </div>
+                </form>
+                <div id="newsletter-success" class="alert alert-success d-none mt-3"></div>
+                <div id="newsletter-error" class="alert alert-danger d-none mt-3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // AJAX loading for featured properties, statistics, testimonials, newsletter
+        // ...AJAX and loading state logic here...
+    </script>
+}

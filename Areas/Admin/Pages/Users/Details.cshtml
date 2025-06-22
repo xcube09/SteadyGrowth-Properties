@@ -1,0 +1,48 @@
+@page "{id}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h1>User Details</h1>
+@if (Model.User == null)
+{
+    <p>User not found.</p>
+}
+else
+{
+    <div class="mb-3">
+        <strong>Name:</strong> @Model.User.FirstName @Model.User.LastName<br />
+        <strong>Email:</strong> @Model.User.Email<br />
+        <strong>Status:</strong> @(Model.User.IsActive ? "Active" : "Inactive")<br />
+        <strong>Joined:</strong> @Model.User.CreatedAt.ToString("yyyy-MM-dd")
+    </div>
+    <h4>User Properties</h4>
+    @if (Model.Properties.Count == 0)
+    {
+        <p>No properties found.</p>
+    }
+    else
+    {
+        <ul>
+        @foreach (var property in Model.Properties)
+        {
+            <li>@property.Title (@property.Status)</li>
+        }
+        </ul>
+    }
+    <h4>User Referrals</h4>
+    @if (Model.Referrals.Count == 0)
+    {
+        <p>No referrals found.</p>
+    }
+    else
+    {
+        <ul>
+        @foreach (var referral in Model.Referrals)
+        {
+            <li>@referral.ReferredUserId (@referral.CreatedAt.ToString("yyyy-MM-dd"))</li>
+        }
+        </ul>
+    }
+}

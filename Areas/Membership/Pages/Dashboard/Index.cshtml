@@ -1,0 +1,52 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Member Dashboard</h1>
+
+<section>
+    <h3>Welcome!</h3>
+    <p>Your statistics and recent activity are shown below.</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Properties</h5>
+                    <p>Total: @Model.UserStats?.TotalProperties</p>
+                    <p>Approved: @Model.UserStats?.ApprovedProperties</p>
+                    <p>Pending: @Model.UserStats?.PendingProperties</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Referrals</h5>
+                    <p>Total: @Model.ReferralStats?.TotalReferrals</p>
+                    <p>Active: @Model.ReferralStats?.ActiveReferrals</p>
+                    <p>Commission Earned: @Model.ReferralStats?.TotalCommissionEarned.ToString("C")</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Rewards</h5>
+                    <p>Points: @Model.RewardPoints</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h4>Recent Properties</h4>
+    <ul>
+        @foreach (var property in Model.RecentProperties)
+        {
+            <li>@property.Title (@property.Status)</li>
+        }
+    </ul>
+</section>

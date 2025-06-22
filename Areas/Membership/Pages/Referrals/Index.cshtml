@@ -1,0 +1,59 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Referrals.IndexModel
+@{
+    ViewData["Title"] = "My Referrals";
+}
+
+<h1>My Referrals</h1>
+
+@if (!string.IsNullOrEmpty(Model.ReferralCode))
+{
+    <div class="mb-3">
+        <strong>Your Referral Code:</strong> <span class="badge bg-success">@Model.ReferralCode</span>
+        <br />
+        <strong>Referral Link:</strong> <code>@Url.Page("/Account/Register", null, new { code = Model.ReferralCode }, Request.Scheme)</code>
+    </div>
+}
+
+<section>
+    <h4>Referral Statistics</h4>
+    <ul>
+        <li>Total Referrals: @Model.Stats?.TotalReferrals</li>
+        <li>Active Referrals: @Model.Stats?.ActiveReferrals</li>
+        <li>Total Commission Earned: @Model.Stats?.TotalCommissionEarned.ToString("C")</li>
+        <li>Pending Commission: @Model.Stats?.PendingCommission.ToString("C")</li>
+        <li>Commission Paid: @Model.Stats?.CommissionPaid.ToString("C")</li>
+    </ul>
+</section>
+
+<section>
+    <h4>Referral History</h4>
+    @if (Model.Referrals.Count == 0)
+    {
+        <p>No referrals yet.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Referred User</th>
+                    <th>Date</th>
+                    <th>Commission</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var referral in Model.Referrals)
+            {
+                <tr>
+                    <td>@referral.ReferredUser?.Email</td>
+                    <td>@referral.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    <td>@referral.CommissionEarned.ToString("C")</td>
+                    <td>@(referral.CommissionPaid ? "Paid" : "Pending")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</section>

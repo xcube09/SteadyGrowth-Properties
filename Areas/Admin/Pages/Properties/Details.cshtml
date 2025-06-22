@@ -1,0 +1,52 @@
+@page "{id:int}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Properties.DetailsModel
+@{
+    ViewData["Title"] = "Property Vetting Details";
+}
+
+<h1>Property Details</h1>
+@if (Model.Property == null)
+{
+    <p>Property not found.</p>
+}
+else
+{
+    <div class="mb-3">
+        <strong>Title:</strong> @Model.Property.Title<br />
+        <strong>User:</strong> @Model.Property.User?.Email<br />
+        <strong>Location:</strong> @Model.Property.Location<br />
+        <strong>Price:</strong> @Model.Property.Price.ToString("C")<br />
+        <strong>Status:</strong> @Model.Property.Status<br />
+        <strong>Description:</strong> @Model.Property.Description
+    </div>
+    <h4>Vetting History</h4>
+    @if (Model.VettingHistory.Count == 0)
+    {
+        <p>No vetting history found.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Admin</th>
+                    <th>Notes</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var log in Model.VettingHistory)
+            {
+                <tr>
+                    <td>@log.Action</td>
+                    <td>@log.AdminUserId</td>
+                    <td>@log.Notes</td>
+                    <td>@log.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    <a asp-page="Approve" asp-route-propertyId="@Model.Property.Id" class="btn btn-success">Approve/Reject</a>
+}

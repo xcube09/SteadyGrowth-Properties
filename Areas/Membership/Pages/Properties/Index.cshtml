@@ -1,0 +1,57 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Properties.IndexModel
+@{
+    ViewData["Title"] = "My Properties";
+}
+
+<h1>My Properties</h1>
+
+<form method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <select asp-for="StatusFilter" class="form-select">
+                <option value="">All Statuses</option>
+                @foreach (var status in Enum.GetValues(typeof(SteadyGrowth.Web.Models.Entities.PropertyStatus)))
+                {
+                    <option value="@status" selected="@(Model.StatusFilter == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Properties.Count == 0)
+{
+    <p>No properties found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var property in Model.Properties)
+        {
+            <tr>
+                <td>@property.Title</td>
+                <td>@property.Status</td>
+                <td>@property.Price.ToString("C")</td>
+                <td>@property.Location</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@property.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

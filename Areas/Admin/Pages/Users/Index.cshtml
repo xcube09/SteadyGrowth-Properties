@@ -1,0 +1,139 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Users.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>User Management</h1>
+
+<!-- Search and Filter Controls -->
+<form class="row g-3 mb-3" method="get">
+    <div class="col-md-3">
+        <input type="text" class="form-control" name="search" placeholder="Search by name, email, or ID" value="@Model.SearchTerm" />
+    </div>
+    <div class="col-md-2">
+        <select class="form-select" name="status">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Pending">Pending</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="button" class="btn btn-outline-success" id="export-users">Export CSV</button>
+    </div>
+</form>
+
+<!-- Bulk Operations -->
+<div class="mb-2">
+    <button class="btn btn-danger btn-sm" id="bulk-suspend" disabled>Suspend Selected</button>
+    <button class="btn btn-success btn-sm" id="bulk-activate" disabled>Activate Selected</button>
+    <button class="btn btn-warning btn-sm" id="bulk-delete" disabled>Delete Selected</button>
+</div>
+
+<!-- User Management Table -->
+<div class="table-responsive">
+    <table class="table table-hover align-middle" id="users-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all-users" /></th>
+                <th>@Html.DisplayNameFor(m => m.Users[0].Id)</th>
+                <th>@Html.DisplayNameFor(m => m.Users[0].FullName)</th>
+                <th>@Html.DisplayNameFor(m => m.Users[0].Email)</th>
+                <th>Status</th>
+                <th>Role</th>
+                <th>Registered</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                var userVm = user as SteadyGrowth.Web.Models.ViewModels.UserAdminViewModel;
+                <tr>
+                    <td><input type="checkbox" class="select-user" value="@userVm.Id" /></td>
+                    <td>@userVm.Id</td>
+                    <td>@userVm.FullName</td>
+                    <td>@userVm.Email</td>
+                    <td>
+                        <span class="badge bg-@GetStatusColor(userVm.Status)">@userVm.Status</span>
+                    </td>
+                    <td>@userVm.Role</td>
+                    <td>@userVm.RegisteredAt.ToShortDateString()</td>
+                    <td>
+                        <a asp-page="./Details" asp-route-id="@userVm.Id" class="btn btn-info btn-sm">Details</a>
+                        <button type="button" class="btn btn-warning btn-sm suspend-user" data-id="@userVm.Id">Suspend</button>
+                        <button type="button" class="btn btn-success btn-sm activate-user" data-id="@userVm.Id">Activate</button>
+                        <button type="button" class="btn btn-danger btn-sm delete-user" data-id="@userVm.Id">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Audit Log Display -->
+<div class="mt-4">
+    <h5>Recent Admin Actions</h5>
+    <ul class="list-group">
+        @foreach (var log in Model.AuditLogs)
+        {
+            var logVm = log as SteadyGrowth.Web.Models.ViewModels.AuditLogViewModel;
+            <li class="list-group-item small">@logVm.Timestamp.ToString("g") - @logVm.Action</li>
+        }
+    </ul>
+</div>
+
+@section Scripts {
+    <script>
+        // DataTable sorting/filtering (could use a JS library for advanced features)
+        document.getElementById('select-all-users').addEventListener('change', function() {
+            document.querySelectorAll('.select-user').forEach(cb => cb.checked = this.checked);
+            updateBulkButtons();
+        });
+        document.querySelectorAll('.select-user').forEach(cb => cb.addEventListener('change', updateBulkButtons));
+        function updateBulkButtons() {
+            const anyChecked = Array.from(document.querySelectorAll('.select-user')).some(cb => cb.checked);
+            document.getElementById('bulk-suspend').disabled = !anyChecked;
+            document.getElementById('bulk-activate').disabled = !anyChecked;
+            document.getElementById('bulk-delete').disabled = !anyChecked;
+        }
+        // Confirmation dialogs for destructive actions
+        document.querySelectorAll('.delete-user').forEach(btn => btn.addEventListener('click', function() {
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return false;
+            // TODO: AJAX call to delete user
+        }));
+        // Export functionality
+        document.getElementById('export-users').addEventListener('click', function() {
+            window.location = '@Url.Page("/Users/Index", new { export = true })';
+        });
+    </script>
+    @functions {
+        private string GetStatusColor(string status) => status switch {
+            "Active" => "success",
+            "Suspended" => "danger",
+            "Pending" => "warning",
+            _ => "secondary"
+        };
+        public class UserAdminViewModel
+        {
+            public string Id { get; set; } = string.Empty;
+            public string FullName { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public DateTime RegisteredAt { get; set; }
+        }
+        public class AuditLogViewModel
+        {
+            public DateTime Timestamp { get; set; }
+            public string Action { get; set; } = string.Empty;
+        }
+    }
+}

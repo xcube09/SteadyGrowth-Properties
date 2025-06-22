@@ -1,0 +1,30 @@
+/* dashboard.css - Dashboard-specific styles */
+.dashboard-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.dashboard-card {
+    flex: 1 1 220px;
+    background: var(--light);
+    border: 1px solid #e5e5e5;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    text-align: center;
+}
+.dashboard-sidebar {
+    min-width: 200px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+.chart-container {
+    min-height: 320px;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    margin-bottom: 2rem;
+    padding: 1rem;
+}

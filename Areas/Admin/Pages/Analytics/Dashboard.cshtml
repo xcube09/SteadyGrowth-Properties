@@ -1,0 +1,16 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Analytics.DashboardModel
+@{
+    ViewData["Title"] = "Admin Analytics Dashboard";
+}
+
+<h1>Analytics Dashboard</h1>
+
+<ul>
+    <li>Total Users: @Model.TotalUsers</li>
+    <li>Total Properties: @Model.TotalProperties</li>
+    <li>Total Referrals: @Model.TotalReferrals</li>
+    <li>Total Reward Points: @Model.TotalRewardPoints</li>
+</ul>
+
+<!-- Add chart components and KPIs here as needed -->

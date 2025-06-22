@@ -1,0 +1,29 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Properties.ApproveModel
+@{
+    ViewData["Title"] = "Approve/Reject Property";
+}
+
+<h1>Approve/Reject Property</h1>
+
+@if (!string.IsNullOrEmpty(Model.ResultMessage))
+{
+    <div class="alert alert-info">@Model.ResultMessage</div>
+}
+
+<form method="post">
+    <input type="hidden" asp-for="PropertyId" />
+    <div class="mb-3">
+        <label asp-for="Approve" class="form-label">Decision</label>
+        <select asp-for="Approve" class="form-select">
+            <option value="true">Approve</option>
+            <option value="false">Reject</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label">Notes</label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

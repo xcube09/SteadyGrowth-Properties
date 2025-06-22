@@ -1,0 +1,102 @@
+@* Metronic 8 Admin Layout Integration *@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SteadyGrowth Admin</title>
+    <!-- Metronic 8 Core CSS -->
+    <link rel="stylesheet" href="~/themes/metronic8/css/style.bundle.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SteadyGrowth.Web.styles.css" asp-append-version="true" />
+</head>
+<body id="kt_body" class="app-default">
+    <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+        <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+            <!--begin::Header-->
+            <div id="kt_app_header" class="app-header">
+                <div class="app-container container-fluid d-flex align-items-stretch justify-content-between">
+                    <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
+                        <a class="app-sidebar-logo" asp-area="Admin" asp-page="/Properties/Index">
+                            <span class="fs-3 fw-bold text-primary">SteadyGrowth Admin</span>
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+            <!--end::Header-->
+            <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+                <!--begin::Sidebar-->
+                <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
+                    <!--begin::Logo-->
+                    <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
+                        <a asp-area="Admin" asp-page="/Properties/Index">
+                            <img alt="Logo" src="~/images/clireclogow1.png" class="h-50px app-sidebar-logo-default" />
+                            <img alt="Logo" src="~/images/clireclogow1.png" class="h-20px app-sidebar-logo-minimize" />
+                        </a>
+                        <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
+                            <i class="ki-duotone ki-black-left-line fs-3 rotate-180">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </div>
+                    </div>
+                    <!--end::Logo-->
+                    <!--begin::sidebar menu-->
+                    <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+                        <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper">
+                            <div id="kt_app_sidebar_menu_scroll" class="scroll-y my-5 mx-3" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
+                                <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+                                    <div class="menu-item">
+                                        <a class="menu-link" asp-area="Admin" asp-page="/Properties/Index">
+                                            <span class="menu-icon"><i class="fa fa-building"></i></span>
+                                            <span class="menu-title">Properties</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
+                                        <a class="menu-link" asp-area="Admin" asp-page="/Users/Index">
+                                            <span class="menu-icon"><i class="fa fa-users"></i></span>
+                                            <span class="menu-title">Users</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
+                                        <a class="menu-link" asp-area="Admin" asp-page="/Analytics/Dashboard">
+                                            <span class="menu-icon"><i class="fa fa-chart-bar"></i></span>
+                                            <span class="menu-title">Analytics</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::sidebar menu-->
+                </div>
+                <!--end::Sidebar-->
+                <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                    <div class="app-content flex-column-fluid">
+                        <div class="app-container container-fluid">
+                            @RenderBody()
+                        </div>
+                    </div>
+                    <footer class="app-footer py-4 d-flex flex-lg-column">
+                        <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
+                            <div class="text-dark order-2 order-md-1">
+                                &copy; @DateTime.Now.Year - SteadyGrowth Admin
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Metronic Core JS Bundle -->
+    <script src="~/themes/metronic8/js/scripts.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

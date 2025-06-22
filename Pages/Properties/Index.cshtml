@@ -1,0 +1,104 @@
+@page
+@model IndexModel
+@using SteadyGrowth.Web.Models.Entities
+@{
+    ViewData["Title"] = "Property Listings - SteadyGrowth";
+}
+<!-- SEO Meta Tags -->
+<meta name="description" content="Browse vetted real estate properties for sale and investment on SteadyGrowth." />
+<meta property="og:title" content="Property Listings - SteadyGrowth" />
+<meta property="og:description" content="Browse vetted real estate properties for sale and investment on SteadyGrowth." />
+<meta property="og:type" content="website" />
+
+<section class="container py-5">
+    <h1 class="mb-4 text-center">Property Listings</h1>
+    <!-- Search and Filter Form -->
+    <form id="search-form" class="row g-3 mb-4" method="get">
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="searchTerm" placeholder="Search by title or location" value="@Model.SearchTerm" />
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="propertyType">
+                <option value="">All Types</option>
+                @foreach (PropertyType type in Enum.GetValues(typeof(PropertyType)))
+                {
+                    var selected = Model.PropertyType.HasValue && Model.PropertyType.Value == type ? "selected=\"selected\"" : "";
+                    @Html.Raw($"<option value=\"{type}\" {selected}>{type}</option>")
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" name="minPrice" placeholder="Min Price" value="@Model.MinPrice" min="0" />
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" name="maxPrice" placeholder="Max Price" value="@Model.MaxPrice" min="0" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="location" placeholder="Location" value="@Model.Location" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    <!-- Sort Options -->
+    <div class="mb-3 d-flex justify-content-end">
+        <label class="me-2">Sort by:</label>
+        <select class="form-select w-auto" id="sort-options" name="sort">
+            <option value="date">Date</option>
+            <option value="price">Price</option>
+            <option value="location">Location</option>
+        </select>
+    </div>
+    <!-- Loading State -->
+    <div id="properties-loading" class="text-center d-none">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+    <!-- Property Cards Grid -->
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="properties-list">
+        @if (Model.Properties != null && Model.Properties.Any()) {
+            foreach (var property in Model.Properties) {
+                <div class="col">
+                    <div class="card h-100 shadow-sm animate__animated animate__fadeInUp">
+                        <img src="@(property.Images != null && property.Images.Any() ? property.Images[0] : "/images/no-image.png")" class="card-img-top" alt="@property.Title" loading="lazy" />
+                        <div class="card-body">
+                            <h5 class="card-title">@property.Title</h5>
+                            <p class="card-text text-truncate">@property.Description</p>
+                            <div class="mb-2"><span class="badge bg-secondary">@property.PropertyType</span></div>
+                            <div class="fw-bold text-primary">@property.Price.ToString("C")</div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a href="/Properties/Details/@property.Id" class="btn btn-outline-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        } else {
+            <div class="col-12">
+                <div class="alert alert-info text-center">No properties found matching your criteria.</div>
+            </div>
+        }
+    </div>
+    <!-- Pagination Controls -->
+    <nav class="mt-4" aria-label="Property pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                <a class="page-link" href="?page=@(Model.Page - 1)">Previous</a>
+            </li>
+            @for (int i = 1; i <= ((Model.Properties.Count + Model.PageSize - 1) / Model.PageSize); i++) {
+                <li class="page-item @(Model.Page == i ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.Page == ((Model.Properties.Count + Model.PageSize - 1) / Model.PageSize) ? "disabled" : "")">
+                <a class="page-link" href="?page=@(Model.Page + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // AJAX loading, sort, and loading state logic here...
+    </script>
+}
