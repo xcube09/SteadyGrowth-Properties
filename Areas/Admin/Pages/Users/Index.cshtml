@@ -111,7 +111,7 @@
         }));
         // Export functionality
         document.getElementById('export-users').addEventListener('click', function() {
-            window.location = '@Url.Page("/Users/Index", new { export = true })';
+            window.location = '@Url.Page("/Users/Index", new { export = true, pageIndex = Model.PageIndex, search = Model.SearchTerm, status = Model.StatusFilter })';
         });
     </script>
     @functions {

@@ -25,17 +25,17 @@ public class IndexModel : PageModel
     public List<AuditLogViewModel> AuditLogs { get; set; } = new();
     public string SearchTerm { get; set; } = string.Empty;
     public string StatusFilter { get; set; } = string.Empty;
-    public int Page { get; set; } = 1;
+    public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 20;
     public int TotalCount { get; set; }
 
-    public async Task OnGetAsync(string search = "", string status = "", int page = 1)
+    public async Task OnGetAsync(string search = "", string status = "", int pageIndex = 1)
     {
-        Page = page;
+        PageIndex = pageIndex;
         SearchTerm = search;
         StatusFilter = status;
         // Fetch users and map to view model
-        var users = await _userService.GetAllUsersAsync(page, PageSize);
+        var users = await _userService.GetAllUsersAsync(PageIndex, PageSize);
         Users = users.Select(u => new UserAdminViewModel {
             Id = u.Id,
             FullName = u.FirstName + " " + u.LastName,

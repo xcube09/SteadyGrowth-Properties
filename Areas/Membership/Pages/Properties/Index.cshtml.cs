@@ -5,6 +5,9 @@ using SteadyGrowth.Web.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
+using SteadyGrowth.Web.Application.Queries.Properties;
+using Microsoft.AspNetCore.Identity;
 
 namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties;
 
@@ -14,28 +17,37 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties;
 [Authorize]
 public class IndexModel : PageModel
 {
-    private readonly IPropertyService _propertyService;
+    private readonly IMediator _mediator;
+    private readonly UserManager<User> _userManager;
 
-    public IndexModel(IPropertyService propertyService)
+    public IndexModel(IMediator mediator, UserManager<User> userManager)
     {
-        _propertyService = propertyService;
+        _mediator = mediator;
+        _userManager = userManager;
     }
 
-    public IList<Property> Properties { get; set; } = new List<Property>();
+    public PaginatedList<Property> Properties { get; set; }
     public PropertyStatus? StatusFilter { get; set; }
-    public int Page { get; set; } = 1;
+    public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 10;
 
-    public async Task OnGetAsync(PropertyStatus? status, int page = 1)
+    public async Task OnGetAsync(PropertyStatus? status, int pageIndex = 1)
     {
-        var userId = User.Identity?.Name;
+        ViewData["Breadcrumb"] = new List<(string, string)> { ("My Properties", "/Membership/Properties/Index") };
+        var userId = _userManager.GetUserId(User);
         if (string.IsNullOrEmpty(userId)) return;
+
         StatusFilter = status;
-        Page = page;
-        var all = await _propertyService.GetUserPropertiesAsync(userId);
-        var filtered = all.AsQueryable();
-        if (StatusFilter.HasValue)
-            filtered = filtered.Where(p => p.Status == StatusFilter);
-        Properties = filtered.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+        PageIndex = pageIndex;
+
+        var query = new GetMemberPropertyListingQuery
+        {
+            UserId = userId,
+            PageIndex = PageIndex,
+            PageSize = PageSize,
+            StatusFilter = StatusFilter
+        };
+
+        Properties = await _mediator.Send(query);
     }
 }

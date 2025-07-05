@@ -1,87 +1,137 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SteadyGrowth.Web.Application.Commands.Properties;
+using SteadyGrowth.Web.Application.Queries.Properties;
+using SteadyGrowth.Web.Application.ViewModels;
 using SteadyGrowth.Web.Models.Entities;
-using SteadyGrowth.Web.Services.Interfaces;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using System;
 
-namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties;
-
-/// <summary>
-/// Edit property page model for members.
-/// </summary>
-[Authorize]
-public class EditModel : PageModel
+namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties
 {
-    private readonly IPropertyService _propertyService;
-
-    public EditModel(IPropertyService propertyService)
+    public class EditModel : PageModel
     {
-        _propertyService = propertyService;
-    }
+        private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<User> _userManager;
 
-    [BindProperty]
-    public int Id { get; set; }
-    [BindProperty]
-    [Required, StringLength(200)]
-    public string Title { get; set; } = string.Empty;
-    [BindProperty]
-    [Required, StringLength(2000)]
-    public string Description { get; set; } = string.Empty;
-    [BindProperty]
-    [Required, StringLength(500)]
-    public string Location { get; set; } = string.Empty;
-    [BindProperty]
-    [Required]
-    public decimal Price { get; set; }
-    [BindProperty]
-    [Required]
-    public PropertyType PropertyType { get; set; }
-    [BindProperty]
-    public List<IFormFile> Images { get; set; } = new();
+        public EditModel(IMediator mediator, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
+        {
+            _mediator = mediator;
+            _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
+        }
 
-    [TempData]
-    public string? ResultMessage { get; set; }
+        [BindProperty]
+        public UpdatePropertyCommand? Command { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(int id)
-    {
-        var userId = User.Identity?.Name;
-        if (string.IsNullOrEmpty(userId))
-            return Unauthorized();
-        var property = await _propertyService.GetPropertyByIdAsync(id);
-        if (property == null || property.UserId != userId)
-            return NotFound();
-        Id = property.Id;
-        Title = property.Title;
-        Description = property.Description;
-        Location = property.Location;
-        Price = property.Price;
-        PropertyType = property.PropertyType;
-        // TODO: Load images
-        return Page();
-    }
+        [BindProperty]
+        public List<PropertyImageUploadModel> NewImages { get; set; } = new List<PropertyImageUploadModel>();
 
-    public async Task<IActionResult> OnPostAsync()
-    {
-        if (!ModelState.IsValid)
+        [BindProperty]
+        public List<PropertyImageCommandDto> ExistingImages { get; set; } = new List<PropertyImageCommandDto>();
+
+        [BindProperty]
+        public List<int> ImagesToDelete { get; set; } = new List<int>();
+
+        public async Task<IActionResult> OnGetAsync(int id)
+        {
+            ViewData["Breadcrumb"] = new List<(string, string)> { ("My Properties", "/Membership/Properties/Index"), ("Edit Property", $"/Membership/Properties/Edit/{id}") };
+
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToPage("/Identity/Account/Login");
+            }
+
+            var query = new GetPropertyDetailsQuery { PropertyId = id, UserId = userId };
+            var property = await _mediator.Send(query);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            Command = new UpdatePropertyCommand
+            {
+                Id = property.Id,
+                Title = property.Title,
+                Description = property.Description,
+                Price = property.Price,
+                Location = property.Location,
+                UserId = property.UserId
+            };
+
+            ExistingImages = property.PropertyImages.Select(pi => new PropertyImageCommandDto
+            {
+                Id = pi.Id,
+                FileName = pi.FileName,
+                Caption = pi.Caption,
+                ImageType = pi.ImageType,
+                DisplayOrder = pi.DisplayOrder
+            }).ToList();
+
             return Page();
-        var userId = User.Identity?.Name;
-        if (string.IsNullOrEmpty(userId))
-            return Unauthorized();
-        var property = await _propertyService.GetPropertyByIdAsync(Id);
-        if (property == null || property.UserId != userId)
-            return NotFound();
-        property.Title = Title;
-        property.Description = Description;
-        property.Location = Location;
-        property.Price = Price;
-        property.PropertyType = PropertyType;
-        // TODO: Handle image update
-        await _propertyService.UpdatePropertyAsync(property);
-        ResultMessage = "Property updated successfully.";
-        return RedirectToPage("Index");
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (Command == null)
+            {
+                return Page();
+            }
+
+            if (User.Identity == null || User.Identity.Name == null)
+            {
+                return RedirectToPage("/Identity/Account/Login");
+            }
+            Command.UserId = _userManager.GetUserId(User);
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            // Handle new image uploads
+            foreach (var image in NewImages)
+            {
+                if (image.ImageFile != null)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "properties");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.ImageFile.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    Command.NewImages.Add(new PropertyImageCommandDto
+                    {
+                        FileName = uniqueFileName,
+                        Caption = image.Caption,
+                        ImageType = image.ImageType,
+                        DisplayOrder = image.DisplayOrder
+                    });
+                }
+            }
+
+            // Handle existing images (updates and deletions)
+            Command.ExistingImages = ExistingImages;
+            Command.ImagesToDelete = ImagesToDelete;
+
+            await _mediator.Send(Command);
+
+            return RedirectToPage("/Properties/Index");
+        }
     }
 }

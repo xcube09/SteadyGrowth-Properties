@@ -10,6 +10,9 @@ using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
 using SteadyGrowth.Web.Services.Implementations;
 using Microsoft.AspNetCore.Http.Features;
+using MediatR;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +104,9 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVettingService, VettingService>();
 builder.Services.AddScoped<PropertyService>();
 
+// MediatR
+builder.Services.AddMediatR(typeof(Program).Assembly);
+
 // Register background services (Singleton)
 // builder.Services.AddHostedService<YourBackgroundService>(); // Example
 
@@ -167,6 +173,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
+
+// Configure localization
+var defaultCulture = new CultureInfo("en-NG");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = new List<CultureInfo> { defaultCulture },
+    SupportedUICultures = new List<CultureInfo> { defaultCulture }
+};
+app.UseRequestLocalization(localizationOptions);
 
 app.MapRazorPages();
 app.MapControllers();

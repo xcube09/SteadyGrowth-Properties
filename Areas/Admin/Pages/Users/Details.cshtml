@@ -5,17 +5,17 @@
 }
 
 <h1>User Details</h1>
-@if (Model.User == null)
+@if (Model.AppUser == null)
 {
     <p>User not found.</p>
 }
 else
 {
     <div class="mb-3">
-        <strong>Name:</strong> @Model.User.FirstName @Model.User.LastName<br />
-        <strong>Email:</strong> @Model.User.Email<br />
-        <strong>Status:</strong> @(Model.User.IsActive ? "Active" : "Inactive")<br />
-        <strong>Joined:</strong> @Model.User.CreatedAt.ToString("yyyy-MM-dd")
+        <strong>Name:</strong> @Model.AppUser.FirstName @Model.AppUser.LastName<br />
+        <strong>Email:</strong> @Model.AppUser.Email<br />
+        <strong>Status:</strong> @(Model.AppUser.IsActive ? "Active" : "Inactive")<br />
+        <strong>Joined:</strong> @Model.AppUser.CreatedAt.ToString("yyyy-MM-dd")
     </div>
     <h4>User Properties</h4>
     @if (Model.Properties.Count == 0)

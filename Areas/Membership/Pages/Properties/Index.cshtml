@@ -1,10 +1,10 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Properties.IndexModel
 @{
-    ViewData["Title"] = "My Properties";
+    ViewData["Title"] = "List Properties";
 }
 
-<h1>My Properties</h1>
+<h1>List Properties</h1>
 
 <form method="get" class="mb-3">
     <div class="row g-2">
@@ -13,7 +13,7 @@
                 <option value="">All Statuses</option>
                 @foreach (var status in Enum.GetValues(typeof(SteadyGrowth.Web.Models.Entities.PropertyStatus)))
                 {
-                    <option value="@status" selected="@(Model.StatusFilter == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
+                    <option value="@status" selected="@(Model.StatusFilter.HasValue && Model.StatusFilter.Value == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
                 }
             </select>
         </div>
@@ -23,35 +23,69 @@
     </div>
 </form>
 
-@if (Model.Properties.Count == 0)
+@if (Model.Properties != null && Model.Properties.Any())
 {
-    <p>No properties found.</p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        @foreach (var property in Model.Properties)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    @if (property.PropertyImages != null && property.PropertyImages.Any())
+                    {
+                        <img src="~/images/properties/@property.PropertyImages.First().FileName" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/no-image.png" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@property.Title</h5>
+                        <p class="card-text text-truncate">@property.Description</p>
+                        <p class="card-text"><strong>Price:</strong> NGN @property.Price.ToString("N2")</p>
+                        <p class="card-text"><strong>Location:</strong> @property.Location</p>
+                        <p class="card-text"><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(property.Status)">@property.Status</span></p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-page="Edit" asp-route-id="@property.Id" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-page="Details" asp-route-id="@property.Id" class="btn btn-secondary btn-sm">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.Properties.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex - 1)" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">Previous</a>
+            </li>
+            @for (var i = 1; i <= Model.Properties.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Properties.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.Properties.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex + 1)" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">Next</a>
+            </li>
+        </ul>
+    </nav>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var property in Model.Properties)
+    <p>No properties found.</p>
+}
+
+@functions {
+    public string GetStatusBadgeClass(SteadyGrowth.Web.Models.Entities.PropertyStatus status)
+    {
+        return status switch
         {
-            <tr>
-                <td>@property.Title</td>
-                <td>@property.Status</td>
-                <td>@property.Price.ToString("C")</td>
-                <td>@property.Location</td>
-                <td>
-                    <a asp-page="Edit" asp-route-id="@property.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Draft => "bg-secondary",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Pending => "bg-warning",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Approved => "bg-success",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Rejected => "bg-danger",
+            _ => "bg-info",
+        };
+    }
 }

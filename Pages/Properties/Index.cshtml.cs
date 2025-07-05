@@ -33,7 +33,7 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Location { get; set; }
     [BindProperty(SupportsGet = true)]
-    public int Page { get; set; } = 1;
+    public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 
     public IList<Property> Properties { get; set; } = new List<Property>();
@@ -51,7 +51,7 @@ public class IndexModel : PageModel
 
     private async Task LoadPropertiesAsync()
     {
-        var all = await _propertyService.GetApprovedPropertiesAsync(Page, PageSize);
+        var all = await _propertyService.GetApprovedPropertiesAsync(PageIndex, PageSize);
         var filtered = all.AsQueryable();
         if (!string.IsNullOrWhiteSpace(SearchTerm))
             filtered = filtered.Where(p => p.Title.Contains(SearchTerm) || (p.Location != null && p.Location.Contains(SearchTerm)) || (p.Description != null && p.Description.Contains(SearchTerm)));
