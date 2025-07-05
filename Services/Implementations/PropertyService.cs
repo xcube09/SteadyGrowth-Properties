@@ -29,7 +29,7 @@ public class PropertyService : IPropertyService
     {
         try
         {
-            var query = _db.Properties
+            var query = _db.Properties.Include(x => x.PropertyImages)
                 .AsNoTracking()
                 .Include(p => p.User)
                 .Where(p => p.Status == PropertyStatus.Approved)
@@ -57,8 +57,8 @@ public class PropertyService : IPropertyService
     {
         try
         {
-            var property = await _db.Properties
-                .AsNoTracking()
+            var property = await _db.Properties.Include(x => x.PropertyImages)
+				.AsNoTracking()
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id)
                 .ConfigureAwait(false);

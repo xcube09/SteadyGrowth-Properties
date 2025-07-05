@@ -30,8 +30,6 @@ public class PropertyDto
     [JsonPropertyName("status")]
     public PropertyStatus Status { get; set; }
 
-    [JsonPropertyName("images")]
-    public List<string> Images { get; set; } = new();
 
     [JsonPropertyName("features")]
     public List<string> Features { get; set; } = new();
@@ -44,6 +42,9 @@ public class PropertyDto
 
     [JsonPropertyName("owner")]
     public UserDto? Owner { get; set; }
+
+    [JsonPropertyName("propertyImages")]
+    public List<PropertyImageDto> PropertyImages { get; set; } = new();
 
     /// <summary>
     /// Implicit conversion from Property entity to PropertyDto.
@@ -58,10 +59,17 @@ public class PropertyDto
         Location = entity.Location,
         PropertyType = entity.PropertyType,
         Status = entity.Status,
-        Images = string.IsNullOrWhiteSpace(entity.Images) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(entity.Images) ?? new List<string>(),
         Features = string.IsNullOrWhiteSpace(entity.Features) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(entity.Features) ?? new List<string>(),
         CreatedAt = entity.CreatedAt,
         ApprovedAt = entity.ApprovedAt,
-        Owner = entity.User is not null ? (UserDto)entity.User : null
+        Owner = entity.User is not null ? (UserDto)entity.User : null,
+        PropertyImages = entity.PropertyImages?.OrderBy(pi => pi.DisplayOrder).Select(pi => new PropertyImageDto
+        {
+            Id = pi.Id,
+            FileName = pi.FileName,
+            Caption = pi.Caption,
+            ImageType = pi.ImageType,
+            DisplayOrder = pi.DisplayOrder
+        }).ToList() ?? new List<PropertyImageDto>()
     };
 }

@@ -267,6 +267,45 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("Properties");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("ImageType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisplayOrder");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyImages");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Referral", b =>
                 {
                     b.Property<int>("Id")
@@ -575,6 +614,17 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyImage", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.Property", "Property")
+                        .WithMany("PropertyImages")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Referral", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.User", "ReferredUser")
@@ -633,6 +683,11 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("AdminUser");
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>
+                {
+                    b.Navigation("PropertyImages");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.User", b =>

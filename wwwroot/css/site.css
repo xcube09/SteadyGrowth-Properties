@@ -62,4 +62,70 @@ body {
 .card {
     border-radius: 0.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+/* Index Page Specific Styles */
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    padding: 8rem 0;
+    color: white;
+}
+
+.hero-section .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+}
+
+/* Statistics Section */
+.stat-item {
+    background-color: white;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: scale(1.05);
+}
+
+/* How It Works Section */
+.how-it-works-item .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Testimonial Cards (assuming a .testimonial-card class will be used) */
+.testimonial-card {
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    background: white;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    background-color: #e9ecef;
+}
+
+.newsletter-section .form-control {
+    border: 1px solid #ced4da;
+}
+
+.newsletter-section .btn-primary {
+    width: 100%;
 }

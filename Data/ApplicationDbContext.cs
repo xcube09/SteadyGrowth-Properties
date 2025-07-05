@@ -17,11 +17,12 @@ namespace SteadyGrowth.Web.Data
         // Use 'new' to hide inherited member for Users
         public new DbSet<User> Users { get; set; }
         public DbSet<Property> Properties { get; set; }
-        public DbSet<Referral> Referrals { get; set; }
+		public DbSet<Referral> Referrals { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<VettingLog> VettingLogs { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<PropertyImage> PropertyImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -68,6 +69,21 @@ namespace SteadyGrowth.Web.Data
                 entity.HasIndex(e => e.ReferralCode)
                       .IsUnique()
                       .HasFilter("[ReferralCode] IS NOT NULL");
+            });
+
+            // PropertyImage configurations
+            builder.Entity<PropertyImage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.FileName).IsRequired().HasMaxLength(300);
+                entity.Property(e => e.Caption).HasMaxLength(500);
+                entity.Property(e => e.ImageType).HasMaxLength(100);
+                entity.HasOne(e => e.Property)
+                      .WithMany(p => p.PropertyImages)
+                      .HasForeignKey(e => e.PropertyId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(e => e.PropertyId);
+                entity.HasIndex(e => e.DisplayOrder);
             });
 
             // Add further entity configurations here as needed

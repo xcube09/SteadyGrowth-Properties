@@ -4,6 +4,80 @@
     ViewData["Title"] = "Register";
 }
 
+
+
+<div class="ltn__login-area pb-110">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title-area text-center">
+                    <h1 class="section-title">Register <br>Your Account</h1>
+                    <p>
+                        Create your SteadyGrowth account to access exclusive property listings, manage your investments, and enjoy personalized real estate services.<br>
+                        Join our community and start your journey to financial growth today.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="account-login-inner">
+                    <form method="post" class="ltn__form-box contact-form-box">
+                        <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+
+                        <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+
+                        <input asp-for="Email" class="form-control" placeholder="Email*" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                        <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="Phone Number (optional)" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                        <input asp-for="ReferralCode" class="form-control" placeholder="Referral Code (optional)" />
+                        <span asp-validation-for="ReferralCode" class="text-danger"></span>
+
+                        <input asp-for="Password" class="form-control" placeholder="Password*" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password*" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                        <div class="form-check mb-2">
+                            <input type="checkbox" class="form-check-input" id="consent1" required />
+                            <label class="form-check-label" for="consent1">
+                                I consent to SteadyGrowth processing my personal data in order to send personalized marketing material in accordance with the consent form and the privacy policy.
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="consent2" required />
+                            <label class="form-check-label" for="consent2">
+                                By clicking "create account", I consent to the privacy policy.
+                            </label>
+                        </div>
+                        <div class="btn-wrapper">
+                            <button class="theme-btn-1 btn reverse-color btn-block" type="submit">CREATE ACCOUNT</button>
+                        </div>
+                    </form>
+                    <div class="by-agree text-center">
+                        <p>By creating an account, you agree to our:</p>
+                        <p><a href="#">TERMS OF CONDITIONS  &nbsp; &nbsp; | &nbsp; &nbsp;  PRIVACY POLICY</a></p>
+                        <div class="go-to-btn mt-50">
+                            <a href="login.html">ALREADY HAVE AN ACCOUNT ?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LOGIN AREA END -->
+
+@* 
+
+
+
 <h1>Register</h1>
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
@@ -47,3 +121,4 @@
     </div>
     <button type="submit" class="btn btn-success">Register</button>
 </form>
+ *@

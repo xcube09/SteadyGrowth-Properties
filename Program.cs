@@ -64,16 +64,16 @@ builder.Services.AddAntiforgery(options =>
     options.HeaderName = "X-XSRF-TOKEN";
 });
 
-// CORS policy for API endpoints
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("ApiCorsPolicy", policy =>
-    {
-        policy.WithOrigins("https://yourfrontend.com")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+//// CORS policy for API endpoints
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("ApiCorsPolicy", policy =>
+//    {
+//        policy.WithOrigins("https://yourfrontend.com")
+//              .AllowAnyHeader()
+//              .AllowAnyMethod();
+//    });
+//});
 
 // Response compression
 builder.Services.AddResponseCompression(options =>
@@ -99,6 +99,7 @@ builder.Services.AddScoped<IReferralService, ReferralService>();
 builder.Services.AddScoped<IRewardService, RewardService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVettingService, VettingService>();
+builder.Services.AddScoped<PropertyService>();
 
 // Register background services (Singleton)
 // builder.Services.AddHostedService<YourBackgroundService>(); // Example
@@ -112,27 +113,35 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Register");
 });
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+}
+else
+{
+    builder.Services.AddRazorPages();
+}
+
 // API Controllers (for AJAX endpoints)
 builder.Services.AddControllers();
 
 // Authorization policies
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminPolicy", policy =>
+builder.Services.AddAuthorizationBuilder()
+							 // Authorization policies
+		.AddPolicy("AdminPolicy", policy =>
         policy.RequireRole("Admin"));
-});
 
 var app = builder.Build();
 
-// Security headers
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.Append("X-Frame-Options", "DENY");
-    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
-    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
-    await next();
-});
+//// Security headers
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+//    context.Response.Headers.Append("X-Frame-Options", "DENY");
+//    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+//    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+//    await next();
+//});
 
 if (app.Environment.IsDevelopment())
 {
@@ -154,7 +163,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 app.UseResponseCompression();
 app.UseRouting();
-app.UseCors("ApiCorsPolicy");
+//app.UseCors("ApiCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();

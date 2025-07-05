@@ -57,5 +57,6 @@ namespace SteadyGrowth.Web.Models.Entities
 		
 		// Navigation properties
 		public virtual User User { get; set; } = null!;
+		public virtual ICollection<PropertyImage> PropertyImages { get; set; } = new List<PropertyImage>();
 	}
 }

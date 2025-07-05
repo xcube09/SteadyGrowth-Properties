@@ -1,122 +1,466 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home - SteadyGrowth";
+    ViewData["Title"] = "Home page";
+    Layout = "_Layout";
 }
-<!-- SEO Meta Tags -->
-<meta name="description" content="SteadyGrowth - Discover, invest, and grow with trusted real estate properties." />
-<meta property="og:title" content="SteadyGrowth - Home" />
-<meta property="og:description" content="Discover, invest, and grow with trusted real estate properties." />
-<meta property="og:type" content="website" />
 
-<!-- Hero Section -->
-<section class="py-5 bg-primary text-white text-center animate__animated animate__fadeInDown">
-    <div class="container">
-        <h1 class="display-4 fw-bold">Find Your Next Investment Property</h1>
-        <p class="lead">SteadyGrowth connects you with vetted, high-potential real estate opportunities.</p>
-        <a href="/Properties" class="btn btn-lg btn-light mt-3 shadow">Browse Properties</a>
-    </div>
-</section>
 
-<!-- Featured Properties -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="mb-4 text-center">Featured Properties</h2>
-        <div id="featured-properties-loading" class="text-center d-none">
-            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
-        </div>
-        <div class="row row-cols-1 row-cols-md-3 g-4" id="featured-properties">
-            <!-- Property cards will be loaded here via AJAX -->
-        </div>
-        <div id="featured-properties-error" class="alert alert-danger d-none mt-3"></div>
-    </div>
-</section>
-
-<!-- Statistics Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-4 mb-3">
-                <h3 class="fw-bold" id="stat-total-properties">0</h3>
-                <p>Total Properties</p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h3 class="fw-bold" id="stat-total-users">0</h3>
-                <p>Registered Users</p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h3 class="fw-bold" id="stat-success-stories">0</h3>
-                <p>Success Stories</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- How It Works -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="mb-4 text-center">How It Works</h2>
-        <div class="row g-4">
-            <div class="col-md-4 text-center">
-                <div class="mb-3"><i class="bi bi-search display-5 text-primary"></i></div>
-                <h5>Browse</h5>
-                <p>Explore a curated list of vetted properties.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="mb-3"><i class="bi bi-cash-coin display-5 text-success"></i></div>
-                <h5>Invest</h5>
-                <p>Connect with property owners and make secure investments.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="mb-3"><i class="bi bi-graph-up-arrow display-5 text-info"></i></div>
-                <h5>Grow</h5>
-                <p>Track your portfolio and watch your wealth grow.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Testimonials -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="mb-4 text-center">What Our Users Say</h2>
-        <div id="testimonials-loading" class="text-center d-none">
-            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
-        </div>
-        <div class="row g-4" id="testimonials">
-            <!-- Testimonials will be loaded here via AJAX -->
-        </div>
-        <div id="testimonials-error" class="alert alert-danger d-none mt-3"></div>
-    </div>
-</section>
-
-<!-- Newsletter Signup -->
-<section class="py-5 bg-primary text-white">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h2 class="mb-3 text-center">Stay Updated</h2>
-                <form id="newsletter-form" class="row g-3" method="post" novalidate>
-                    <div class="col-md-9">
-                        <input type="email" class="form-control form-control-lg" name="email" placeholder="Enter your email" required />
-                        <div class="invalid-feedback">Please enter a valid email address.</div>
+<!-- SLIDER AREA START (slider-3) -->
+<div class="ltn__slider-area ltn__slider-3  section-bg-1">
+    <div class="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
+        <!-- ltn__slide-item -->
+        <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3-normal ltn__slide-item-3">
+            <div class="ltn__slide-item-inner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 align-self-center">
+                            <div class="slide-item-info">
+                                <div class="slide-item-info-inner ltn__slide-animation">
+                                    <div class="slide-video mb-50 d-none">
+                                        <a class="ltn__video-icon-2 ltn__video-icon-2-border" href="https://www.youtube.com/embed/tlThdr3O5Qo" data-rel="lightcase:myCollection">
+                                            <i class="fa fa-play"></i>
+                                        </a>
+                                    </div>
+                                    <h6 class="slide-sub-title white-color--- animated"><span><i class="fas fa-home"></i></span> Steady Growth Real Estate</h6>
+                                    <h1 class="slide-title animated ">Discover Opulence<br /> With Us</h1>
+                                    <div class="slide-brief animated">
+                                        <p>
+                                            Begin your journey of abundance and an incredible lifestyle.
+                                        </p>
+                                    </div>
+                                    <div class="btn-wrapper animated">
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1">Explore Our Properties</a>
+                                        @*        <a class="ltn__video-play-btn bg-white" href="https://www.youtube.com/embed/HnbMYzdjuBs?autoplay=1&amp;showinfo=0" data-rel="lightcase">
+                                            <i class="icon-play  ltn__secondary-color"></i>
+                                        </a> *@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slide-item-img">
+                                <img src="/images/sliders/slider_1.jpg" alt="#">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3 d-grid">
-                        <button type="submit" class="btn btn-lg btn-light">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <!-- ltn__slide-item -->
+        @*         <div class="ltn__slide-item ltn__slide-item-2  ltn__slide-item-3-normal ltn__slide-item-3">
+            <div class="ltn__slide-item-inner  text-right text-end">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 align-self-center">
+                            <div class="slide-item-info">
+                                <div class="slide-item-info-inner ltn__slide-animation">
+                                    <h6 class="slide-sub-title white-color--- animated"><span><i class="fas fa-home"></i></span> Real Estate Agency</h6>
+                                    <h1 class="slide-title animated ">The Right Place <br>of House Finding</h1>
+                                    <div class="slide-brief animated">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                                    </div>
+                                    <div class="btn-wrapper animated">
+                                        <a href="service.html" class="theme-btn-1 btn btn-effect-1">OUR SERVICES</a>
+                                        <a href="about.html" class="btn btn-transparent btn-effect-3">LEARN MORE</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slide-item-img slide-img-left">
+                                <img src="/themes/quarter/img/slider/21.png" alt="#">
+                            </div>
+                        </div>
                     </div>
-                </form>
-                <div id="newsletter-success" class="alert alert-success d-none mt-3"></div>
-                <div id="newsletter-error" class="alert alert-danger d-none mt-3"></div>
+                </div>
+            </div>
+        </div> *@
+        <!--  -->
+    </div>
+</div>
+<!-- SLIDER AREA END -->
+<!-- CAR DEALER FORM AREA START -->
+<div class="ltn__car-dealer-form-area mt--65 mt-120 pb-115---">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ltn__car-dealer-form-tab">
+                    <div class="ltn__tab-menu  text-uppercase d-none">
+                        <div class="nav">
+                            <a class="active show" data-bs-toggle="tab" href="#ltn__form_tab_1_1"><i class="fas fa-car"></i>Find A Car</a>
+                            <a data-bs-toggle="tab" href="#ltn__form_tab_1_2" class=""><i class="far fa-user"></i>Get a Dealer</a>
+                        </div>
+                    </div>
+                    <div class="tab-content bg-white box-shadow-1 ltn__border position-relative pb-10">
+                        <div class="tab-pane fade active show" id="ltn__form_tab_1_1">
+                            <div class="car-dealer-form-inner">
+                                <form action="#" class="ltn__car-dealer-form-box row">
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Choose Area</option>
+                                            <option>Asokoro</option>
+                                            <option>Maitama</option>
+                                            <option>Katampe</option>
+                                            <option>Guzappe</option>
+                                            <option>Katampe extension</option>
+                                            <option>Jabi</option>
+                                            <option>Wuye</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Property Status</option>
+                                            @*       <option>Rent</option> *@
+                                            <option>Sale</option>
+                                            <option>shortlet</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-calendar---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Property Type</option>
+                                            <option>Terrace duplex</option>
+                                            <option>Detached duplex</option>
+                                            <option>Semi-detached duplex</option>
+                                            <option>Fully detached</option>
+                                            <option>Blocks of flat</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
+                                        <div class="btn-wrapper text-center mt-0">
+                                            <!-- <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> -->
+                                            <a href="shop-right-sidebar.html" class="btn theme-btn-1 btn-effect-1 text-uppercase">Find Now</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="ltn__form_tab_1_2">
+                            <div class="car-dealer-form-inner">
+                                <form action="#" class="ltn__car-dealer-form-box row">
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Choose Area</option>
+                                            <option>chicago</option>
+                                            <option>London</option>
+                                            <option>Los Angeles</option>
+                                            <option>New York</option>
+                                            <option>New Jersey</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Property Status</option>
+                                            <option>Open house</option>
+                                            <option>Rent</option>
+                                            <option>Sale</option>
+                                            <option>Sold</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-calendar---- col-lg-3 col-md-6">
+                                        <select class="nice-select">
+                                            <option>Property Type</option>
+                                            <option>Apartment</option>
+                                            <option>Co-op</option>
+                                            <option>Condo</option>
+                                            <option>Single Family Home</option>
+                                        </select>
+                                    </div>
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
+                                        <div class="btn-wrapper text-center mt-0">
+                                            <!-- <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> -->
+                                            <a href="shop-right-sidebar.html" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Properties</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        // AJAX loading for featured properties, statistics, testimonials, newsletter
-        // ...AJAX and loading state logic here...
-    </script>
+</div>
+<!-- CAR DEALER FORM AREA END -->
+<!-- ABOUT US AREA START -->
+<div class="ltn__about-us-area pt-120 pb-90 ">
+    @await Html.PartialAsync("_AboutPartial")
+</div>
+<!-- ABOUT US AREA END -->
+@if (false)
+{
+    <!-- COUNTER UP AREA START -->
+    <div class="ltn__counterup-area section-bg-1 pt-120 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 align-self-center">
+                    <div class="ltn__counterup-item text-color-white---">
+                        <div class="counter-icon">
+                            <i class="flaticon-select"></i>
+                        </div>
+                        <h1><span class="counter">560</span><span class="counterUp-icon">+</span> </h1>
+                        <h6>Total Area Sq</h6>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 align-self-center">
+                    <div class="ltn__counterup-item text-color-white---">
+                        <div class="counter-icon">
+                            <i class="flaticon-office"></i>
+                        </div>
+                        <h1><span class="counter">197</span><span class="counterUp-letter">K</span><span class="counterUp-icon">+</span> </h1>
+                        <h6>Apartments Sold</h6>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 align-self-center">
+                    <div class="ltn__counterup-item text-color-white---">
+                        <div class="counter-icon">
+                            <i class="flaticon-excavator"></i>
+                        </div>
+                        <h1><span class="counter">268</span><span class="counterUp-icon">+</span> </h1>
+                        <h6>Total Constructions</h6>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 align-self-center">
+                    <div class="ltn__counterup-item text-color-white---">
+                        <div class="counter-icon">
+                            <i class="flaticon-armchair"></i>
+                        </div>
+                        <h1><span class="counter">340</span><span class="counterUp-icon">+</span> </h1>
+                        <h6>Apartio Rooms</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- COUNTER UP AREA END -->
+    <!-- CATEGORY AREA START -->
+    <div class="ltn__category-area section-bg-1-- ltn__primary-bg before-bg-1 bg-image bg-overlay-theme-black-5--0 pt-115 pb-90 d-none" data-bs-bg="/themes/quarter/img/bg/5.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title-area ltn__section-title-2 text-center">
+                        <h1 class="section-title white-color">Top Categories</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row ltn__category-slider-active slick-arrow-1">
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="ltn__category-item ltn__category-item-4 text-center">
+                        <div class="ltn__category-item-img">
+                            <a href="shop.html">
+                                <i class="flaticon-car"></i>
+                            </a>
+                        </div>
+                        <div class="ltn__category-item-name">
+                            <h4><a href="shop.html">Parking Space</a></h4>
+                        </div>
+                        <div class="ltn__category-item-btn">
+                            <a href="shop.html"><i class="flaticon-right-arrow"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- CATEGORY AREA END -->
+    <!-- CATEGORY AREA START -->
+    <div class="ltn__category-area ltn__product-gutter section-bg-1--- pt-115 pb-90 ">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title-area ltn__section-title-2--- text-center">
+                        <h6 class="section-subtitle section-subtitle-2 ltn__secondary-color">Our Aminities</h6>
+                        <h1 class="section-title">Building Aminities</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row ltn__category-slider-active--- slick-arrow-1 justify-content-center">
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-car"></i></span>
+                            <span class="category-title">Parking Space</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-swimming"></i></span>
+                            <span class="category-title">Swimming Pool</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-secure-shield"></i></span>
+                            <span class="category-title">Private Security</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-stethoscope"></i></span>
+                            <span class="category-title">Medical Center</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-book"></i></span>
+                            <span class="category-title">Library Area</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-bed-1"></i></span>
+                            <span class="category-title">King Size Beds</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-home-2"></i></span>
+                            <span class="category-title">Smart Homes</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__category-item ltn__category-item-5 text-center">
+                        <a href="shop.html">
+                            <span class="category-icon"><i class="flaticon-slider"></i></span>
+                            <span class="category-title">Kid’s Playland</span>
+                            <span class="category-btn"><i class="flaticon-right-arrow"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- CATEGORY AREA END -->
+    @await Html.PartialAsync("_TestimonialPartial")
+    <!-- BRAND LOGO AREA START -->
+    <div class="ltn__brand-logo-area ltn__brand-logo-1 section-bg-1 pt-290 pb-110 plr--9 d-none">
+        <div class="container-fluid">
+            <div class="row ltn__brand-logo-active">
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/1.png" alt="Brand Logo">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/2.png" alt="Brand Logo">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/3.png" alt="Brand Logo">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/4.png" alt="Brand Logo">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/5.png" alt="Brand Logo">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ltn__brand-logo-item">
+                        <img src="/themes/quarter/img/brand-logo/3.png" alt="Brand Logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BRAND LOGO AREA END -->
 }
+
+

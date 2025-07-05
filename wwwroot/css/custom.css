@@ -1,0 +1,133 @@
+/* Custom styles inspired by Quarter Real Estate HTML Template */
+
+body {
+    font-family: 'Jost', Arial, sans-serif;
+    background: #f8f8f8;
+    color: #222;
+}
+
+.hero-section {
+    background: linear-gradient(120deg, #1e5799 0%, #2989d8 100%);
+    color: #fff;
+    padding: 4rem 0 3rem 0;
+    border-radius: 0 0 2rem 2rem;
+    box-shadow: 0 8px 32px rgba(30,87,153,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background: #1e5799;
+    border: none;
+    border-radius: 2rem;
+    font-weight: 600;
+    padding: 0.75rem 2.5rem;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(30,87,153,0.08);
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #2989d8;
+}
+
+.property-card {
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 24px rgba(30,87,153,0.08);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    border: none;
+    position: relative;
+}
+
+.property-card:hover {
+    box-shadow: 0 8px 32px rgba(30,87,153,0.16);
+}
+
+.property-image-wrapper {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    background: #eaeaea;
+}
+
+.property-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+    transition: transform 0.3s;
+}
+
+.property-card:hover .property-image {
+    transform: scale(1.05);
+}
+
+.property-type {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #2989d8;
+    color: #fff;
+    border-radius: 1rem;
+    padding: 0.25rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(30,87,153,0.08);
+    z-index: 2;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+.property-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.property-feature {
+    background: #f0f4fa;
+    color: #1e5799;
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.property-price {
+    color: #1e5799;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .property-image-wrapper {
+        height: 160px;
+    }
+}

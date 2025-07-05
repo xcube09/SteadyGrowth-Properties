@@ -4,40 +4,56 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">@Model.ErrorMessage</div>
-}
-<form method="post">
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+
+<!-- LOGIN AREA START -->
+<div class="ltn__login-area pb-65">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title-area text-center">
+                    <h1 class="section-title">Sign In <br>To  Your Account</h1>
+                    <p>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. <br>
+                        Sit aliquid,  Non distinctio vel iste.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="account-login-inner">
+                    <form method="post" class="ltn__form-box contact-form-box">
+                        <input asp-for="Email" class="form-control" placeholder="Email*" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <input asp-for="Password" class="form-control" placeholder="Password*" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="form-check mb-3">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
+                        </div>
+                        <div class="btn-wrapper mt-0">
+                            <button class="theme-btn-1 btn btn-block" type="submit">SIGN IN</button>
+                        </div>
+                        <div class="go-to-btn mt-20">
+                            <a asp-page="/ForgotPassword"><small>FORGOTTEN YOUR PASSWORD?</small></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="account-create text-center pt-50">
+                    <h4>DON'T HAVE AN ACCOUNT?</h4>
+                    <p>
+                        Add items to your wishlistget personalised recommendations <br>
+                        check out more quickly track your orders register
+                    </p>
+                    <div class="btn-wrapper">
+                        <a asp-page="/Register" class="theme-btn-1 btn black-btn">CREATE ACCOUNT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" type="password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="mb-3 form-check">
-        <input asp-for="RememberMe" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label"></label>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-<div class="mt-3">
-    <a asp-page="ForgotPassword">Forgot your password?</a>
 </div>
-@if (Model.ExternalLogins.Count > 0)
-{
-    <div class="mt-4">
-        <h5>Or login with:</h5>
-        @foreach (var provider in Model.ExternalLogins)
-        {
-            <form method="post" asp-page-handler="ExternalLogin" asp-route-provider="@provider.Name">
-                <button type="submit" class="btn btn-outline-secondary">@provider.DisplayName</button>
-            </form>
-        }
-    </div>
-}
+<!-- LOGIN AREA END -->
+

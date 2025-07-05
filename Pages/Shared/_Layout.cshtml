@@ -1,52 +1,439 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿<!doctype html>
+<html class="no-js" lang="zxx">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SteadyGrowth.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SteadyGrowth.Web.styles.css" asp-append-version="true" />
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Steady Growth - @ViewBag.Title</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Place favicon.png in the root directory -->
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
+    <!-- Font Icons css -->
+    <link rel="stylesheet" href="/themes/quarter/css/font-icons.css">
+    <!-- plugins css -->
+    <link rel="stylesheet" href="/themes/quarter/css/plugins.css">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/themes/quarter/css/style.css">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="/themes/quarter/css/responsive.css">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Contact SteadyGrowth for inquiries, support, and partnership opportunities." />
+    <meta property="og:title" content="SteadyGrowth Properties" />
+    <meta property="og:description" content="Contact SteadyGrowth for inquiries, support, and partnership opportunities." />
+    <meta property="og:type" content="website" />
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SteadyGrowth.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+    <!--[if lte IE 9]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+    <!-- Add your site or application content here -->
+    <!-- Body main wrapper start -->
+    <div class="body-wrapper">
+
+        <!-- HEADER AREA START (header-5) -->
+        <header class="ltn__header-area ltn__header-5 ltn__header-transparent--- gradient-color-4---">
+            <!-- ltn__header-top-area start -->
+            <div class="ltn__header-top-area section-bg-6 top-area-color-white---">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="ltn__top-bar-menu">
+                                <ul>
+                                    <li><a href="mailto:Info@steadygrowth.com"><i class="icon-mail"></i> Info@steadygrowth.com</a></li>
+                                    <li><a href="#"><i class="icon-placeholder"></i> Block B, Cluster B, Admiralty Estate Asokoro, Abuja</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="top-bar-right text-end">
+                                <div class="ltn__top-bar-menu">
+                                    <ul>
+                                        <li>
+                                            <!-- ltn__social-media -->
+                                            <div class="ltn__social-media">
+                                                <ul>
+                                                    <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                                    <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+
+                                                    <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                                                    <li><a href="#" title="Dribbble"><i class="fab fa-dribbble"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <!-- header-top-btn -->
+                                            <div class="header-top-btn">
+                                                <a asp-page="/Listings/AddListing">Add Listing</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - SteadyGrowth.Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <!-- ltn__header-top-area end -->
+            <!-- ltn__header-middle-area start -->
+            <div class="ltn__header-middle-area ltn__header-sticky ltn__sticky-bg-white">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="site-logo-wrap">
+                                <div class="site-logo" style="">
+                                    <a href="/"><img style="width:150px;" src="/images/logo.png" alt="Logo"></a>
+                                </div>
+                                <div class="get-support clearfix d-none">
+                                    <div class="get-support-icon">
+                                        <i class="icon-call"></i>
+                                    </div>
+                                    <div class="get-support-info">
+                                        <h6>Get Support</h6>
+                                        <h4><a href="tel:+123456789">123-456-789-10</a></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col header-menu-column">
+                            <div class="header-menu d-none d-xl-block">
+                                <nav>
+                                    <div class="ltn__main-menu">
+                                        <ul>
+                                            <li>
+                                                <a href="/">Home</a>
+                                            </li>
+                                            <li>
+                                                <a asp-page="/about">About</a>
+                                            </li>
+                                            <li>
+                                                <a asp-page="Services">Services</a>
+                                            </li>
+                                            <li>
+                                                <a asp-page="/Listings">Listings</a>
+                                            </li>
+                                            <li>
+                                                <a asp-page="/Contact">Contact</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col ltn__header-options ltn__header-options-2 mb-sm-20">
+                            <!-- header-search-1 -->
+                            <div class="header-search-wrap">
+                                <div class="header-search-1">
+                                    <div class="search-icon">
+                                        <i class="icon-search for-search-show"></i>
+                                        <i class="icon-cancel  for-search-close"></i>
+                                    </div>
+                                </div>
+                                <div class="header-search-1-form">
+                                    <form id="#" method="get" action="#">
+                                        <input type="text" name="search" value="" placeholder="Search here..." />
+                                        <button type="submit">
+                                            <span><i class="icon-search"></i></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- user-menu -->
+                            <div class="ltn__drop-menu user-menu">
+                                <ul>
+                                    <li>
+                                        <a href="#"><i class="icon-user"></i></a>
+                                        <ul>
+                                            <li><a asp-page="/Login" asp-area="Identity">Sign in</a></li>
+                                            <li><a asp-page="/Register" asp-area="Identity">Register</a></li>
+                                            <li><a href="account.html">My Account</a></li>
+                                            <li><a href="wishlist.html">Wishlist</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- mini-cart -->
+                            @*         <div class="mini-cart-icon">
+                            <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle">
+                            <i class="icon-shopping-cart"></i>
+                            <sup>2</sup>
+                            </a>
+                            </div> *@
+                            <!-- mini-cart -->
+                            <!-- Mobile Menu Button -->
+                            <div class="mobile-menu-toggle d-xl-none">
+                                <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
+                                    <svg viewBox="0 0 800 600">
+                                        <path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200" id="top"></path>
+                                        <path d="M300,320 L540,320" id="middle"></path>
+                                        <path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190" id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ltn__header-middle-area end -->
+        </header>
+        <!-- HEADER AREA END -->
+    
+        <!-- Utilize Mobile Menu Start -->
+        <div id="ltn__utilize-mobile-menu" class="ltn__utilize ltn__utilize-mobile-menu">
+            <div class="ltn__utilize-menu-inner ltn__scrollbar">
+                <div class="ltn__utilize-menu-head">
+                    <div class="site-logo">
+                        <a href="/"><img src="/images/logo.png" alt="Logo"></a>
+                    </div>
+                    <button class="ltn__utilize-close">×</button>
+                </div>
+                <div class="ltn__utilize-menu-search-form">
+                    <form action="#">
+                        <input type="text" placeholder="Search...">
+                        <button><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="ltn__utilize-menu">
+                    <ul>
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a asp-page="/AboutUs">About</a>
+                        </li>
+                        <li>
+                            <a asp-page="/OurServices">Our Services</a>
+                        </li>
+                        <li>
+                            <a asp-page="/ContactUs">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ltn__utilize-buttons ltn__utilize-buttons-2">
+                    <ul>
+                        <li>
+                            <a href="account.html" title="My Account">
+                                <span class="utilize-btn-icon">
+                                    <i class="far fa-user"></i>
+                                </span>
+                                My Account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="wishlist.html" title="Wishlist">
+                                <span class="utilize-btn-icon">
+                                    <i class="far fa-heart"></i>
+                                    <sup>3</sup>
+                                </span>
+                                Wishlist
+                            </a>
+                        </li>
+                        <li>
+                            <a href="cart.html" title="Shoping Cart">
+                                <span class="utilize-btn-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <sup>5</sup>
+                                </span>
+                                Shoping Cart
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ltn__social-media-2">
+                    <ul>
+                        <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </footer>
+        <!-- Utilize Mobile Menu End -->
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
+        @RenderBody()
+
+        <!-- CALL TO ACTION START (call-to-action-6) -->
+        <div class="ltn__call-to-action-area call-to-action-6 before-bg-bottom" data-bs-bg="/themes/quarter/img/1.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="call-to-action-inner call-to-action-inner-6 ltn__secondary-bg position-relative text-center---">
+                            <div class="coll-to-info text-color-white">
+                                <h1>Explore our exclusive listings</h1>
+                                <p>We can help you realize your dream of a new home</p>
+                            </div>
+                            <div class="btn-wrapper">
+                                <a class="btn btn-effect-3 btn-white" href="/ContactUs">Explore Properties <i class="icon-next"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CALL TO ACTION END -->
+        <!-- FOOTER AREA START -->
+        <footer class="ltn__footer-area  ">
+            <div class="footer-top-area  section-bg-2 plr--5">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-about-widget">
+                                <div class="footer-logo">
+                                    <div class="site-logo">
+                                        <img style="width:150px;" src="/images/logo_black.png" alt="Logo">
+                                    </div>
+                                </div>
+                                <p>
+                                    We are SteadyGrowth properties, a first class real estate company in Abuja and the city’s
+                                    leading provider of affordable luxury properties that redefine premium real estate.
+                                </p>
+                                <div class="footer-address">
+                                    <ul>
+                                        <li>
+                                            <div class="footer-address-icon">
+                                                <i class="icon-placeholder"></i>
+                                            </div>
+                                            <div class="footer-address-info">
+                                                <p>Block B, Cluster B, Admiralty Estate Asokoro, Abuja.</p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="footer-address-icon">
+                                                <i class="icon-call"></i>
+                                            </div>
+                                            <div class="footer-address-info">
+                                                <p><a href="tel:+0123-456789">+0123-456789</a></p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="footer-address-icon">
+                                                <i class="icon-mail"></i>
+                                            </div>
+                                            <div class="footer-address-info">
+                                                <p><a href="mailto:Info@steadygrowth.com">Info@steadygrowth.com</a></p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="ltn__social-media mt-20">
+                                    <ul>
+                                        <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                        <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                        <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
+                                        <li><a href="#" title="Youtube"><i class="fab fa-youtube"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-menu-widget clearfix">
+                                <h4 class="footer-title">Company</h4>
+                                <div class="footer-menu">
+                                    <ul>
+                                        <li><a asp-page="/About">About Us</a></li>
+                                        @*       <li><a href="blog.html">Blog</a></li>
+                                        <li><a href="shop.html">All Products</a></li>
+                                        <li><a href="locations.html">Locations Map</a></li>
+                                        <li><a href="faq.html">FAQ</a></li> *@
+                                        <li><a href="contact.html">Contact </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-menu-widget clearfix">
+                                <h4 class="footer-title">Services</h4>
+                                <div class="footer-menu">
+                                    <ul>
+
+                                        <li><a href="#">Login</a></li>
+                                        <li><a href="#">My account</a></li>
+                                        <li><a href="#">Terms & Conditions</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-menu-widget clearfix">
+                                <h4 class="footer-title">Customer Care</h4>
+                                <div class="footer-menu">
+                                    <ul>
+                                        <li><a href="#">Login</a></li>
+                                        <li><a href="#">My account</a></li>
+                                        <li><a href="#">FAQ</a></li>
+                                        <li><a asp-page="/ContactUs">Contact us</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                            <div class="footer-widget footer-newsletter-widget">
+                                <h4 class="footer-title">Newsletter</h4>
+                                <p>Subscribe to our weekly Newsletter and receive updates via email.</p>
+                                <div class="footer-newsletter">
+                                    <form action="#">
+                                        <input type="email" name="email" placeholder="Email*">
+                                        <div class="btn-wrapper">
+                                            <button class="theme-btn-1 btn" type="submit"><i class="fas fa-location-arrow"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                                @*         <h5 class="mt-30">We Accept</h5>
+                                <img src="/themes/quarter/img/icons/payment-4.png" alt="Payment Image"> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ltn__copyright-area ltn__copyright-2 section-bg-7  plr--5">
+                <div class="container-fluid ltn__border-top-2">
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="ltn__copyright-design clearfix">
+                                <p>All Rights Reserved @@ Steady Growth <span>@DateTime.Now.Year</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12 align-self-center">
+                            <div class="ltn__copyright-menu text-end">
+                                <ul>
+                                    <li><a href="#">Terms & Conditions</a></li>
+                                    <li><a asp-page="/Privacy">Privacy & Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- FOOTER AREA END -->
+
+
+    </div>
+    <!-- Body main wrapper end -->
+    <!-- preloader area start -->
+    <div class="preloader d-none" id="preloader">
+        <div class="preloader-inner">
+            <div class="spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- preloader area end -->
+    <!-- All JS Plugins -->
+    <script src="/themes/quarter/js/plugins.js"></script>
+    <!-- Main JS -->
+    <script src="/themes/quarter/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+

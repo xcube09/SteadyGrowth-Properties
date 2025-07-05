@@ -38,4 +38,6 @@ public class IndexModel : PageModel
         RewardPoints = await _rewardService.GetUserTotalPointsAsync(userId);
         RecentProperties = (await _propertyService.GetUserPropertiesAsync(userId)).Take(5).ToList();
     }
+
+    
 }

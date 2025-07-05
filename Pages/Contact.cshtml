@@ -1,59 +1,104 @@
 @page
 @model ContactModel
 @{
-    ViewData["Title"] = "Contact Us - SteadyGrowth";
+    ViewData["Title"] = "Contact Us";
 }
-<!-- SEO Meta Tags -->
-<meta name="description" content="Contact SteadyGrowth for inquiries, support, and partnership opportunities." />
-<meta property="og:title" content="Contact SteadyGrowth" />
-<meta property="og:description" content="Contact SteadyGrowth for inquiries, support, and partnership opportunities." />
-<meta property="og:type" content="website" />
 
-<section class="container py-5">
-    <h1 class="mb-4 text-center">Contact Us</h1>
-    <div class="row mb-5">
-        <div class="col-md-7">
-            <form id="contact-form" method="post" novalidate>
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="name" placeholder="Your Name" required />
-                    <div class="invalid-feedback">Please enter your name.</div>
+
+<!-- CONTACT ADDRESS AREA START -->
+<div class="ltn__contact-address-area mb-90">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ltn__contact-address-item ltn__contact-address-item-3 box-shadow">
+                    <div class="ltn__contact-address-icon">
+                        <img src="/themes/quarter/img/icons/10.png" alt="Icon Image">
+                    </div>
+                    <h3>Email Address</h3>
+                    <p>
+                        Info@steadygrowth.com <br>
+                        support@steadygrowth.com
+                    </p>
                 </div>
-                <div class="mb-3">
-                    <input type="email" class="form-control" name="email" placeholder="Your Email" required />
-                    <div class="invalid-feedback">Please enter a valid email address.</div>
-                </div>
-                <div class="mb-3">
-                    <textarea class="form-control" name="message" rows="4" placeholder="Your Message" required></textarea>
-                    <div class="invalid-feedback">Please enter your message.</div>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
-            <div id="contact-success" class="alert alert-success d-none mt-3"></div>
-            <div id="contact-error" class="alert alert-danger d-none mt-3"></div>
-        </div>
-        <div class="col-md-5">
-            <h4>Our Offices</h4>
-            <ul class="list-group mb-3">
-                <li class="list-group-item"><i class="bi bi-geo-alt"></i> 123 Main St, Lagos, Nigeria</li>
-                <li class="list-group-item"><i class="bi bi-clock"></i> Mon-Fri: 9am - 6pm</li>
-                <li class="list-group-item"><i class="bi bi-telephone"></i> +1 (555) 123-4567</li>
-            </ul>
-            <h5>Follow Us</h5>
-            <div class="mb-3">
-                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-twitter-x"></i></a>
-                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-linkedin"></i></a>
             </div>
-            <div class="ratio ratio-16x9 rounded shadow">
-                <iframe src="https://www.google.com/maps?q=123+Main+St,+Lagos,+Nigeria&output=embed" allowfullscreen loading="lazy"></iframe>
+            <div class="col-lg-4">
+                <div class="ltn__contact-address-item ltn__contact-address-item-3 box-shadow">
+                    <div class="ltn__contact-address-icon">
+                        <img src="/themes/quarter/img/icons/11.png" alt="Icon Image">
+                    </div>
+                    <h3>Phone Number</h3>
+                    <p>+0123-456789 <br> +987-6543210</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ltn__contact-address-item ltn__contact-address-item-3 box-shadow">
+                    <div class="ltn__contact-address-icon">
+                        <img src="/themes/quarter/img/icons/12.png" alt="Icon Image">
+                    </div>
+                    <h3>Office Address</h3>
+                    <p>
+                        Block B, Cluster B, Admiralty Estate Asokoro, Abuja.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</section>
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        // AJAX for contact form, loading states, and validation
-    </script>
-}
+</div>
+<!-- CONTACT ADDRESS AREA END -->
+<!-- CONTACT MESSAGE AREA START -->
+<div class="ltn__contact-message-area mb-20 mb--100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ltn__form-box contact-form-box box-shadow white-bg">
+                    <h4 class="title-2">Get A Quote</h4>
+                    <form id="contact-form" action="mail.php" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="name" placeholder="Enter your name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-item input-item-email ltn__custom-icon">
+                                    <input type="email" name="email" placeholder="Enter email address">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-item">
+                                    <select class="nice-select">
+                                        <option>Select Service Type</option>
+                                        <option>Property Management </option>
+                                        <option>Mortgage Service </option>
+                                        <option>Consulting Service</option>
+                                        <option>Home Buying</option>
+                                        <option>Home Selling</option>
+                                        <option>Escrow Services</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-item input-item-phone ltn__custom-icon">
+                                    <input type="text" name="phone" placeholder="Enter phone number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-item input-item-textarea ltn__custom-icon">
+                            <textarea name="message" placeholder="Enter message"></textarea>
+                        </div>
+                        <p><label class="input-info-save mb-0"><input type="checkbox" name="agree"> Save my name, email, and website in this browser for the next time I comment.</label></p>
+                        <div class="btn-wrapper mt-0">
+                            <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">get a free service</button>
+                        </div>
+                        <p class="form-messege mb-0 mt-20"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- CONTACT MESSAGE AREA END -->
+<!-- GOOGLE MAP AREA START -->
+<div class="google-map mb-20" style="height:200px;">
+</div>
+<!-- GOOGLE MAP AREA END -->
