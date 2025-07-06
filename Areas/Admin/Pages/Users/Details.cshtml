@@ -4,45 +4,227 @@
     ViewData["Title"] = "User Details";
 }
 
-<h1>User Details</h1>
 @if (Model.AppUser == null)
 {
     <p>User not found.</p>
 }
 else
 {
-    <div class="mb-3">
-        <strong>Name:</strong> @Model.AppUser.FirstName @Model.AppUser.LastName<br />
-        <strong>Email:</strong> @Model.AppUser.Email<br />
-        <strong>Status:</strong> @(Model.AppUser.IsActive ? "Active" : "Inactive")<br />
-        <strong>Joined:</strong> @Model.AppUser.CreatedAt.ToString("yyyy-MM-dd")
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-body pt-9 pb-0">
+            <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
+                <div class="me-7 mb-4">
+                    <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                        <img src="@(string.IsNullOrEmpty(Model.AppUser.ProfilePictureUrl) ? "~/themes/metronic/v8_2/assets/media/avatars/blank.png" : "~/images/profilepictures/" + Model.AppUser.ProfilePictureUrl)" alt="image" />
+                        <div class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-body h-20px w-20px"></div>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center mb-2">
+                                <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">@Model.AppUser.FirstName @Model.AppUser.LastName</a>
+                                <a href="#"><i class="ki-duotone ki-verify fs-1 text-primary"></i></a>
+                            </div>
+                            <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
+                                <a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                    <i class="ki-duotone ki-profile-circle fs-4 me-1"></i>Developer
+                                </a>
+                                <a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                    <i class="ki-duotone ki-geolocation fs-4 me-1"></i>SF, Bay Area
+                                </a>
+                                <a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary mb-2">
+                                    <i class="ki-duotone ki-sms fs-4 me-1"></i>@Model.AppUser.Email
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-stack">
+                        <div class="d-flex flex-column flex-grow-1 pe-8">
+                            <div class="d-flex flex-wrap">
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-arrow-up fs-3 text-success me-2"></i>
+                                        <div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="@Model.UserStats?.TotalProperties">0</div>
+                                    </div>
+                                    <div class="fw-semibold fs-6 text-gray-400">Total Properties</div>
+                                </div>
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-arrow-down fs-3 text-danger me-2"></i>
+                                        <div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="@Model.UserStats?.ApprovedProperties">0</div>
+                                    </div>
+                                    <div class="fw-semibold fs-6 text-gray-400">Approved Properties</div>
+                                </div>
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-arrow-up fs-3 text-success me-2"></i>
+                                        <div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="@Model.UserStats?.PendingProperties">0</div>
+                                    </div>
+                                    <div class="fw-semibold fs-6 text-gray-400">Pending Properties</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#kt_user_view_overview_tab">Overview</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#kt_user_view_properties_tab">Properties</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#kt_user_view_referrals_tab">Referrals</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <h4>User Properties</h4>
-    @if (Model.Properties.Count == 0)
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="kt_user_view_overview_tab" role="tabpanel">
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header cursor-pointer">
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Profile Details</h3>
+                    </div>
+                </div>
+                <div class="card-body p-9">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Profile Picture</label>
+                        <div class="col-lg-8">
+                            <form method="post" enctype="multipart/form-data" asp-page-handler="UploadProfilePicture">
+                                <input type="hidden" name="userId" value="@Model.AppUser.Id" />
+                                <input type="file" name="profilePicture" class="form-control" />
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Full Name</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800">@Model.AppUser.FirstName @Model.AppUser.LastName</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Email</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800">@Model.AppUser.Email</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Phone</label>
+                        <div class="col-lg-8 d-flex align-items-center">
+                            <span class="fw-bold fs-6 text-gray-800 me-2">@Model.AppUser.PhoneNumber</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Status</label>
+                        <div class="col-lg-8">
+                            <span class="badge badge-light-success">@(Model.AppUser.IsActive ? "Active" : "Inactive")</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Joined Date</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800">@Model.AppUser.CreatedAt.ToShortDateString()</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="kt_user_view_properties_tab" role="tabpanel">
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header cursor-pointer">
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">User Properties</h3>
+                    </div>
+                </div>
+                <div class="card-body p-9">
+                    @if (Model.Properties != null && Model.Properties.Any())
+                    {
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-125px">Title</th>
+                                    <th class="min-w-125px">Status</th>
+                                    <th class="min-w-125px">Price</th>
+                                    <th class="min-w-125px">Location</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                @foreach (var property in Model.Properties)
+                                {
+                                    <tr>
+                                        <td>@property.Title</td>
+                                        <td><span class="badge @(GetStatusBadgeClass(property.Status))">@property.Status</span></td>
+                                        <td>NGN @property.Price.ToString("N2")</td>
+                                        <td>@property.Location</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No properties found for this user.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="kt_user_view_referrals_tab" role="tabpanel">
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header cursor-pointer">
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">User Referrals</h3>
+                    </div>
+                </div>
+                <div class="card-body p-9">
+                    @if (Model.Referrals != null && Model.Referrals.Any())
+                    {
+                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-125px">Referred User ID</th>
+                                    <th class="min-w-125px">Commission Earned</th>
+                                    <th class="min-w-125px">Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                @foreach (var referral in Model.Referrals)
+                                {
+                                    <tr>
+                                        <td>@referral.ReferredUserId</td>
+                                        <td>NGN @referral.CommissionEarned.ToString("N2")</td>
+                                        <td>@referral.CreatedAt.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No referrals found for this user.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@functions {
+    public string GetStatusBadgeClass(SteadyGrowth.Web.Models.Entities.PropertyStatus status)
     {
-        <p>No properties found.</p>
-    }
-    else
-    {
-        <ul>
-        @foreach (var property in Model.Properties)
+        return status switch
         {
-            <li>@property.Title (@property.Status)</li>
-        }
-        </ul>
-    }
-    <h4>User Referrals</h4>
-    @if (Model.Referrals.Count == 0)
-    {
-        <p>No referrals found.</p>
-    }
-    else
-    {
-        <ul>
-        @foreach (var referral in Model.Referrals)
-        {
-            <li>@referral.ReferredUserId (@referral.CreatedAt.ToString("yyyy-MM-dd"))</li>
-        }
-        </ul>
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Draft => "badge-light-secondary",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Pending => "badge-light-warning",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Approved => "badge-light-success",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Rejected => "badge-light-danger",
+            _ => "badge-light-info",
+        };
     }
 }

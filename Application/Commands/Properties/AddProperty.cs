@@ -57,7 +57,7 @@ namespace SteadyGrowth.Web.Application.Commands.Properties
                     var propertyImage = new PropertyImage
                     {
                         PropertyId = property.Id,
-                        FileName = imageDto.FileName,
+                        FileName = imageDto.FileName!,
                         Caption = imageDto.Caption,
                         ImageType = imageDto.ImageType,
                         DisplayOrder = imageDto.DisplayOrder

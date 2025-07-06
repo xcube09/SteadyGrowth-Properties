@@ -1,5 +1,247 @@
-﻿@page
+@page
 @model SteadyGrowth.Web.Pages.ListingsModel
 @{
     ViewBag.Title = "Property Listings";
+}
+
+
+<!-- PRODUCT DETAILS AREA START -->
+<div class="ltn__product-area ltn__product-gutter mb-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="ltn__shop-options">
+                    <ul>
+                        <li>
+                            <div class="ltn__grid-list-tab-menu ">
+                                <div class="nav">
+                                    <a class="active show" data-bs-toggle="tab" href="#liton_product_grid"><i class="fas fa-th-large"></i></a>
+                                    <a data-bs-toggle="tab" href="#liton_product_list"><i class="fas fa-list"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="showing-product-number text-right">
+                                <span>Showing @(Model.Properties != null ? (Model.Properties.PageIndex - 1) * Model.Properties.PageSize + 1 : 0)–@(Model.Properties != null ? Math.Min(Model.Properties.PageIndex * Model.Properties.PageSize, Model.Properties.TotalCount) : 0) of @(Model.Properties != null ? Model.Properties.TotalCount : 0) results</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="short-by text-center">
+                                <form method="get">
+                                    <select class="nice-select" asp-for="StatusFilter" onchange="this.form.submit()">
+                                        <option value="">Default Sorting</option>
+                                        @foreach (var status in Enum.GetValues(typeof(SteadyGrowth.Web.Models.Entities.PropertyStatus)))
+                                        {
+                                            <option value="@status" selected="@(Model.StatusFilter.HasValue && Model.StatusFilter.Value == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
+                                        }
+                                    </select>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="liton_product_grid">
+                        <div class="ltn__product-tab-content-inner ltn__product-grid-view">
+                            <div class="row">
+                                @if (Model.Properties != null && Model.Properties.Any())
+                                {
+                                    @foreach (var property in Model.Properties)
+                                    {
+                                        <div class="col-lg-6 col-sm-6 col-12">
+                                            <div class="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
+                                                <div class="product-img">
+                                                    @if (property.PropertyImages != null && property.PropertyImages.Any())
+                                                    {
+                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/properties/@property.PropertyImages.First().FileName" alt="@property.Title"></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/no-image.png" alt="No Image"></a>
+                                                    }
+                                                </div>
+                                                <div class="product-info">
+                                                    <h2 class="product-title"><a href="/Properties/Details/@property.Id">@property.Title</a></h2>
+                                                    <div class="product-img-location">
+                                                        <ul>
+                                                            <li>
+                                                                <a href="#"><i class="flaticon-pin"></i> @property.Location</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span>NGN @property.Price.ToString("N2")</span>
+                                                    </div>
+                                                    <p>Status: <span class="badge @GetStatusBadgeClass(property.Status)">@property.Status</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12">
+                                        <p>No approved properties found.</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="liton_product_list">
+                        <div class="ltn__product-tab-content-inner ltn__product-list-view">
+                            <div class="row">
+                                @if (Model.Properties != null && Model.Properties.Any())
+                                {
+                                    @foreach (var property in Model.Properties)
+                                    {
+                                        <div class="col-lg-12">
+                                            <div class="ltn__product-item ltn__product-item-4 ltn__product-item-5">
+                                                <div class="product-img">
+                                                    @if (property.PropertyImages != null && property.PropertyImages.Any())
+                                                    {
+                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/properties/@property.PropertyImages.First().FileName" alt="@property.Title"></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/no-image.png" alt="No Image"></a>
+                                                    }
+                                                </div>
+                                                <div class="product-info">
+                                                    <div class="product-badge-price">
+                                                        <div class="product-badge">
+                                                            <ul>
+                                                                <li class="sale-badg">@property.Status</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="product-price">
+                                                            <span>NGN @property.Price.ToString("N2")</span>
+                                                        </div>
+                                                    </div>
+                                                    <h2 class="product-title"><a href="/Properties/Details/@property.Id">@property.Title</a></h2>
+                                                    <div class="product-img-location">
+                                                        <ul>
+                                                            <li>
+                                                                <a href="#"><i class="flaticon-pin"></i> @property.Location</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <p>@property.Description</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12">
+                                        <p>No approved properties found.</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ltn__pagination-area text-center">
+                    <div class="ltn__pagination">
+                        <ul>
+                            <li class="@(Model.Properties != null && Model.Properties.HasPreviousPage ? "" : "disabled")">
+                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex - 1 : 1)" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)"><i class="fas fa-angle-double-left"></i></a>
+                            </li>
+                            @if (Model.Properties != null)
+                            {
+                                @for (var i = 1; i <= Model.Properties.TotalPages; i++)
+                                {
+                                    <li class="@(i == Model.Properties.PageIndex ? "active" : "")">
+                                        <a asp-page="./Listings" asp-route-pageIndex="@i" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">@i</a>
+                                    </li>
+                                }
+                            }
+                            <li class="@(Model.Properties != null && Model.Properties.HasNextPage ? "" : "disabled")">
+                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex + 1 : 1)" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)"><i class="fas fa-angle-double-right"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <aside class="sidebar ltn__shop-sidebar ltn__right-sidebar">
+                    <h3 class="mb-10">Advance Information</h3>
+                    <!-- Price Filter Widget -->
+                    <div class="widget ltn__price-filter-widget">
+                        <h4 class="ltn__widget-title ltn__widget-title-border---">Filter by price</h4>
+                        <div class="price_filter">
+                            <div class="price_slider_amount">
+                                <input type="submit" value="Your range:" />
+                                <input type="text" class="amount" name="price" placeholder="Add Your Price" />
+                            </div>
+                            <div class="slider-range"></div>
+                        </div>
+                    </div>
+                    <!-- Property Type Widget -->
+                    <div class="widget ltn__menu-widget">
+                        <h4 class="ltn__widget-title">Property Type</h4>
+                        <ul>
+                            <li>
+                                <label class="checkbox-item">House
+                                    <input type="checkbox" checked="checked">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">3,924</span>
+                            </li>
+                            <li>
+                                <label class="checkbox-item">Single Family
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">3,610</span>
+                            </li>
+                            <li>
+                                <label class="checkbox-item">Apartment
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">2,912</span>
+                            </li>
+                            <li>
+                                <label class="checkbox-item">Office Villa
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">2,687</span>
+                            </li>
+                            <li>
+                                <label class="checkbox-item">Luxury Home
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">1,853</span>
+                            </li>
+                            <li>
+                                <label class="checkbox-item">Studio
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span class="categorey-no">893</span>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PRODUCT DETAILS AREA END -->
+
+@functions {
+    public string GetStatusBadgeClass(SteadyGrowth.Web.Models.Entities.PropertyStatus status)
+    {
+        return status switch
+        {
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Draft => "bg-secondary",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Pending => "bg-warning",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Approved => "bg-success",
+            SteadyGrowth.Web.Models.Entities.PropertyStatus.Rejected => "bg-danger",
+            _ => "bg-info",
+        };
+    }
 }

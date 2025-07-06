@@ -26,7 +26,7 @@ public class IndexModel : PageModel
         _userManager = userManager;
     }
 
-    public PaginatedList<Property> Properties { get; set; }
+    public PaginatedList<Property>? Properties { get; set; }
     public PropertyStatus? StatusFilter { get; set; }
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 10;

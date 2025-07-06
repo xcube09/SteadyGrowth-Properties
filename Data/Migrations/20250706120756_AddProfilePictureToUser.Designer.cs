@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteadyGrowth.Web.Data;
 
@@ -11,9 +12,11 @@ using SteadyGrowth.Web.Data;
 namespace SteadyGrowth.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250706120756_AddProfilePictureToUser")]
+    partial class AddProfilePictureToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,37 +162,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.AcademyPackage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AcademyPackages");
-                });
-
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -197,9 +169,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AcademyPackageId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -234,8 +203,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AcademyPackageId");
 
                     b.ToTable("Courses");
                 });
@@ -430,9 +397,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("AcademyPackageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
@@ -509,8 +473,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AcademyPackageId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -648,16 +610,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Course", b =>
-                {
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "AcademyPackage")
-                        .WithMany("Courses")
-                        .HasForeignKey("AcademyPackageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AcademyPackage");
-                });
-
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
@@ -710,16 +662,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.User", b =>
-                {
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "AcademyPackage")
-                        .WithMany("Users")
-                        .HasForeignKey("AcademyPackageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AcademyPackage");
-                });
-
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.UserActivity", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
@@ -748,13 +690,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("AdminUser");
 
                     b.Navigation("Property");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.AcademyPackage", b =>
-                {
-                    b.Navigation("Courses");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>

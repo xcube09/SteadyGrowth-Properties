@@ -36,5 +36,8 @@ namespace SteadyGrowth.Web.Models.Entities
 
         [Required]
         public DateTime UpdatedAt { get; set; }
+
+        public int? AcademyPackageId { get; set; }
+        public virtual AcademyPackage? AcademyPackage { get; set; }
     }
 }

@@ -104,19 +104,19 @@
                                 <nav>
                                     <div class="ltn__main-menu">
                                         <ul>
-                                            <li>
+                                            <li class="@(IsActivePage("Index") ? "active" : "")">
                                                 <a href="/">Home</a>
                                             </li>
-                                            <li>
+                                            <li class="@(IsActivePage("About") ? "active" : "")">
                                                 <a asp-page="/about">About</a>
                                             </li>
-                                            <li>
+                                            <li class="@(IsActivePage("Services") ? "active" : "")">
                                                 <a asp-page="Services">Services</a>
                                             </li>
-                                            <li>
+                                            <li class="@(IsActivePage("Listings") ? "active" : "")">
                                                 <a asp-page="/Listings">Listings</a>
                                             </li>
-                                            <li>
+                                            <li class="@(IsActivePage("Contact") ? "active" : "")">
                                                 <a asp-page="/Contact">Contact</a>
                                             </li>
                                         </ul>
@@ -434,6 +434,29 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+@functions {
+    public bool IsActivePage(string pageName)
+    {
+        var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+        if (currentPage == null)
+        {
+            return false;
+        }
+
+        // Normalize pageName to match the format in RouteData.Values["page"]
+        // e.g., "/Index" for Home, "/About" for About
+        var normalizedPageName = pageName.StartsWith("/") ? pageName : "/" + pageName;
+
+        // Special handling for the root page "/Index"
+        if (normalizedPageName.Equals("/Index", StringComparison.OrdinalIgnoreCase) && currentPage.Equals("/", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return currentPage.Equals(normalizedPageName, StringComparison.OrdinalIgnoreCase);
+    }
+}
 
 
 

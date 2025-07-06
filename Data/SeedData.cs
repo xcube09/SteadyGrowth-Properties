@@ -127,6 +127,28 @@ namespace SteadyGrowth.Web.Data
                 await context.SaveChangesAsync();
                 Console.WriteLine("Seeded showcase properties for landing page with images.");
             }
+
+            // Seed Academy Packages
+            if (!context.AcademyPackages.Any())
+            {
+                var basicPackage = new AcademyPackage
+                {
+                    Name = "Basic Package",
+                    Description = "Access to fundamental real estate courses.",
+                    Price = 0.00m,
+                    IsActive = true
+                };
+                var premiumPackage = new AcademyPackage
+                {
+                    Name = "Premium Package",
+                    Description = "Full access to all real estate academy courses and advanced materials.",
+                    Price = 50000.00m,
+                    IsActive = true
+                };
+                context.AcademyPackages.AddRange(basicPackage, premiumPackage);
+                await context.SaveChangesAsync();
+                Console.WriteLine("Seeded Academy Packages.");
+            }
         }
     }
 }

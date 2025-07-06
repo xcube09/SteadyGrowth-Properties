@@ -30,7 +30,7 @@ public interface IUserService
     /// <summary>
     /// Gets all users with paging support.
     /// </summary>
-    Task<IEnumerable<User>> GetAllUsersAsync(int page = 1, int pageSize = 50);
+    // Task<IEnumerable<User>> GetAllUsersAsync(int page = 1, int pageSize = 50);
 
     /// <summary>
     /// Gets the total number of users in the system.

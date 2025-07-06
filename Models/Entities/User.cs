@@ -24,6 +24,12 @@ namespace SteadyGrowth.Web.Models.Entities
         [StringLength(8)]
         public string? ReferralCode { get; set; }
 
+        [StringLength(500)]
+        public string? ProfilePictureUrl { get; set; }
+
+        public int? AcademyPackageId { get; set; }
+        public virtual AcademyPackage? AcademyPackage { get; set; }
+
         // Navigation properties
         public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
         public virtual ICollection<Referral> ReferralsMade { get; set; } = new List<Referral>();

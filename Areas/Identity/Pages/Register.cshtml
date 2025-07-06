@@ -2,6 +2,7 @@
 @model SteadyGrowth.Web.Areas.Identity.Pages.RegisterModel
 @{
     ViewData["Title"] = "Register";
+    var isReferralCodeReadOnly = !string.IsNullOrWhiteSpace(Model.ReferralCode) ? "readonly" : "";
 }
 
 
@@ -35,7 +36,7 @@
                         <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="Phone Number (optional)" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
 
-                        <input asp-for="ReferralCode" class="form-control" placeholder="Referral Code (optional)" />
+                        <input asp-for="ReferralCode" class="form-control" placeholder="Referral Code (optional)" sg-readonly-if="@(string.IsNullOrWhiteSpace(Model.ReferralCode) ? false : true)" />
                         <span asp-validation-for="ReferralCode" class="text-danger"></span>
 
                         <input asp-for="Password" class="form-control" placeholder="Password*" />

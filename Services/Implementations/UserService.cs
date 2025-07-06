@@ -64,15 +64,7 @@ namespace SteadyGrowth.Web.Services.Implementations
             return true;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync(int page = 1, int pageSize = 50)
-        {
-            return await _db.Users
-                .AsNoTracking()
-                .OrderByDescending(u => u.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
+        
 
         public async Task<int> GetTotalUsersCountAsync()
         {

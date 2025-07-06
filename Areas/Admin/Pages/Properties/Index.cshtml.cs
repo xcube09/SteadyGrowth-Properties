@@ -1,31 +1,61 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SteadyGrowth.Web.Services.Interfaces;
-using System.Linq;
+using MediatR;
+using SteadyGrowth.Web.Application.Queries.Properties;
+using SteadyGrowth.Web.Models.Entities;
+using System.Collections.Generic;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Properties;
 
 public class IndexModel : PageModel
 {
-    private readonly IPropertyService _propertyService;
-    public List<PropertyViewModel> Properties { get; set; } = new();
+    private readonly IMediator _mediator;
 
-    public IndexModel(IPropertyService propertyService)
+    public IndexModel(IMediator mediator)
     {
-        _propertyService = propertyService;
+        _mediator = mediator;
     }
 
-    public async Task<IActionResult> OnGetAsync()
+    public PaginatedList<PropertyViewModel>? Properties { get; set; }
+    public string SearchTerm { get; set; } = string.Empty;
+    public PropertyStatus? StatusFilter { get; set; }
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+
+    public async Task<IActionResult> OnGetAsync(string search = "", PropertyStatus? status = null, int pageIndex = 1)
     {
-        var all = await _propertyService.GetAllPropertiesAsync();
-        Properties = all.Select(p => new PropertyViewModel {
-            Id = p.Id,
-            Title = p.Title,
-            Status = p.Status.ToString(),
-            UserEmail = p.User?.Email ?? "",
-            CreatedAt = p.CreatedAt
-        }).ToList();
+        ViewData["Breadcrumb"] = new List<(string, string)> { ("Admin", "/Admin/Properties/Index"), ("Properties", "/Admin/Properties/Index") };
+
+        SearchTerm = search;
+        StatusFilter = status;
+        PageIndex = pageIndex;
+
+        var query = new GetAdminPropertyListingQuery
+        {
+            PageIndex = PageIndex,
+            PageSize = PageSize,
+            SearchTerm = SearchTerm,
+            StatusFilter = StatusFilter
+        };
+
+        Properties = await _mediator.Send(query);
+
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostApproveAsync(int id)
+    {
+        var command = new ApprovePropertyCommand { PropertyId = id };
+        var result = await _mediator.Send(command);
+        if (result)
+        {
+            TempData["SuccessMessage"] = "Property approved successfully.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Failed to approve property.";
+        }
+        return RedirectToPage();
     }
 }
 

@@ -1,0 +1,45 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Profile.UpgradePackageModel
+@{
+    ViewData["Title"] = "Upgrade Package";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Upgrade Your Academy Package</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form method="post" class="form">
+            <div class="card-body border-top p-9">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <p>Your current package: <strong>@Model.CurrentPackageName</strong></p>
+
+                <h4 class="mt-5">Available Packages:</h4>
+                @if (Model.AvailablePackages != null && Model.AvailablePackages.Any())
+                {
+                    <div class="row">
+                        @foreach (var package in Model.AvailablePackages)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@package.Name</h5>
+                                        <p class="card-text">@package.Description</p>
+                                        <p class="card-text"><strong>Price:</strong> NGN @package.Price.ToString("N2")</p>
+                                        <button type="submit" asp-page-handler="Upgrade" asp-route-packageId="@package.Id" class="btn btn-primary">Upgrade to @package.Name</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No other packages available for upgrade.</p>
+                }
+            </div>
+        </form>
+    </div>
+</div>

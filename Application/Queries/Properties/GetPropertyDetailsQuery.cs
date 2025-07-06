@@ -10,7 +10,7 @@ namespace SteadyGrowth.Web.Application.Queries.Properties
     public class GetPropertyDetailsQuery : IRequest<Property>
     {
         public int PropertyId { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public class GetPropertyDetailsQueryHandler : IRequestHandler<GetPropertyDetailsQuery, Property>
         {

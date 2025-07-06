@@ -23,6 +23,7 @@ namespace SteadyGrowth.Web.Data
         public DbSet<VettingLog> VettingLogs { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<PropertyImage> PropertyImages { get; set; }
+        public DbSet<AcademyPackage> AcademyPackages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -69,6 +70,11 @@ namespace SteadyGrowth.Web.Data
                 entity.HasIndex(e => e.ReferralCode)
                       .IsUnique()
                       .HasFilter("[ReferralCode] IS NOT NULL");
+
+                entity.HasOne(u => u.AcademyPackage)
+                      .WithMany(ap => ap.Users)
+                      .HasForeignKey(u => u.AcademyPackageId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
 
             // PropertyImage configurations
@@ -84,6 +90,15 @@ namespace SteadyGrowth.Web.Data
                       .OnDelete(DeleteBehavior.Cascade);
                 entity.HasIndex(e => e.PropertyId);
                 entity.HasIndex(e => e.DisplayOrder);
+            });
+
+            // Course configurations
+            builder.Entity<Course>(entity =>
+            {
+                entity.HasOne(c => c.AcademyPackage)
+                      .WithMany(ap => ap.Courses)
+                      .HasForeignKey(c => c.AcademyPackageId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Add further entity configurations here as needed

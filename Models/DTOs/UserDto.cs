@@ -45,7 +45,7 @@ public class UserDto
     public static implicit operator UserDto(User entity) => new()
     {
         Id = entity.Id,
-        Email = entity.Email,
+        Email = entity.Email!,
         FirstName = entity.FirstName,
         LastName = entity.LastName,
         PhoneNumber = entity.PhoneNumber,
