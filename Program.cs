@@ -187,6 +187,13 @@ app.UseRequestLocalization(localizationOptions);
 app.MapRazorPages();
 app.MapControllers();
 
+// Apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Seed default admin user and role
 using (var scope = app.Services.CreateScope())
 {

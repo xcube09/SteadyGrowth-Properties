@@ -24,6 +24,7 @@ namespace SteadyGrowth.Web.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<AcademyPackage> AcademyPackages { get; set; }
+        public DbSet<UpgradeRequest> UpgradeRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -99,6 +100,20 @@ namespace SteadyGrowth.Web.Data
                       .WithMany(ap => ap.Courses)
                       .HasForeignKey(c => c.AcademyPackageId)
                       .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // UpgradeRequest configurations
+            builder.Entity<UpgradeRequest>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(ur => ur.User)
+                      .WithMany()
+                      .HasForeignKey(ur => ur.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(ur => ur.RequestedPackage)
+                      .WithMany()
+                      .HasForeignKey(ur => ur.RequestedPackageId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Add further entity configurations here as needed

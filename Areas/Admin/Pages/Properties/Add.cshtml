@@ -1,0 +1,59 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Properties.AddModel
+@{
+    ViewData["Title"] = "Add New Property";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Add New Property</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form method="post" class="form" enctype="multipart/form-data">
+            <div class="card-body border-top p-9">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row mb-6">
+                    <label asp-for="Property.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Property.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+                        <span asp-validation-for="Property.Title" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Property.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <textarea asp-for="Property.Description" class="form-control form-control-lg form-control-solid"></textarea>
+                        <span asp-validation-for="Property.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Property.Price" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Property.Price" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Property.Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Property.Location" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Property.Location" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Property.Location" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Property Images</label>
+                    <div class="col-lg-8">
+                        <input type="file" name="Images" class="form-control form-control-lg form-control-solid" multiple />
+                        <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>

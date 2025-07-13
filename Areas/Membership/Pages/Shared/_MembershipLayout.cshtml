@@ -1,11 +1,15 @@
 @using Microsoft.AspNetCore.Identity
 @using SteadyGrowth.Web.Models.Entities
 @using Microsoft.EntityFrameworkCore;
+@using MediatR;
+@using SteadyGrowth.Web.Application.Queries.Academy;
 @inject UserManager<User> _userManager
+@inject IMediator _mediator
 @{
     Layout = null;
     User? currentUser = null;
     string referralLink = "#";
+    IList<AcademyPackage> availablePackages = new List<AcademyPackage>();
 
     if (User.Identity.IsAuthenticated)
     {
@@ -14,6 +18,7 @@
         {
             referralLink = Url.PageLink("/Register", pageHandler: null, protocol: "https", host: Context.Request.Host.ToString(), values: new { area = "Identity", referrerId = currentUser.ReferralCode });
         }
+        availablePackages = await _mediator.Send(new GetAvailableAcademyPackagesQuery());
     }
 }
 <!DOCTYPE html>
@@ -76,6 +81,12 @@
                                     <div class="menu-item px-5">
                                         <a href="#" class="menu-link px-5" data-bs-toggle="modal" data-bs-target="#referralLinkModal">Referral Link</a>
                                     </div>
+                                    @if (currentUser != null && (currentUser.AcademyPackage == null || currentUser.AcademyPackage.Name != "Premium Package"))
+                                    {
+                                        <div class="menu-item px-5">
+                                            <a href="#" class="menu-link px-5" data-bs-toggle="modal" data-bs-target="#upgradePackageModal">Upgrade to Premium</a>
+                                        </div>
+                                    }
                                     <div class="menu-item px-5">
                                         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
                                             <button type="submit" class="btn btn-sm btn-light-primary menu-link px-5">Sign Out</button>
@@ -192,6 +203,41 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- Upgrade Package Modal -->
+    <div class="modal fade" id="upgradePackageModal" tabindex="-1" aria-labelledby="upgradePackageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="upgradePackageModalLabel">Upgrade to Premium Academy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="upgradeRequestForm">
+                    <div class="modal-body">
+                        <p>You are about to upgrade to the Premium Academy Package. This package costs NGN @(availablePackages?.FirstOrDefault(p => p.Name == "Premium Package")?.Price.ToString("N2") ?? "0.00").</p>
+                        <input type="hidden" id="requestedPackageId" value="@(availablePackages?.FirstOrDefault(p => p.Name == "Premium Package")?.Id ?? 0)" />
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                            <select class="form-select" id="paymentMethod" name="paymentMethod">
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentDetails" class="form-label">Payment Details (e.g., Transaction ID)</label>
+                            <textarea class="form-control" id="paymentDetails" name="paymentDetails" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submitUpgradeRequest">Submit Upgrade Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!--end::Global Javascript Bundle(used by all pages)-->
     <script src="~/themes/metronic/v8_2/assets/plugins/global/plugins.bundle.js"></script>
     <script src="~/themes/metronic/v8_2/assets/js/scripts.bundle.js"></script>
@@ -220,6 +266,11 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
 
+            // Initialize Metronic components if needed
+            if (typeof KTApp !== 'undefined') {
+                KTApp.init();
+            }
+
             // Copy referral link to clipboard
             document.getElementById('copyReferralLinkButton').addEventListener('click', function () {
                 var referralLinkInput = document.getElementById('referralLinkInput');
@@ -233,6 +284,54 @@
                 setTimeout(() => {
                     this.textContent = originalButtonText;
                 }, 2000);
+            });
+
+            // Handle upgrade request form submission
+            document.getElementById('upgradeRequestForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const submitButton = document.getElementById('submitUpgradeRequest');
+                submitButton.setAttribute("data-kt-indicator", "on");
+                submitButton.disabled = true;
+
+                const form = e.target;
+                const formData = new FormData(form);
+                const requestedPackageId = document.getElementById('requestedPackageId').value;
+
+                const data = {
+                    requestedPackageId: parseInt(requestedPackageId),
+                    paymentMethod: formData.get('paymentMethod'),
+                    paymentDetails: formData.get('paymentDetails')
+                };
+
+                console.log('Submitting upgrade request with data:', data);
+
+                try {
+                    const response = await fetch('/api/UpgradeRequestApi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (response.ok) {
+                        Swal.fire('Success!', 'Upgrade request submitted successfully.', 'success');
+                        bootstrap.Modal.getInstance(document.getElementById('upgradePackageModal')).hide();
+                    } else {
+                        const errorData = await response.json();
+                        console.error('API Error:', errorData);
+                        Swal.fire('Error!', errorData.title || 'Failed to submit upgrade request.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Fetch Error:', error);
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                } finally {
+                    submitButton.removeAttribute("data-kt-indicator");
+                    submitButton.disabled = false;
+                }
             });
         });
     </script>

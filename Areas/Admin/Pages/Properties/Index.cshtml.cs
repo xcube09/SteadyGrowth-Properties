@@ -4,6 +4,7 @@ using MediatR;
 using SteadyGrowth.Web.Application.Queries.Properties;
 using SteadyGrowth.Web.Models.Entities;
 using System.Collections.Generic;
+using SteadyGrowth.Web.Application.Commands.Properties;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Properties;
 
