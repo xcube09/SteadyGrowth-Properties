@@ -38,7 +38,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToPage("/Identity/Account/Login");
+                return RedirectToPage("/Identity/Login");
             }
 
             AppUser = await _userService.GetUserByIdAsync(userId);
@@ -67,7 +67,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
             if (User.Identity == null || User.Identity.Name == null)
             {
-                return RedirectToPage("/Identity/Account/Login");
+                return RedirectToPage("/Identity/Login");
             }
             Command.UserId = _userManager.GetUserId(User);
 

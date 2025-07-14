@@ -9,6 +9,9 @@ using MediatR;
 using SteadyGrowth.Web.Application.Queries.Users;
 using SteadyGrowth.Web.Application.Queries.Properties;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System;
+using System.Text.Json;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Users;
 
@@ -19,10 +22,12 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.Users;
 public class IndexModel : PageModel
 {
     private readonly IMediator _mediator;
+    private readonly IWalletService _walletService;
 
-    public IndexModel(IMediator mediator)
+    public IndexModel(IMediator mediator, IWalletService walletService)
     {
         _mediator = mediator;
+        _walletService = walletService;
     }
 
     public PaginatedList<UserAdminViewModel>? Users { get; set; }
@@ -49,13 +54,47 @@ public class IndexModel : PageModel
         };
 
         Users = await _mediator.Send(query);
-        TotalCount = Users.TotalCount;
+        TotalCount = Users?.TotalCount ?? 0;
 
         // TODO: Fetch audit logs
         AuditLogs = new List<AuditLogViewModel> {
             new AuditLogViewModel { Timestamp = DateTime.UtcNow, Action = "Viewed user list" }
         };
         return Page();
+    }
+
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> OnPostWalletActionAsync()
+    {
+        try
+        {
+            using var reader = new StreamReader(Request.Body);
+            var body = await reader.ReadToEndAsync();
+            var data = System.Text.Json.JsonDocument.Parse(body).RootElement;
+            var userId = data.GetProperty("userId").GetString();
+            var type = data.GetProperty("type").GetString();
+            var amount = data.GetProperty("amount").GetDecimal();
+            var description = data.GetProperty("description").GetString();
+            if (string.IsNullOrWhiteSpace(userId) || amount <= 0 || string.IsNullOrWhiteSpace(type))
+                return new JsonResult(new { success = false, message = "Invalid input." });
+            if (type == "credit")
+            {
+                await _walletService.CreditWalletAsync(userId, amount, description, User.Identity?.Name);
+            }
+            else if (type == "debit")
+            {
+                await _walletService.DebitWalletAsync(userId, amount, description);
+            }
+            else
+            {
+                return new JsonResult(new { success = false, message = "Invalid type." });
+            }
+            return new JsonResult(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(new { success = false, message = ex.Message });
+        }
     }
 
     // TODO: Implement user activation/deactivation

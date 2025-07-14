@@ -1,100 +1,89 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SteadyGrowth.Web.Models.Entities;
-using SteadyGrowth.Web.Services.Implementations;
+using SteadyGrowth.Web.Application.Commands.Properties;
+using SteadyGrowth.Web.Application.ViewModels;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using SteadyGrowth.Web.Models.Entities;
 using System;
-using System.Linq;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Properties
 {
     [Authorize(Roles = "Admin")]
     public class AddModel : PageModel
     {
-        private readonly PropertyService _propertyService;
+        private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<User> _userManager;
-        private readonly IWebHostEnvironment _env;
 
-        public AddModel(PropertyService propertyService, UserManager<User> userManager, IWebHostEnvironment env)
+        public AddModel(IMediator mediator, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
         {
-            _propertyService = propertyService;
+            _mediator = mediator;
+            _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
-            _env = env;
-            Property = new Property();
-            Images = new List<IFormFile>();
         }
 
         [BindProperty]
-        public Property Property { get; set; }
+        public AddAdminPropertyCommand? Command { get; set; }
 
         [BindProperty]
-        [Display(Name = "Property Images")]
-        public List<IFormFile> Images { get; set; }
+        public List<PropertyImageUploadModel> Images { get; set; } = new List<PropertyImageUploadModel>();
 
         public void OnGet()
         {
+            ViewData["Breadcrumb"] = new List<(string, string)> { ("Admin", "/Admin/Properties/Index"), ("Add Property", "/Admin/Properties/Add") };
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (Command == null)
+            {
+                return Page();
+            }
+
+            if (User.Identity == null || User.Identity.Name == null)
+            {
+                return RedirectToPage("/Identity/Login");
+            }
+            Command.UserId = _userManager.GetUserId(User);
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            foreach (var image in Images)
             {
-                return Challenge();
-            }
-
-            Property.Status = PropertyStatus.Approved;
-            Property.UserId = user.Id;
-            Property.CreatedAt = DateTime.UtcNow;
-
-            var created = await _propertyService.CreatePropertyAsync(Property, user.Id);
-
-            if (Images != null && Images.Any())
-            {
-                var uploadPath = Path.Combine(_env.WebRootPath, "images", "properties");
-                Directory.CreateDirectory(uploadPath);
-                int order = 0;
-
-                foreach (var file in Images)
+                if (image.ImageFile != null)
                 {
-                    if (file.Length > 0)
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "properties");
+                    if (!Directory.Exists(uploadsFolder))
                     {
-                        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                        var filePath = Path.Combine(uploadPath, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                        }
-
-                        var propertyImage = new PropertyImage
-                        {
-                            PropertyId = created.Id,
-                            FileName = fileName,
-                            DisplayOrder = order++,
-                            UploadedAt = DateTime.UtcNow
-                        };
-
-                        if (created.PropertyImages == null)
-                            created.PropertyImages = new List<PropertyImage>();
-
-                        created.PropertyImages.Add(propertyImage);
+                        Directory.CreateDirectory(uploadsFolder);
                     }
-                }
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.ImageFile.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.ImageFile.CopyToAsync(fileStream);
+                    }
 
-                await _propertyService.UpdatePropertyAsync(created);
+                    Command.Images.Add(new PropertyImageCommandDto
+                    {
+                        FileName = uniqueFileName,
+                        Caption = image.Caption,
+                        ImageType = image.ImageType,
+                        DisplayOrder = image.DisplayOrder
+                    });
+                }
             }
+
+            var property = await _mediator.Send(Command);
 
             return RedirectToPage("/Properties/Index");
         }

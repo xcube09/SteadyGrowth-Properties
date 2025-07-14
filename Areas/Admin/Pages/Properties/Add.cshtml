@@ -15,38 +15,45 @@
             <div class="card-body border-top p-9">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row mb-6">
-                    <label asp-for="Property.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label asp-for="Command.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
                     <div class="col-lg-8">
-                        <input asp-for="Property.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
-                        <span asp-validation-for="Property.Title" class="text-danger"></span>
+                        <input asp-for="Command.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+                        <span asp-validation-for="Command.Title" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row mb-6">
-                    <label asp-for="Property.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label asp-for="Command.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
                     <div class="col-lg-8">
-                        <textarea asp-for="Property.Description" class="form-control form-control-lg form-control-solid"></textarea>
-                        <span asp-validation-for="Property.Description" class="text-danger"></span>
+                        <textarea asp-for="Command.Description" class="form-control form-control-lg form-control-solid"></textarea>
+                        <span asp-validation-for="Command.Description" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row mb-6">
-                    <label asp-for="Property.Price" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label asp-for="Command.Price" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
                     <div class="col-lg-8">
-                        <input asp-for="Property.Price" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Property.Price" class="text-danger"></span>
+                        <input asp-for="Command.Price" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Command.Price" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row mb-6">
-                    <label asp-for="Property.Location" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label asp-for="Command.Location" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
                     <div class="col-lg-8">
-                        <input asp-for="Property.Location" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Property.Location" class="text-danger"></span>
+                        <input asp-for="Command.Location" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Command.Location" class="text-danger"></span>
                     </div>
                 </div>
+
+                <div class="separator separator-dashed my-10"></div>
+
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Property Images</label>
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Property Images</label>
                     <div class="col-lg-8">
-                        <input type="file" name="Images" class="form-control form-control-lg form-control-solid" multiple />
-                        <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+                        <div id="image-upload-container">
+                            <!-- Image upload fields will be added here by JavaScript -->
+                        </div>
+                        <button type="button" id="add-image-field" class="btn btn-light-primary mt-3">
+                            <i class="ki-duotone ki-plus fs-2"></i>Add Image
+                        </button>
                     </div>
                 </div>
             </div>
@@ -57,3 +64,70 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let imageIndex = 0;
+
+            function addImageField() {
+                const container = document.getElementById('image-upload-container');
+                const newField = document.createElement('div');
+                newField.classList.add('image-field', 'mb-4', 'p-4', 'border', 'rounded');
+                newField.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Image #${imageIndex + 1}</h5>
+                        <button type="button" class="btn btn-sm btn-danger remove-image-field">Remove</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__ImageFile" class="form-label">Image File</label>
+                        <input type="file" name="Images[${imageIndex}].ImageFile" id="Images_${imageIndex}__ImageFile" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__Caption" class="form-label">Caption</label>
+                        <input type="text" name="Images[${imageIndex}].Caption" id="Images_${imageIndex}__Caption" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__ImageType" class="form-label">Image Type</label>
+                        <input type="text" name="Images[${imageIndex}].ImageType" id="Images_${imageIndex}__ImageType" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__DisplayOrder" class="form-label">Display Order</label>
+                        <input type="number" name="Images[${imageIndex}].DisplayOrder" id="Images_${imageIndex}__DisplayOrder" class="form-control" value="${imageIndex}" />
+                    </div>
+                `;
+                container.appendChild(newField);
+
+                newField.querySelector('.remove-image-field').addEventListener('click', function () {
+                    newField.remove();
+                    updateImageFieldIndices();
+                });
+
+                imageIndex++;
+            }
+
+            function updateImageFieldIndices() {
+                const imageFields = document.querySelectorAll('.image-field');
+                imageFields.forEach((field, index) => {
+                    field.querySelector('h5').textContent = `Image #${index + 1}`;
+                    field.querySelectorAll('input, textarea, select').forEach(input => {
+                        const nameAttr = input.getAttribute('name');
+                        const idAttr = input.getAttribute('id');
+                        if (nameAttr) {
+                            input.setAttribute('name', nameAttr.replace(/Images\[\d+\]/, `Images[${index}]`));
+                        }
+                        if (idAttr) {
+                            input.setAttribute('id', idAttr.replace(/Images_\d+__/, `Images_${index}__`));
+                        }
+                    });
+                });
+                imageIndex = imageFields.length;
+            }
+
+            document.getElementById('add-image-field').addEventListener('click', addImageField);
+
+            // Add one image field by default
+            addImageField();
+        });
+    </script>
+}

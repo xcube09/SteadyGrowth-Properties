@@ -46,7 +46,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties
 
             if (User.Identity == null || User.Identity.Name == null)
             {
-                return RedirectToPage("/Identity/Account/Login");
+                return RedirectToPage("/Identity/Login");
             }
             Command.UserId = _userManager.GetUserId(User);
 

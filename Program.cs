@@ -102,6 +102,7 @@ builder.Services.AddScoped<IReferralService, ReferralService>();
 builder.Services.AddScoped<IRewardService, RewardService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVettingService, VettingService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<PropertyService>();
 
 // MediatR

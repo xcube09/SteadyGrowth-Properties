@@ -91,40 +91,149 @@
                     <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
                         <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-5" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
                             <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
-                                    <div class="menu-item @(IsActivePage("/Properties/Index") ? "active" : "")">
-                                        <a class="menu-link" asp-area="Admin" asp-page="/Properties/Index">
-                                            <span class="menu-icon"><i class="fa fa-building"></i></span>
-                                            <span class="menu-title">Properties</span>
-                                        </a>
-                                    </div>
-                                    <div class="menu-item @(IsActivePage("/Users/Index") ? "active" : "")">
-                                        <a class="menu-link" asp-area="Admin" asp-page="/Users/Index">
-                                            <span class="menu-icon"><i class="fa fa-users"></i></span>
-                                            <span class="menu-title">Users</span>
-                                        </a>
-                                    </div>
-                                    <div class="menu-item @(IsActivePage("/Analytics/Dashboard") ? "active" : "")">
-                                        <a class="menu-link" asp-area="Admin" asp-page="/Analytics/Dashboard">
-                                            <span class="menu-icon"><i class="fa fa-chart-bar"></i></span>
-                                            <span class="menu-title">Analytics</span>
-                                        </a>
-                                    </div>
-                                    <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Academy/Courses") ? "show" : "")">
-                                        <span class="menu-link">
-                                            <span class="menu-icon"><i class="ki-duotone ki-book fs-2"></i></span>
-                                            <span class="menu-title">Academy</span>
-                                            <span class="menu-arrow"></span>
+                                <!-- Dashboard -->
+                                <div class="menu-item @(IsActivePage("/Analytics/Dashboard") ? "active" : "")">
+                                    <a class="menu-link" asp-area="Admin" asp-page="/Analytics/Dashboard">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-element-11 fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                                <span class="path4"></span>
+                                            </i>
                                         </span>
-                                        <div class="menu-sub menu-sub-accordion">
-                                            <div class="menu-item">
-                                                <a class="menu-link @(IsActivePage("/Academy/Courses") ? "active" : "")" asp-area="Admin" asp-page="/Academy/Courses">
-                                                    <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                    <span class="menu-title">Courses</span>
-                                                </a>
-                                            </div>
+                                        <span class="menu-title">Dashboard</span>
+                                    </a>
+                                </div>
+
+                                <!-- Properties Management -->
+                                <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Properties/") ? "show" : "")">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-home fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Properties</span>
+                                        <span class="menu-arrow"></span>
+                                    </span>
+                                    <div class="menu-sub menu-sub-accordion">
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Properties/Index") ? "active" : "")" asp-area="Admin" asp-page="/Properties/Index">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">All Properties</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Properties/Add") ? "active" : "")" asp-area="Admin" asp-page="/Properties/Add">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Add Property</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Properties/Pending") ? "active" : "")" asp-area="Admin" asp-page="/Properties/Pending">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Pending Approval</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- User Management -->
+                                <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Users/") ? "show" : "")">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-user fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Users</span>
+                                        <span class="menu-arrow"></span>
+                                    </span>
+                                    <div class="menu-sub menu-sub-accordion">
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Users/Index") ? "active" : "")" asp-area="Admin" asp-page="/Users/Index">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">All Users</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Users/Pending") ? "active" : "")" asp-area="Admin" asp-page="/Users/Pending">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Pending Users</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Academy Management -->
+                                <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Academy/") ? "show" : "")">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-book fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                                <span class="path4"></span>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Academy</span>
+                                        <span class="menu-arrow"></span>
+                                    </span>
+                                    <div class="menu-sub menu-sub-accordion">
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Academy/Courses") ? "active" : "")" asp-area="Admin" asp-page="/Academy/Courses">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Courses</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Academy/Add") ? "active" : "")" asp-area="Admin" asp-page="/Academy/Add">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Add Course</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Academy/Packages") ? "active" : "")" asp-area="Admin" asp-page="/Academy/Packages">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Packages</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- Settings -->
+                                <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Settings/") ? "show" : "")">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-gear fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Settings</span>
+                                        <span class="menu-arrow"></span>
+                                    </span>
+                                    <div class="menu-sub menu-sub-accordion">
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Settings/General") ? "active" : "")" asp-area="Admin" asp-page="/Settings/General">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">General</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Settings/Security") ? "active" : "")" asp-area="Admin" asp-page="/Settings/Security">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Security</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!--end::sidebar menu-->
@@ -211,6 +320,12 @@
             return false;
         }
 
+        // Handle directory-level matching (e.g., "/Properties/" for all properties pages)
+        if (pageName.EndsWith("/"))
+        {
+            return currentPage.StartsWith(pageName, StringComparison.OrdinalIgnoreCase);
+        }
+
         // Normalize pageName to match the format in RouteData.Values["page"]
         // e.g., "/Index" for Home, "/About" for About
         var normalizedPageName = pageName.StartsWith("/") ? pageName : "/" + pageName;
@@ -223,4 +338,4 @@
 
         return currentPage.Equals(normalizedPageName, StringComparison.OrdinalIgnoreCase);
     }
-}
+} 

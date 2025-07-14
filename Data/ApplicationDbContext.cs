@@ -25,6 +25,8 @@ namespace SteadyGrowth.Web.Data
         public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<AcademyPackage> AcademyPackages { get; set; }
         public DbSet<UpgradeRequest> UpgradeRequests { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -114,6 +116,40 @@ namespace SteadyGrowth.Web.Data
                       .WithMany()
                       .HasForeignKey(ur => ur.RequestedPackageId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Wallet configurations
+            builder.Entity<Wallet>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Balance).HasPrecision(18, 2);
+                entity.HasOne(e => e.User)
+                      .WithOne(u => u.Wallet)
+                      .HasForeignKey<Wallet>(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(e => e.UserId).IsUnique();
+                entity.HasIndex(e => e.IsActive);
+            });
+
+            // WalletTransaction configurations
+            builder.Entity<WalletTransaction>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Amount).HasPrecision(18, 2);
+                entity.Property(e => e.BalanceBefore).HasPrecision(18, 2);
+                entity.Property(e => e.BalanceAfter).HasPrecision(18, 2);
+                entity.HasOne(e => e.Wallet)
+                      .WithMany(w => w.Transactions)
+                      .HasForeignKey(e => e.WalletId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.AdminUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.AdminUserId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(e => e.WalletId);
+                entity.HasIndex(e => e.TransactionType);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.CreatedAt);
             });
 
             // Add further entity configurations here as needed

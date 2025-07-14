@@ -63,7 +63,8 @@ namespace SteadyGrowth.Web.Application.Queries.Users
                                          Email = u.Email!,
                                          Status = u.LockoutEnd.HasValue && u.LockoutEnd > DateTime.UtcNow ? "Suspended" : "Active",
                                          Role = "User", // Placeholder, actual role fetching might be more complex
-                                         RegisteredAt = u.CreatedAt
+                                         RegisteredAt = u.CreatedAt,
+                                         WalletBalance = u.Wallet != null ? u.Wallet.Balance : 0m
                                      })
                                      .ToListAsync(cancellationToken);
 

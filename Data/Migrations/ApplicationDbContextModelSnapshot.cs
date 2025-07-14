@@ -425,6 +425,48 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("Rewards");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.UpgradeRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PaymentDetails")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RequestedPackageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestedPackageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UpgradeRequests");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -597,6 +639,104 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("VettingLogs");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Wallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.WalletTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BalanceAfter")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BalanceBefore")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminUserId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TransactionType");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletTransactions");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -710,6 +850,25 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.UpgradeRequest", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "RequestedPackage")
+                        .WithMany()
+                        .HasForeignKey("RequestedPackageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("RequestedPackage");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.User", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "AcademyPackage")
@@ -750,6 +909,35 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Wallet", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("SteadyGrowth.Web.Models.Entities.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.WalletTransaction", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "AdminUser")
+                        .WithMany()
+                        .HasForeignKey("AdminUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.Wallet", "Wallet")
+                        .WithMany("Transactions")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AdminUser");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.AcademyPackage", b =>
                 {
                     b.Navigation("Courses");
@@ -769,6 +957,13 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("ReferralsMade");
 
                     b.Navigation("ReferralsReceived");
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Wallet", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

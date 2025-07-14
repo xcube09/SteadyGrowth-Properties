@@ -29,7 +29,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToPage("/Identity/Account/Login");
+                return RedirectToPage("/Identity/Login");
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -52,7 +52,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToPage("/Identity/Account/Login");
+                return RedirectToPage("/Identity/Login");
             }
 
             var command = new UpgradeUserPackageCommand

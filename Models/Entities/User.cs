@@ -34,5 +34,6 @@ namespace SteadyGrowth.Web.Models.Entities
         public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
         public virtual ICollection<Referral> ReferralsMade { get; set; } = new List<Referral>();
         public virtual ICollection<Referral> ReferralsReceived { get; set; } = new List<Referral>();
+        public virtual Wallet? Wallet { get; set; }
     }
 } 

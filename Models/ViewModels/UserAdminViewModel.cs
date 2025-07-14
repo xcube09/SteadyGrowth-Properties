@@ -10,6 +10,7 @@ namespace SteadyGrowth.Web.Models.ViewModels
         public string Status { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public DateTime RegisteredAt { get; set; }
+        public decimal WalletBalance { get; set; }
     }
 
     public class AuditLogViewModel
