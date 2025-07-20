@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MediatR;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SteadyGrowth.Web.Pages
 {
+    [Authorize(Policy = "KYCVerified")]
     public class ListingsModel : PageModel
     {
         private readonly IMediator _mediator;

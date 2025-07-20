@@ -1,66 +1,56 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Profile.IndexModel
 @{
+    Layout = "/Areas/Membership/Pages/Shared/_ProfileLayout.cshtml";
     ViewData["Title"] = "My Profile";
+    ViewData["ActiveTab"] = "Profile";
 }
 
-<div class="card mb-5 mb-xl-10">
-    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
-        <div class="card-title m-0">
-            <h3 class="fw-bold m-0">Profile Details</h3>
+<form method="post" class="form" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row mb-6">
+        <label class="col-lg-4 col-form-label fw-semibold fs-6">Avatar</label>
+        <div class="col-lg-8">
+            <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(/themes/metronic/v8_2/assets/media/svg/avatars/blank.svg)">
+                <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@(string.IsNullOrEmpty(Model.AppUser?.ProfilePictureUrl) ? "/themes/metronic/v8_2/assets/media/avatars/blank.png" : "/images/profilepictures/" + Model.AppUser?.ProfilePictureUrl))"></div>
+                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                    <i class="ki-duotone ki-pencil fs-7"></i>
+                    <input type="file" name="profilePicture" accept=".png, .jpg, .jpeg" />
+                    <input type="hidden" name="avatar_remove" />
+                </label>
+                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                    <i class="ki-duotone ki-cross fs-2"></i>
+                </span>
+                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
+                    <i class="ki-duotone ki-cross fs-2"></i>
+                </span>
+            </div>
+            <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
         </div>
     </div>
-    <div id="kt_account_profile_details" class="collapse show">
-        <form method="post" class="form" enctype="multipart/form-data">
-            <div class="card-body border-top p-9">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Avatar</label>
-                    <div class="col-lg-8">
-                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(/themes/metronic/v8_2/assets/media/svg/avatars/blank.svg)">
-                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@(string.IsNullOrEmpty(Model.AppUser?.ProfilePictureUrl) ? "/themes/metronic/v8_2/assets/media/avatars/blank.png" : "/images/profilepictures/" + Model.AppUser?.ProfilePictureUrl))
-"></div>
-                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
-                                <i class="ki-duotone ki-pencil fs-7"></i>
-                                <input type="file" name="profilePicture" accept=".png, .jpg, .jpeg" />
-                                <input type="hidden" name="avatar_remove" />
-                            </label>
-                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
-                                <i class="ki-duotone ki-cross fs-2"></i>
-                            </span>
-                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
-                                <i class="ki-duotone ki-cross fs-2"></i>
-                            </span>
-                        </div>
-                        <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
-                    </div>
-                </div>
-                <div class="row mb-6">
-                    <label asp-for="Command.FirstName" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
-                    <div class="col-lg-8">
-                        <input asp-for="Command.FirstName" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
-                        <span asp-validation-for="Command.FirstName" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="row mb-6">
-                    <label asp-for="Command.LastName" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
-                    <div class="col-lg-8">
-                        <input asp-for="Command.LastName" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Command.LastName" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="row mb-6">
-                    <label asp-for="Command.PhoneNumber" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
-                    <div class="col-lg-8">
-                        <input asp-for="Command.PhoneNumber" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Command.PhoneNumber" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex justify-content-end py-6 px-9">
-                <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
-                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Save Changes</button>
-            </div>
-        </form>
+    <div class="row mb-6">
+        <label asp-for="Command.FirstName" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+        <div class="col-lg-8">
+            <input asp-for="Command.FirstName" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+            <span asp-validation-for="Command.FirstName" class="text-danger"></span>
+        </div>
     </div>
-</div>
+    <div class="row mb-6">
+        <label asp-for="Command.LastName" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+        <div class="col-lg-8">
+            <input asp-for="Command.LastName" class="form-control form-control-lg form-control-solid" />
+            <span asp-validation-for="Command.LastName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row mb-6">
+        <label asp-for="Command.PhoneNumber" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+        <div class="col-lg-8">
+            <input asp-for="Command.PhoneNumber" class="form-control form-control-lg form-control-solid" />
+            <span asp-validation-for="Command.PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end py-6 px-9">
+        <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+        <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Save Changes</button>
+    </div>
+</form>

@@ -9,6 +9,8 @@ using SteadyGrowth.Web.Data;
 using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
 using SteadyGrowth.Web.Services.Implementations;
+using SteadyGrowth.Web.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using MediatR;
 using System.Globalization;
@@ -59,6 +61,18 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(14);
     options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        if (context.Request.Path.ToString().StartsWith("/Membership"))
+        {
+            context.Response.Redirect("/Membership/AccessDenied");
+        }
+        else
+        {
+            context.Response.Redirect(options.AccessDeniedPath);
+        }
+        return Task.CompletedTask;
+    };
 });
 
 // Anti-forgery
@@ -104,6 +118,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVettingService, VettingService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<PropertyService>();
+builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
 
 // MediatR
 builder.Services.AddMediatR(typeof(Program).Assembly);
@@ -136,7 +151,9 @@ builder.Services.AddControllers();
 builder.Services.AddAuthorizationBuilder()
 							 // Authorization policies
 		.AddPolicy("AdminPolicy", policy =>
-        policy.RequireRole("Admin"));
+        policy.RequireRole("Admin"))
+		.AddPolicy("KYCVerified", policy =>
+			policy.Requirements.Add(new KYCRequirement()));
 
 var app = builder.Build();
 

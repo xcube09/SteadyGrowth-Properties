@@ -1,0 +1,24 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Profile.KYCModel
+@{
+    Layout = "/Areas/Membership/Pages/Shared/_ProfileLayout.cshtml";
+    ViewData["Title"] = "KYC Verification";
+    ViewData["ActiveTab"] = "KYC";
+}
+
+
+    <p>Your current KYC status is: <strong>@Model.AppUser.KYCStatus</strong></p>
+    @if (Model.AppUser.KYCStatus != SteadyGrowth.Web.Models.Enums.KYCStatus.Approved)
+    {
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="document">Upload your KYC document:</label>
+                <input type="file" id="document" name="document" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    }
+    else
+    {
+        <p>Your KYC has been approved. You now have full access to the platform.</p>
+    }

@@ -27,6 +27,7 @@ namespace SteadyGrowth.Web.Data
         public DbSet<UpgradeRequest> UpgradeRequests { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
+        public DbSet<CourseProgress> CourseProgresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -153,6 +154,20 @@ namespace SteadyGrowth.Web.Data
             });
 
             // Add further entity configurations here as needed
+
+            builder.Entity<CourseProgress>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(cp => cp.User)
+                      .WithMany()
+                      .HasForeignKey(cp => cp.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(cp => cp.Course)
+                      .WithMany()
+                      .HasForeignKey(cp => cp.CourseId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => new { e.UserId, e.CourseId }).IsUnique();
+            });
         }
     }
 }

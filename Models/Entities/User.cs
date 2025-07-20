@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using SteadyGrowth.Web.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SteadyGrowth.Web.Models.Entities
@@ -35,5 +36,7 @@ namespace SteadyGrowth.Web.Models.Entities
         public virtual ICollection<Referral> ReferralsMade { get; set; } = new List<Referral>();
         public virtual ICollection<Referral> ReferralsReceived { get; set; } = new List<Referral>();
         public virtual Wallet? Wallet { get; set; }
+
+        public KYCStatus KYCStatus { get; set; } = KYCStatus.NotStarted;
     }
 } 

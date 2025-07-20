@@ -1,0 +1,55 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.KYC.IndexModel
+
+<div class="card">
+    <div class="card-header border-0 pt-6">
+        <div class="card-title">
+            <h2 class="card-label">KYC Management</h2>
+        </div>
+    </div>
+    <div class="card-body py-4">
+        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_kyc">
+            <thead>
+                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                    <th class="min-w-125px">User</th>
+                    <th class="min-w-125px">Status</th>
+                    <th class="text-end min-w-100px">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-600 fw-semibold">
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>
+                            <div class="badge badge-light-@(GetStatusColor(user.KYCStatus.ToString())) fw-bold">@user.KYCStatus</div>
+                        </td>
+                        <td class="text-end">
+                            @if (user.KYCStatus == SteadyGrowth.Web.Models.Enums.KYCStatus.Submitted)
+                            {
+                                <form method="post" class="d-inline-block">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" name="action" value="Approve" class="btn btn-sm btn-light-success">Approve</button>
+                                </form>
+                                <form method="post" class="d-inline-block">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" name="action" value="Reject" class="btn btn-sm btn-light-danger">Reject</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status) => status switch
+    {
+        "Approved" => "success",
+        "Rejected" => "danger",
+        "Submitted" => "warning",
+        _ => "secondary"
+    };
+}
