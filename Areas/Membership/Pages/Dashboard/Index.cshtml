@@ -5,13 +5,24 @@
     ViewData["Title"] = "Dashboard";
 }
 
-@if (Model.KYCStatus == KYCStatus.NotStarted || Model.KYCStatus == KYCStatus.Rejected)
+@if (Model.KYCStatus != KYCStatus.Approved)
 {
     <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
         <i class="ki-duotone ki-information fs-2hx text-warning me-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
         <div class="d-flex flex-column">
             <h4 class="mb-1 text-warning">KYC Required!</h4>
-            <span>Your KYC documents are not yet approved. Please <a href="/Membership/Profile/KYC" class="fw-bold">upload your documents</a> to gain full access to the platform.</span>
+            @if (Model.KYCStatus == KYCStatus.NotStarted)
+            {
+                <span>Your KYC documents are required to gain full access to the platform. Please <a href="/Membership/Profile/KYC" class="fw-bold">upload your documents</a>.</span>
+            }
+            else if (Model.KYCStatus == KYCStatus.Submitted)
+            {
+                <span>Your KYC documents have been submitted and are awaiting review. You will gain full access once approved.</span>
+            }
+            else if (Model.KYCStatus == KYCStatus.Rejected)
+            {
+                <span>Your KYC documents were rejected. Please <a href="/Membership/Profile/KYC" class="fw-bold">review and re-upload your documents</a>.</span>
+            }
         </div>
     </div>
 }

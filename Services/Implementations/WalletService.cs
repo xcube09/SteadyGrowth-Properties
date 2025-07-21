@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SteadyGrowth.Web.Data;
 using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
+using SteadyGrowth.Web.Common;
 using System.Transactions;
 
 namespace SteadyGrowth.Web.Services.Implementations
@@ -154,18 +155,18 @@ namespace SteadyGrowth.Web.Services.Implementations
         }
 
         /// <inheritdoc />
-        public async Task<WalletTransaction> DebitWalletAsync(string userId, decimal amount, string description, string? reference = null)
+        public async Task<CommandResult> DebitWalletAsync(string userId, decimal amount, string description, string? reference = null)
         {
             if (amount <= 0)
-                throw new ArgumentException("Amount must be greater than zero", nameof(amount));
+                return CommandResult.Fail("Amount must be greater than zero.");
 
-            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            using var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
             try
             {
                 var wallet = await GetOrCreateWalletAsync(userId);
                 
                 if (wallet.Balance < amount)
-                    throw new InvalidOperationException($"Insufficient balance. Current balance: {wallet.Balance}, Required: {amount}");
+                    return CommandResult.Fail($"Insufficient balance. Current balance: {wallet.Balance:N2}, Required: {amount:N2}");
 
                 var balanceBefore = wallet.Balance;
                 var balanceAfter = balanceBefore - amount;
@@ -196,12 +197,12 @@ namespace SteadyGrowth.Web.Services.Implementations
                 _logger.LogInformation("Debited wallet for user {UserId} with amount {Amount}. New balance: {Balance}", 
                     userId, amount, balanceAfter);
 
-                return transaction;
+                return CommandResult.Success("Wallet debited successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error debiting wallet for user {UserId} with amount {Amount}", userId, amount);
-                throw;
+                return CommandResult.Fail("An error occurred while debiting the wallet.");
             }
         }
 

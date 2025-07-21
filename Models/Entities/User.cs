@@ -36,6 +36,7 @@ namespace SteadyGrowth.Web.Models.Entities
         public virtual ICollection<Referral> ReferralsMade { get; set; } = new List<Referral>();
         public virtual ICollection<Referral> ReferralsReceived { get; set; } = new List<Referral>();
         public virtual Wallet? Wallet { get; set; }
+        public virtual ICollection<KYCDocument> KYCDocuments { get; set; } = new List<KYCDocument>();
 
         public KYCStatus KYCStatus { get; set; } = KYCStatus.NotStarted;
     }

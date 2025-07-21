@@ -1,4 +1,5 @@
 using SteadyGrowth.Web.Models.Entities;
+using SteadyGrowth.Web.Common;
 
 namespace SteadyGrowth.Web.Services.Interfaces
 {
@@ -27,10 +28,9 @@ namespace SteadyGrowth.Web.Services.Interfaces
         /// </summary>
         Task<WalletTransaction> CreditWalletAsync(string userId, decimal amount, string description, string? adminUserId = null, string? reference = null);
 
-        /// <summary>
         /// Debit a user's wallet
         /// </summary>
-        Task<WalletTransaction> DebitWalletAsync(string userId, decimal amount, string description, string? reference = null);
+        Task<CommandResult> DebitWalletAsync(string userId, decimal amount, string description, string? reference = null);
 
         /// <summary>
         /// Add bonus to a user's wallet

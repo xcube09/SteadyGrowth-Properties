@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteadyGrowth.Web.Data;
 
@@ -11,9 +12,11 @@ using SteadyGrowth.Web.Data;
 namespace SteadyGrowth.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720214429_AddWithdrawalRequest")]
+    partial class AddWithdrawalRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,47 +278,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("CourseProgresses");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.KYCDocument", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AdminNotes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("DocumentType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentType");
-
-                    b.HasIndex("Status");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("KYCDocuments");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>
@@ -953,17 +915,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.KYCDocument", b =>
-                {
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
-                        .WithMany("KYCDocuments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
@@ -1129,8 +1080,6 @@ namespace SteadyGrowth.Web.Data.Migrations
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.User", b =>
                 {
-                    b.Navigation("KYCDocuments");
-
                     b.Navigation("Properties");
 
                     b.Navigation("ReferralsMade");

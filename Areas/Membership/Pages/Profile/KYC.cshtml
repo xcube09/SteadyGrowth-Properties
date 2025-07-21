@@ -1,24 +1,125 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Profile.KYCModel
+@using SteadyGrowth.Web.Models.Enums
 @{
     Layout = "/Areas/Membership/Pages/Shared/_ProfileLayout.cshtml";
     ViewData["Title"] = "KYC Verification";
     ViewData["ActiveTab"] = "KYC";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
 
-    <p>Your current KYC status is: <strong>@Model.AppUser.KYCStatus</strong></p>
-    @if (Model.AppUser.KYCStatus != SteadyGrowth.Web.Models.Enums.KYCStatus.Approved)
-    {
-        <form method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="document">Upload your KYC document:</label>
-                <input type="file" id="document" name="document" class="form-control" />
+@if (!ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                @foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+<p>Your current KYC status is: <strong>@Model.AppUser.KYCStatus</strong></p>
+
+@if (Model.AppUser.KYCStatus != KYCStatus.Approved)
+{
+    <div class="card mb-5">
+        <div class="card-header">
+            <h4 class="card-title">Upload New KYC Document</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-page-handler="UploadDocument" enctype="multipart/form-data">
+                <div class="row mb-6">
+                    <label for="documentType" class="col-lg-4 col-form-label required fw-semibold fs-6">Document Type</label>
+                    <div class="col-lg-8">
+                        <select id="documentType" name="documentType" class="form-select form-select-solid">
+                            @foreach (var type in Enum.GetValues(typeof(DocumentType)))
+                            {
+                                <option value="@type">@type.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label for="document" class="col-lg-4 col-form-label required fw-semibold fs-6">Select Document</label>
+                    <div class="col-lg-8">
+                        <input type="file" id="document" name="document" class="form-control" required />
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end py-6 px-9">
+                    <button type="submit" class="btn btn-primary">Upload Document</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-success">
+        Your KYC has been approved. You now have full access to the platform.
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Uploaded KYC Documents</h4>
+    </div>
+    <div class="card-body">
+        @if (Model.KYCDocuments != null && Model.KYCDocuments.Any())
+        {
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th>Document Type</th>
+                            <th>File Name</th>
+                            <th>Upload Date</th>
+                            <th>Status</th>
+                            <th>Admin Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                        @foreach (var doc in Model.KYCDocuments)
+                        {
+                            <tr>
+                                <td>@doc.DocumentType</td>
+                                <td><a href="@doc.FileName" target="_blank">@System.IO.Path.GetFileName(doc.FileName)</a></td>
+                                <td>@doc.UploadDate.ToShortDateString()</td>
+                                <td>
+                                    <span class="badge badge-light-@(GetStatusColor(doc.Status.ToString()))">
+                                        @doc.Status
+                                    </span>
+                                </td>
+                                <td>@(string.IsNullOrEmpty(doc.AdminNotes) ? "N/A" : doc.AdminNotes)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
-        </form>
-    }
-    else
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No KYC documents uploaded yet.
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status) => status switch
     {
-        <p>Your KYC has been approved. You now have full access to the platform.</p>
-    }
+        "Pending" => "warning",
+        "Approved" => "success",
+        "Rejected" => "danger",
+        _ => "secondary"
+    };
+}

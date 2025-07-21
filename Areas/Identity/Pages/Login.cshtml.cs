@@ -54,7 +54,11 @@ public class LoginModel : PageModel
         {
             _logger.LogInformation("User {Email} logged in.", Email);
             // TODO: Track login activity
-            return LocalRedirect(ReturnUrl ?? Url.Content("~/"));
+            if (string.IsNullOrEmpty(ReturnUrl) || ReturnUrl == "~/")
+            {
+                return RedirectToPage("/Dashboard/Index", new { area = "Membership" });
+            }
+            return LocalRedirect(ReturnUrl);
         }
         if (result.IsLockedOut)
         {

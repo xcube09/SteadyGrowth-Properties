@@ -28,6 +28,8 @@ namespace SteadyGrowth.Web.Data
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
         public DbSet<CourseProgress> CourseProgresses { get; set; }
+        public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
+        public DbSet<KYCDocument> KYCDocuments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -167,6 +169,33 @@ namespace SteadyGrowth.Web.Data
                       .HasForeignKey(cp => cp.CourseId)
                       .OnDelete(DeleteBehavior.Restrict);
                 entity.HasIndex(e => new { e.UserId, e.CourseId }).IsUnique();
+            });
+
+            // WithdrawalRequest configurations
+            builder.Entity<WithdrawalRequest>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Amount).HasPrecision(18, 2);
+                entity.HasOne(wr => wr.User)
+                      .WithMany()
+                      .HasForeignKey(wr => wr.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.RequestedDate);
+            });
+
+            // KYCDocument configurations
+            builder.Entity<KYCDocument>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(kd => kd.User)
+                      .WithMany(u => u.KYCDocuments)
+                      .HasForeignKey(kd => kd.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.DocumentType);
+                entity.HasIndex(e => e.Status);
             });
         }
     }

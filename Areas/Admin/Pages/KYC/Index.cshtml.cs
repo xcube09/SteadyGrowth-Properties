@@ -23,7 +23,10 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.KYC
 
         public async Task OnGetAsync()
         {
-            Users = await _userManager.Users.Where(u => u.KYCStatus != KYCStatus.NotStarted).ToListAsync();
+            Users = await _userManager.Users
+                .Include(u => u.KYCDocuments)
+                .Where(u => u.KYCStatus != KYCStatus.NotStarted || (u.KYCDocuments != null && u.KYCDocuments.Any()))
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(string userId, string action)

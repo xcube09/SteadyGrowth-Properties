@@ -12,7 +12,8 @@
             <thead>
                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                     <th class="min-w-125px">User</th>
-                    <th class="min-w-125px">Status</th>
+                    <th class="min-w-150px">KYC Documents</th>
+                    <th class="min-w-125px">Overall Status</th>
                     <th class="text-end min-w-100px">Actions</th>
                 </tr>
             </thead>
@@ -22,6 +23,24 @@
                     <tr>
                         <td>@user.Email</td>
                         <td>
+                            @if (user.KYCDocuments != null && user.KYCDocuments.Any())
+                            {
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var doc in user.KYCDocuments)
+                                    {
+                                        <li>
+                                            @doc.DocumentType: <span class="badge badge-light-@(GetStatusColor(doc.Status.ToString()))">@doc.Status</span>
+                                            <a asp-page="./ViewDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-light-info ms-2">View</a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span>No documents uploaded.</span>
+                            }
+                        </td>
+                        <td>
                             <div class="badge badge-light-@(GetStatusColor(user.KYCStatus.ToString())) fw-bold">@user.KYCStatus</div>
                         </td>
                         <td class="text-end">
@@ -29,11 +48,11 @@
                             {
                                 <form method="post" class="d-inline-block">
                                     <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="submit" name="action" value="Approve" class="btn btn-sm btn-light-success">Approve</button>
+                                    <button type="submit" name="action" value="Approve" class="btn btn-sm btn-light-success">Approve All</button>
                                 </form>
                                 <form method="post" class="d-inline-block">
                                     <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="submit" name="action" value="Reject" class="btn btn-sm btn-light-danger">Reject</button>
+                                    <button type="submit" name="action" value="Reject" class="btn btn-sm btn-light-danger">Reject All</button>
                                 </form>
                             }
                         </td>
@@ -47,9 +66,11 @@
 @functions {
     private string GetStatusColor(string status) => status switch
     {
+        "Pending" => "warning",
         "Approved" => "success",
         "Rejected" => "danger",
         "Submitted" => "warning",
+        "NotStarted" => "secondary",
         _ => "secondary"
     };
 }

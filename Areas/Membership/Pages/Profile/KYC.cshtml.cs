@@ -5,6 +5,11 @@ using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Models.Enums;
 using SteadyGrowth.Web.Services.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System;
+using SteadyGrowth.Web.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 {
@@ -12,14 +17,19 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserService _userService;
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public KYCModel(UserManager<User> userManager, IUserService userService)
+        public KYCModel(UserManager<User> userManager, IUserService userService, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _userService = userService;
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public User AppUser { get; set; }
+        public List<KYCDocument> KYCDocuments { get; set; } = new List<KYCDocument>();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -35,23 +45,63 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
                 return NotFound();
             }
 
+            KYCDocuments = await _context.KYCDocuments.Where(d => d.UserId == userId).ToListAsync();
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(IFormFile document)
+        public async Task<IActionResult> OnPostUploadDocumentAsync(IFormFile document, DocumentType documentType)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToPage("/Identity/Login");
+            }
+
             if (document != null && document.Length > 0)
             {
-                var user = await _userManager.GetUserAsync(User);
-                user.KYCStatus = KYCStatus.Submitted;
-                await _userManager.UpdateAsync(user);
+                // Save the file
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "kycdocuments");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
 
-                // In a real application, you would save the document to a secure location.
-                // For this example, we'll just update the status.
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + document.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await document.CopyToAsync(fileStream);
+                }
+
+                // Create KYCDocument entry
+                var kycDocument = new KYCDocument
+                {
+                    UserId = user.Id,
+                    DocumentType = documentType,
+                    FileName = "/kycdocuments/" + uniqueFileName,
+                    UploadDate = DateTime.UtcNow,
+                    Status = DocumentStatus.Pending
+                };
+
+                _context.KYCDocuments.Add(kycDocument);
+
+                // Update user's overall KYC status if it's not already submitted or approved
+                if (user.KYCStatus == KYCStatus.NotStarted)
+                {
+                    user.KYCStatus = KYCStatus.Submitted;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Document uploaded successfully. It will be reviewed shortly.";
                 return RedirectToPage();
             }
 
+            ModelState.AddModelError(string.Empty, "Please select a document to upload.");
+            await OnGetAsync();
             return Page();
         }
     }

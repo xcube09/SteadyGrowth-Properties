@@ -1,0 +1,67 @@
+@page "/Admin/KYC/ViewDocument/{id}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.KYC.ViewDocumentModel
+@using SteadyGrowth.Web.Models.Enums
+@{
+    ViewData["Title"] = "View KYC Document";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">KYC Document Details</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.KYCDocument == null)
+        {
+            <div class="alert alert-danger">Document not found.</div>
+        }
+        else
+        {
+            <p><strong>User:</strong> @Model.KYCDocument.User.Email</p>
+            <p><strong>Document Type:</strong> @Model.KYCDocument.DocumentType</p>
+            <p><strong>Upload Date:</strong> @Model.KYCDocument.UploadDate.ToShortDateString()</p>
+            <p><strong>Status:</strong> <span class="badge badge-light-@(GetStatusColor(Model.KYCDocument.Status.ToString()))">@Model.KYCDocument.Status</span></p>
+            <p><strong>Admin Notes:</strong> @(string.IsNullOrEmpty(Model.KYCDocument.AdminNotes) ? "N/A" : Model.KYCDocument.AdminNotes)</p>
+
+            <h4 class="mt-5">Document Preview:</h4>
+            @if (Model.IsImage)
+            {
+                <img src="@Model.KYCDocument.FileName" class="img-fluid" alt="KYC Document" />
+            }
+            else if (Model.IsPdf)
+            {
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="@Model.KYCDocument.FileName" style="width:100%; height:600px;" frameborder="0"></iframe>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Preview not available for this file type. <a href="@Model.KYCDocument.FileName" target="_blank">Download to view</a>.</div>
+            }
+
+            @if (Model.KYCDocument.Status == DocumentStatus.Pending)
+            {
+                <div class="mt-5">
+                    <form method="post">
+                        <input type="hidden" name="kycDocumentId" value="@Model.KYCDocument.Id" />
+                        <div class="mb-3">
+                            <label for="adminNotes" class="form-label">Admin Notes (Optional)</label>
+                            <textarea class="form-control" id="adminNotes" name="adminNotes" rows="3"></textarea>
+                        </div>
+                        <button type="submit" asp-page-handler="Approve" class="btn btn-success me-2">Approve</button>
+                        <button type="submit" asp-page-handler="Reject" class="btn btn-danger">Reject</button>
+                    </form>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status) => status switch
+    {
+        "Pending" => "warning",
+        "Approved" => "success",
+        "Rejected" => "danger",
+        _ => "secondary"
+    };
+}
