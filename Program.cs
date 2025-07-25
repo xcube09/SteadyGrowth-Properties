@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Http.Features;
 using MediatR;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Griesoft.AspNetCore.ReCaptcha;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,6 +112,8 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
 });
 
+builder.Services.AddRecaptchaService();
+
 // Register services (Scoped)
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
@@ -119,6 +124,7 @@ builder.Services.AddScoped<IVettingService, VettingService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
+builder.Services.AddHttpClient();
 
 // MediatR
 builder.Services.AddMediatR(typeof(Program).Assembly);

@@ -1,3 +1,4 @@
+using Griesoft.AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SteadyGrowth.Web.Areas.Identity.Pages;
 
+    [ValidateRecaptcha(Action = "register")]
     public class RegisterModel : PageModel
     {
         private readonly UserManager<User> _userManager;
