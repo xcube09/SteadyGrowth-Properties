@@ -11,6 +11,7 @@ using SteadyGrowth.Web.Application.Queries.Properties;
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Academy
 {
     [Authorize(Roles = "Admin")]
+    [ValidateAntiForgeryToken]
     public class CoursesModel : PageModel
     {
         private readonly IMediator _mediator;
@@ -46,6 +47,46 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.Academy
 
             var packagesQuery = new GetAvailableAcademyPackagesQuery();
             AvailablePackages = await _mediator.Send(packagesQuery);
+        }
+
+        public class DeleteCourseModel
+        {
+            public int Id { get; set; }
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync([FromBody] DeleteCourseModel model)
+        {
+            var result = await _mediator.Send(new SteadyGrowth.Web.Application.Commands.Academy.DeleteCourseCommand { Id = model.Id });
+            if (result)
+            {
+                return new JsonResult(new { success = true });
+            }
+            return new JsonResult(new { success = false, message = "Error deleting course." });
+        }
+
+        public async Task<IActionResult> OnPostDeleteSelectedAsync([FromBody] List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+            {
+                return new JsonResult(new { success = false, message = "No courses selected." });
+            }
+
+            var success = true;
+            foreach (var id in ids)
+            {
+                var result = await _mediator.Send(new SteadyGrowth.Web.Application.Commands.Academy.DeleteCourseCommand { Id = id });
+                if (!result)
+                {
+                    success = false;
+                }
+            }
+
+            if (success)
+            {
+                return new JsonResult(new { success = true });
+            }
+
+            return new JsonResult(new { success = false, message = "Error deleting some courses." });
         }
     }
 }

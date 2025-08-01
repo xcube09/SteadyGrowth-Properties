@@ -1,0 +1,97 @@
+@page "{id:int}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Academy.EditModel
+@using SteadyGrowth.Web.Models.Entities
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Edit Course</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form method="post" class="form" enctype="multipart/form-data">
+            <div class="card-body border-top p-9">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Course.Id" />
+                <div class="row mb-6">
+                    <label asp-for="Course.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Course.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+                        <span asp-validation-for="Course.Title" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <textarea asp-for="Course.Description" class="form-control form-control-lg form-control-solid"></textarea>
+                        <span asp-validation-for="Course.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.Content" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <textarea asp-for="Course.Content" class="form-control form-control-lg form-control-solid"></textarea>
+                        <span asp-validation-for="Course.Content" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.VideoUrl" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Course.VideoUrl" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Course.VideoUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.Duration" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Course.Duration" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Course.Duration" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.Order" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Course.Order" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Course.Order" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.IsActive" class="col-lg-4 col-form-label fw-semibold fs-6">Is Active</label>
+                    <div class="col-lg-8 d-flex align-items-center">
+                        <div class="form-check form-check-solid form-switch">
+                            <input class="form-check-input" type="checkbox" asp-for="Course.IsActive" />
+                            <label class="form-check-label" for="Course_IsActive"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label asp-for="Course.AcademyPackageId" class="col-lg-4 col-form-label fw-semibold fs-6">Academy Package</label>
+                    <div class="col-lg-8">
+                        <select asp-for="Course.AcademyPackageId" class="form-select form-select-solid" asp-items="new SelectList(Model.AvailablePackages, nameof(AcademyPackage.Id), nameof(AcademyPackage.Name))">
+                            <option value="">-- Select Package --</option>
+                        </select>
+                        <span asp-validation-for="Course.AcademyPackageId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <a asp-page="./Courses" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea[name="Course.Content"]',
+            plugins: 'advlist autolink lists link image charmap print preview anchor',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+        });
+    </script>
+}
