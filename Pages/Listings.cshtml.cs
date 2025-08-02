@@ -21,18 +21,15 @@ namespace SteadyGrowth.Web.Pages
         public PaginatedList<Property>? Properties { get; set; }
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 9; // Display 9 properties per page
-        public PropertyStatus? StatusFilter { get; set; }
 
-        public async Task OnGetAsync(int pageIndex = 1, PropertyStatus? statusFilter = null)
+        public async Task OnGetAsync(int pageIndex = 1)
         {
             PageIndex = pageIndex;
-            StatusFilter = statusFilter;
 
             var query = new GetApprovedPropertyListingQuery
             {
                 PageIndex = PageIndex,
-                PageSize = PageSize,
-                StatusFilter = StatusFilter
+                PageSize = PageSize
             };
 
             Properties = await _mediator.Send(query);

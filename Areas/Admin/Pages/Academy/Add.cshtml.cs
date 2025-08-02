@@ -34,7 +34,6 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.Academy
         public async Task<IActionResult> OnGetAsync()
         {
             ViewData["Breadcrumb"] = new List<(string, string)> { ("Admin", "/Admin/Properties/Index"), ("Academy", "/Admin/Academy/Courses"), ("Add Course", "/Admin/Academy/Add") };
-            AvailablePackages = await _mediator.Send(new GetAvailableAcademyPackagesQuery());
             return Page();
         }
 

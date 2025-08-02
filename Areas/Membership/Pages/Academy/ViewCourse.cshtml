@@ -1,0 +1,253 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Academy.ViewCourseModel
+@{
+    ViewData["Title"] = Model.Course.Title;
+}
+
+<div class="row g-6 g-xl-9">
+    <!-- Course Navigation Sidebar -->
+    <div class="col-lg-4">
+        <div class="card mb-5 mb-xl-10">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="fw-bold m-0">@Model.Course.Title</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">@Model.Course.Description</p>
+                
+                @if (Model.UserProgress != null)
+                {
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted fs-6 fw-semibold">Progress</span>
+                            <span class="text-muted fs-6 fw-semibold">@Model.UserProgress.CompletedLessonsCount / @Model.Segments.Count</span>
+                        </div>
+                        <div class="progress h-6px w-100">
+                            @{
+                                var progressPercentage = Model.Segments.Count > 0 ? (int)((double)Model.UserProgress.CompletedLessonsCount / Model.Segments.Count * 100) : 0;
+                            }
+                            <div class="progress-bar bg-success" role="progressbar" style="width: @progressPercentage%;" aria-valuenow="@progressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="separator my-4"></div>
+
+                <!-- Segment List -->
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-3">Course Segments</h5>
+                    @for (int i = 0; i < Model.Segments.Count; i++)
+                    {
+                        var segment = Model.Segments[i];
+                        var isActive = i == Model.CurrentSegmentIndex;
+                        var isCompleted = segment.IsCompleted;
+                        
+                        <div class="d-flex align-items-center py-2 @(isActive ? "bg-light-primary" : "") rounded px-3 mb-2">
+                            <div class="symbol symbol-20px me-3">
+                                @if (isCompleted)
+                                {
+                                    <i class="ki-duotone ki-check-circle fs-2 text-success"></i>
+                                }
+                                else if (isActive)
+                                {
+                                    <i class="ki-duotone ki-play-circle fs-2 text-primary"></i>
+                                }
+                                else
+                                {
+                                    <i class="ki-duotone ki-time fs-2 text-muted"></i>
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="?courseId=@Model.Course.Id&segmentIndex=@i" 
+                                   class="text-gray-800 text-hover-primary fw-semibold fs-6 @(isActive ? "text-primary" : "")">
+                                    @segment.Segment.Title
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Content -->
+    <div class="col-lg-8">
+        @if (Model.Segments.Any() && Model.CurrentSegmentIndex < Model.Segments.Count)
+        {
+            var currentSegment = Model.Segments[Model.CurrentSegmentIndex];
+            
+            <div class="card mb-5 mb-xl-10">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">@currentSegment.Segment.Title</h3>
+                        @if (currentSegment.IsCompleted)
+                        {
+                            <span class="badge badge-success ms-2">Completed</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(currentSegment.Segment.VideoUrl))
+                    {
+                        <div class="mb-6">
+                            <div class="ratio ratio-16x9">
+                                @if (currentSegment.Segment.VideoUrl.Contains("youtube.com") || currentSegment.Segment.VideoUrl.Contains("youtu.be"))
+                                {
+                                    var videoId = "";
+                                    if (currentSegment.Segment.VideoUrl.Contains("youtube.com/watch?v="))
+                                    {
+                                        videoId = currentSegment.Segment.VideoUrl.Split("v=")[1].Split("&")[0];
+                                    }
+                                    else if (currentSegment.Segment.VideoUrl.Contains("youtu.be/"))
+                                    {
+                                        videoId = currentSegment.Segment.VideoUrl.Split("/").Last();
+                                    }
+                                    <iframe src="https://www.youtube.com/embed/@videoId" allowfullscreen></iframe>
+                                }
+                                else
+                                {
+                                    <video controls class="w-100">
+                                        <source src="@currentSegment.Segment.VideoUrl" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="mb-6">
+                        @Html.Raw(currentSegment.Segment.Content)
+                    </div>
+
+                    <!-- Navigation and Progress Controls -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            @if (Model.CurrentSegmentIndex > 0)
+                            {
+                                <a href="?courseId=@Model.Course.Id&segmentIndex=@(Model.CurrentSegmentIndex - 1)" 
+                                   class="btn btn-light-primary">
+                                    <i class="ki-duotone ki-arrow-left fs-3"></i>Previous
+                                </a>
+                            }
+                        </div>
+
+                        <div>
+                            @if (!currentSegment.IsCompleted)
+                            {
+                                <button type="button" class="btn btn-success" onclick="markSegmentComplete(@currentSegment.Segment.Id)">
+                                    <i class="ki-duotone ki-check fs-3"></i>Mark as Complete
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-bold">
+                                    <i class="ki-duotone ki-check-circle fs-3"></i>Completed
+                                </span>
+                            }
+                        </div>
+
+                        <div>
+                            @if (Model.CurrentSegmentIndex < Model.Segments.Count - 1)
+                            {
+                                <a href="?courseId=@Model.Course.Id&segmentIndex=@(Model.CurrentSegmentIndex + 1)" 
+                                   class="btn btn-light-primary">
+                                    Next<i class="ki-duotone ki-arrow-right fs-3"></i>
+                                </a>
+                            }
+                            else if (Model.UserProgress?.IsCompleted == true)
+                            {
+                                <a href="/Membership/Academy/Courses" class="btn btn-success">
+                                    <i class="ki-duotone ki-check-circle fs-3"></i>Course Complete
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body text-center py-10">
+                    <h3>No segments available</h3>
+                    <p class="text-muted">This course doesn't have any segments yet.</p>
+                    <a href="/Membership/Academy/Courses" class="btn btn-primary">Back to Courses</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function markSegmentComplete(segmentId) {
+            // Show confirmation dialog
+            const result = await Swal.fire({
+                title: 'Mark Segment as Complete?',
+                text: 'Are you sure you want to mark this segment as completed?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Mark Complete',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            // Show loading
+            Swal.fire({
+                title: 'Processing...',
+                text: 'Marking segment as complete',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                const response = await fetch(`/api/coursesapi/segments/${segmentId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show success message
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Segment marked as completed successfully',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    // Reload page to show updated progress
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to mark segment as complete. Please try again.'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred. Please try again.'
+                });
+            }
+        }
+    </script>
+}

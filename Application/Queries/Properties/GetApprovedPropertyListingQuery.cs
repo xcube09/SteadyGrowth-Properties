@@ -13,7 +13,10 @@ namespace SteadyGrowth.Web.Application.Queries.Properties
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public PropertyStatus? StatusFilter { get; set; }
+        public string? TitleFilter { get; set; }
+        public string? LocationFilter { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
 
         public class GetApprovedPropertyListingQueryHandler : IRequestHandler<GetApprovedPropertyListingQuery, PaginatedList<Property>>
         {
@@ -30,9 +33,27 @@ namespace SteadyGrowth.Web.Application.Queries.Properties
                     .Where(p => p.Status == PropertyStatus.Approved)
                     .AsQueryable();
 
-                if (request.StatusFilter.HasValue)
+                // Apply title filter
+                if (!string.IsNullOrEmpty(request.TitleFilter))
                 {
-                    query = query.Where(p => p.Status == request.StatusFilter.Value);
+                    query = query.Where(p => p.Title.Contains(request.TitleFilter));
+                }
+
+                // Apply location filter
+                if (!string.IsNullOrEmpty(request.LocationFilter))
+                {
+                    query = query.Where(p => p.Location.Contains(request.LocationFilter));
+                }
+
+                // Apply price range filters
+                if (request.MinPrice.HasValue)
+                {
+                    query = query.Where(p => p.Price >= request.MinPrice.Value);
+                }
+
+                if (request.MaxPrice.HasValue)
+                {
+                    query = query.Where(p => p.Price <= request.MaxPrice.Value);
                 }
 
                 query = query.Include(p => p.PropertyImages);

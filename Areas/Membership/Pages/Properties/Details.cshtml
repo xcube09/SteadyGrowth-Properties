@@ -1,0 +1,179 @@
+@page "/Membership/Properties/Details/{id:int}"
+@model SteadyGrowth.Web.Areas.Membership.Pages.Properties.DetailsModel
+@{
+    ViewData["Title"] = Model.Property?.Title ?? "Property Details";
+}
+
+@if (Model.Property != null)
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">@Model.Property.Title</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Property Images -->
+                    @if (Model.Property.PropertyImages != null && Model.Property.PropertyImages.Any())
+                    {
+                        <div id="propertyImageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @{
+                                    var imagesList = Model.Property.PropertyImages.ToList();
+                                }
+                                @for (int i = 0; i < imagesList.Count; i++)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <img src="@imagesList[i].FileName" class="d-block w-100" alt="Property Image" style="height: 400px; object-fit: cover;" />
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.Property.PropertyImages.Count > 1)
+                            {
+                                <button class="carousel-control-prev" type="button" data-bs-target="#propertyImageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#propertyImageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            }
+                        </div>
+                        
+                        <!-- Image thumbnails -->
+                        @if (imagesList.Count > 1)
+                        {
+                            <div class="row mb-4">
+                                @for (int i = 0; i < imagesList.Count; i++)
+                                {
+                                    <div class="col-2">
+                                        <img src="@imagesList[i].FileName" 
+                                             class="img-thumbnail cursor-pointer" 
+                                             style="height: 60px; width: 100%; object-fit: cover;" 
+                                             onclick="$('#propertyImageCarousel').carousel(@i)" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="mb-4">
+                            <img src="~/themes/metronic/v8_2/assets/media/stock/600x400/img-23.jpg" class="img-fluid" alt="Property Image" style="height: 400px; width: 100%; object-fit: cover;" />
+                        </div>
+                    }
+
+                    <!-- Property Description -->
+                    <div class="mb-6">
+                        <h5 class="mb-3">Description</h5>
+                        <p class="text-gray-700">@Model.Property.Description</p>
+                    </div>
+
+                    <!-- Property Features -->
+                    <div class="row mb-6">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Property Information</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="ki-duotone ki-home fs-3 text-primary me-2"></i><strong>Type:</strong> @Model.Property.PropertyType</li>
+                                <li><i class="ki-duotone ki-price-tag fs-3 text-primary me-2"></i><strong>Price:</strong> NGN @Model.Property.Price.ToString("N2")</li>
+                                <li><i class="ki-duotone ki-geolocation fs-3 text-primary me-2"></i><strong>Location:</strong> @Model.Property.Location</li>
+                                @if (Model.Property.ApprovedAt.HasValue)
+                                {
+                                    <li><i class="ki-duotone ki-check-circle fs-3 text-primary me-2"></i><strong>Approved:</strong> @Model.Property.ApprovedAt.Value.ToString("MMM dd, yyyy")</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Additional Details</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="ki-duotone ki-calendar-2 fs-3 text-primary me-2"></i><strong>Listed:</strong> @Model.Property.CreatedAt.ToString("MMM dd, yyyy")</li>
+                                @if (!string.IsNullOrEmpty(Model.Property.Features))
+                                {
+                                    <li><i class="ki-duotone ki-star fs-3 text-primary me-2"></i><strong>Features:</strong> Available</li>
+                                }
+                                <li><i class="ki-duotone ki-verify fs-3 text-primary me-2"></i><strong>Status:</strong> <span class="badge badge-light-success">Approved</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Property Summary Card -->
+            <div class="card mb-4 position-sticky" style="top: 20px;">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Property Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-0">NGN @Model.Property.Price.ToString("N2")</h3>
+                        <small class="text-muted">Total Price</small>
+                    </div>
+
+                    <div class="separator my-4"></div>
+
+                    <div class="mb-3">
+                        <i class="ki-duotone ki-geolocation fs-2 text-primary me-2"></i>
+                        <strong>Location:</strong><br />
+                        <span class="text-gray-700">@Model.Property.Location</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <i class="ki-duotone ki-home fs-2 text-primary me-2"></i>
+                        <strong>Property Type:</strong><br />
+                        <span class="text-gray-700">@Model.Property.PropertyType</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <i class="ki-duotone ki-calendar-2 fs-2 text-primary me-2"></i>
+                        <strong>Listed:</strong><br />
+                        <span class="text-gray-700">@Model.Property.CreatedAt.ToString("MMM dd, yyyy")</span>
+                    </div>
+
+                    @if (Model.Property.User != null)
+                    {
+                        <div class="separator my-4"></div>
+                        <div class="mb-3">
+                            <h6 class="mb-2">Listed by:</h6>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-35px me-3">
+                                    <img src="@(!string.IsNullOrEmpty(Model.Property.User.ProfilePictureUrl) ? "/images/profilepictures/" + Model.Property.User.ProfilePictureUrl : "/themes/metronic/v8_2/assets/media/avatars/blank.png")" alt="Profile" />
+                                </div>
+                                <div>
+                                    <div class="fw-bold">@Model.Property.User.FirstName @Model.Property.User.LastName</div>
+                                    <div class="text-muted fs-7">Property Owner</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="separator my-4"></div>
+
+                    <div class="d-grid">
+                        <a href="/Membership/Properties" class="btn btn-light">
+                            <i class="ki-duotone ki-arrow-left fs-2"></i>
+                            Back to Properties
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center py-10">
+        <div class="text-center px-4">
+            <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/18.png">
+        </div>
+        <div class="text-center px-4">
+            <h3 class="fs-2hx fw-bold mb-4">Property Not Found</h3>
+            <div class="fw-semibold fs-6 text-gray-500 mb-7">The property you're looking for doesn't exist or has been removed.</div>
+            <div class="mb-3">
+                <a href="/Membership/Properties" class="btn btn-primary">Back to Properties</a>
+            </div>
+        </div>
+    </div>
+}

@@ -4,94 +4,421 @@
 
 @{
     ViewData["Title"] = "Edit Course";
+    var courseId = ViewData["CourseId"];
 }
 
-<div class="card mb-5 mb-xl-10">
+<div class="d-flex flex-column flex-lg-row">
+    <div class="d-flex align-items-center position-relative my-1">
+        <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10" id="edit-course-card" style="display: none;">
     <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
         <div class="card-title m-0">
             <h3 class="fw-bold m-0">Edit Course</h3>
         </div>
     </div>
     <div id="kt_account_profile_details" class="collapse show">
-        <form method="post" class="form" enctype="multipart/form-data">
+        <form id="edit-course-form" class="form" enctype="multipart/form-data">
             <div class="card-body border-top p-9">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Course.Id" />
+                <div id="validation-summary" class="text-danger" style="display: none;"></div>
+                <input type="hidden" id="course-id" value="@courseId" />
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Title</label>
                     <div class="col-lg-8">
-                        <input asp-for="Course.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
-                        <span asp-validation-for="Course.Title" class="text-danger"></span>
+                        <input id="course-title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+                        <span id="title-error" class="text-danger"></span>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Description</label>
                     <div class="col-lg-8">
-                        <textarea asp-for="Course.Description" class="form-control form-control-lg form-control-solid"></textarea>
-                        <span asp-validation-for="Course.Description" class="text-danger"></span>
+                        <textarea id="course-description" class="form-control form-control-lg form-control-solid"></textarea>
+                        <span id="description-error" class="text-danger"></span>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.Content" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Course Segments</label>
                     <div class="col-lg-8">
-                        <textarea asp-for="Course.Content" class="form-control form-control-lg form-control-solid"></textarea>
-                        <span asp-validation-for="Course.Content" class="text-danger"></span>
+                        <div id="segments-container">
+                            <!-- Segments will be populated here -->
+                        </div>
+                        <button type="button" id="add-segment-btn" class="btn btn-light-primary btn-sm">
+                            <i class="ki-duotone ki-plus fs-3"></i>Add Segment
+                        </button>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.VideoUrl" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Duration (minutes)</label>
                     <div class="col-lg-8">
-                        <input asp-for="Course.VideoUrl" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Course.VideoUrl" class="text-danger"></span>
+                        <input id="course-duration" type="number" class="form-control form-control-lg form-control-solid" />
+                        <span id="duration-error" class="text-danger"></span>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.Duration" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">Order</label>
                     <div class="col-lg-8">
-                        <input asp-for="Course.Duration" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Course.Duration" class="text-danger"></span>
+                        <input id="course-order" type="number" class="form-control form-control-lg form-control-solid" />
+                        <span id="order-error" class="text-danger"></span>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.Order" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
-                    <div class="col-lg-8">
-                        <input asp-for="Course.Order" class="form-control form-control-lg form-control-solid" />
-                        <span asp-validation-for="Course.Order" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="row mb-6">
-                    <label asp-for="Course.IsActive" class="col-lg-4 col-form-label fw-semibold fs-6">Is Active</label>
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Is Active</label>
                     <div class="col-lg-8 d-flex align-items-center">
                         <div class="form-check form-check-solid form-switch">
-                            <input class="form-check-input" type="checkbox" asp-for="Course.IsActive" />
-                            <label class="form-check-label" for="Course_IsActive"></label>
+                            <input class="form-check-input" type="checkbox" id="course-is-active" />
+                            <label class="form-check-label" for="course-is-active"></label>
                         </div>
                     </div>
                 </div>
+                
                 <div class="row mb-6">
-                    <label asp-for="Course.AcademyPackageId" class="col-lg-4 col-form-label fw-semibold fs-6">Academy Package</label>
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Academy Package</label>
                     <div class="col-lg-8">
-                        <select asp-for="Course.AcademyPackageId" class="form-select form-select-solid" asp-items="new SelectList(Model.AvailablePackages, nameof(AcademyPackage.Id), nameof(AcademyPackage.Name))">
+                        <select id="course-package" class="form-select form-select-solid">
                             <option value="">-- Select Package --</option>
                         </select>
-                        <span asp-validation-for="Course.AcademyPackageId" class="text-danger"></span>
+                        <span id="package-error" class="text-danger"></span>
                     </div>
                 </div>
             </div>
+            
             <div class="card-footer d-flex justify-content-end py-6 px-9">
-                <a asp-page="./Courses" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="/Admin/Academy/Courses" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary" id="save-btn">
+                    <span class="indicator-label">Save Changes</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        tinymce.init({
-            selector: 'textarea[name="Course.Content"]',
-            plugins: 'advlist autolink lists link image charmap print preview anchor',
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+        let segmentIndex = 0;
+        let courseData = null;
+        let packages = [];
+
+        function showLoading() {
+            $('#loading-spinner').show();
+            $('#edit-course-card').hide();
+        }
+
+        function hideLoading() {
+            $('#loading-spinner').hide();
+            $('#edit-course-card').show();
+        }
+
+        function showError(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: message
+            });
+        }
+
+        function showSuccess(message, callback) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: message,
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                if (callback) callback();
+            });
+        }
+
+        function initTinyMCE(selector) {
+            tinymce.init({
+                selector: selector,
+                plugins: 'advlist autolink lists link image charmap print preview anchor',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                height: 300
+            });
+        }
+
+        function loadCourseData() {
+            const courseId = $('#course-id').val();
+            showLoading();
+
+            // Load course data and packages in parallel
+            Promise.all([
+                $.get(`/api/coursesapi/${courseId}`),
+                $.get('/api/coursesapi/packages')
+            ]).then(([courseResponse, packagesResponse]) => {
+                courseData = courseResponse;
+                packages = packagesResponse;
+                populateForm();
+                hideLoading();
+            }).catch(error => {
+                console.error('Error loading data:', error);
+                hideLoading();
+                showError('Failed to load course data. Please try again.');
+            });
+        }
+
+        function populateForm() {
+            // Populate basic course fields
+            $('#course-title').val(courseData.title);
+            $('#course-description').val(courseData.description);
+            $('#course-duration').val(courseData.duration);
+            $('#course-order').val(courseData.order);
+            $('#course-is-active').prop('checked', courseData.isActive);
+
+            // Populate packages dropdown
+            const packageSelect = $('#course-package');
+            packageSelect.empty().append('<option value="">-- Select Package --</option>');
+            packages.forEach(pkg => {
+                const selected = pkg.id === courseData.academyPackageId ? 'selected' : '';
+                packageSelect.append(`<option value="${pkg.id}" ${selected}>${pkg.name}</option>`);
+            });
+
+            // Populate segments
+            segmentIndex = 0;
+            $('#segments-container').empty();
+            if (courseData.segments && courseData.segments.length > 0) {
+                courseData.segments.forEach(segment => {
+                    addSegment(segment);
+                });
+            } else {
+                // Add one empty segment if none exist
+                addSegment();
+            }
+        }
+
+        function addSegment(existingSegment = null) {
+            const container = document.getElementById('segments-container');
+            const currentIndex = segmentIndex;
+            const segmentId = existingSegment ? existingSegment.id : 0;
+            const title = existingSegment ? existingSegment.title : '';
+            const content = existingSegment ? existingSegment.content : '';
+            const videoUrl = existingSegment ? existingSegment.videoUrl : '';
+            const isActive = existingSegment ? existingSegment.isActive : true;
+            
+            const segmentHtml = `
+                <div class="card mb-4" id="segment-card-${currentIndex}" data-segment-id="${segmentId}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 segment-title">${title || `Segment ${currentIndex + 1}`}</h5>
+                        <button type="button" class="btn btn-sm btn-light-danger remove-segment-btn" 
+                                onclick="removeSegment(${currentIndex})">
+                            <i class="ki-duotone ki-trash fs-6"></i>Remove
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <input name="segments[${currentIndex}].id" type="hidden" value="${segmentId}" class="segment-id" />
+                        <input name="segments[${currentIndex}].isDeleted" type="hidden" value="false" class="is-deleted-input" />
+                        <div class="mb-4">
+                            <label class="form-label required">Segment Title</label>
+                            <input name="segments[${currentIndex}].title" class="form-control segment-title-input" 
+                                   value="${escapeHtml(title)}" onchange="updateSegmentTitle(${currentIndex}, this.value)" />
+                            <input name="segments[${currentIndex}].order" type="hidden" value="${currentIndex + 1}" class="segment-order" />
+                            <input name="segments[${currentIndex}].isActive" type="hidden" value="${isActive}" class="segment-active" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Video URL</label>
+                            <input name="segments[${currentIndex}].videoUrl" class="form-control segment-video-url" 
+                                   placeholder="https://..." value="${escapeHtml(videoUrl)}" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label required">Content</label>
+                            <textarea name="segments[${currentIndex}].content" class="form-control segment-content" 
+                                      id="segment-content-${currentIndex}">${content}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', segmentHtml);
+            
+            // Initialize TinyMCE for the new segment
+            setTimeout(() => {
+                initTinyMCE(`#segment-content-${currentIndex}`);
+            }, 100);
+            
+            segmentIndex++;
+        }
+
+        function removeSegment(index) {
+            const segmentCard = document.getElementById(`segment-card-${index}`);
+            const segmentId = segmentCard.getAttribute('data-segment-id');
+            
+            if (segmentId && segmentId !== '0') {
+                // Mark existing segment for deletion
+                const isDeletedInput = segmentCard.querySelector('.is-deleted-input');
+                isDeletedInput.value = 'true';
+                segmentCard.style.display = 'none';
+            } else {
+                // Remove TinyMCE instance for new segments
+                tinymce.get(`segment-content-${index}`)?.remove();
+                // Remove the card completely for new segments
+                segmentCard.remove();
+            }
+            
+            // Reindex remaining segments
+            reindexSegments();
+        }
+
+        function updateSegmentTitle(index, title) {
+            const titleSpan = document.querySelector(`#segment-card-${index} .segment-title`);
+            titleSpan.textContent = title || `Segment ${index + 1}`;
+        }
+
+        function reindexSegments() {
+            const segments = Array.from(document.querySelectorAll('#segments-container .card')).filter(seg => seg.style.display !== 'none');
+            segments.forEach((segment, newIndex) => {
+                segment.id = `segment-card-${newIndex}`;
+                
+                // Update form field names and IDs
+                const inputs = segment.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    const name = input.name;
+                    if (name && name.includes('segments[')) {
+                        const newName = name.replace(/segments\[\d+\]/, `segments[${newIndex}]`);
+                        input.name = newName;
+                    }
+                    if (input.id && input.id.includes('segment-content-')) {
+                        input.id = `segment-content-${newIndex}`;
+                    }
+                });
+                
+                // Update order value
+                const orderInput = segment.querySelector('.segment-order');
+                if (orderInput) orderInput.value = newIndex + 1;
+                
+                // Update button onclick
+                const removeBtn = segment.querySelector('.remove-segment-btn');
+                if (removeBtn) removeBtn.setAttribute('onclick', `removeSegment(${newIndex})`);
+                
+                const titleInput = segment.querySelector('.segment-title-input');
+                if (titleInput) titleInput.setAttribute('onchange', `updateSegmentTitle(${newIndex}, this.value)`);
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function collectFormData() {
+            const courseId = $('#course-id').val();
+            const segments = [];
+            
+            // Collect segment data
+            $('#segments-container .card').each(function(index) {
+                if ($(this).is(':visible')) {
+                    // Update TinyMCE content
+                    const contentId = $(this).find('.segment-content').attr('id');
+                    if (tinymce.get(contentId)) {
+                        tinymce.get(contentId).save();
+                    }
+                    
+                    segments.push({
+                        id: parseInt($(this).find('.segment-id').val()) || 0,
+                        title: $(this).find('.segment-title-input').val(),
+                        content: $(this).find('.segment-content').val(),
+                        videoUrl: $(this).find('.segment-video-url').val(),
+                        order: parseInt($(this).find('.segment-order').val()),
+                        isActive: $(this).find('.segment-active').val() === 'true',
+                        isDeleted: false
+                    });
+                } else {
+                    // Hidden segments are marked for deletion
+                    const segmentId = parseInt($(this).find('.segment-id').val());
+                    if (segmentId > 0) {
+                        segments.push({
+                            id: segmentId,
+                            title: '',
+                            content: '',
+                            videoUrl: '',
+                            order: 0,
+                            isActive: false,
+                            isDeleted: true
+                        });
+                    }
+                }
+            });
+
+            return {
+                id: parseInt(courseId),
+                title: $('#course-title').val(),
+                description: $('#course-description').val(),
+                duration: parseInt($('#course-duration').val()),
+                order: parseInt($('#course-order').val()),
+                isActive: $('#course-is-active').is(':checked'),
+                academyPackageId: $('#course-package').val() ? parseInt($('#course-package').val()) : null,
+                segments: segments
+            };
+        }
+
+        function submitForm() {
+            const saveBtn = $('#save-btn');
+            const indicatorLabel = saveBtn.find('.indicator-label');
+            const indicatorProgress = saveBtn.find('.indicator-progress');
+            
+            // Show loading state
+            indicatorLabel.hide();
+            indicatorProgress.show();
+            saveBtn.prop('disabled', true);
+            
+            const formData = collectFormData();
+            const courseId = formData.id;
+
+            $.ajax({
+                url: `/api/coursesapi/${courseId}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    showSuccess('Course updated successfully!', function() {
+                        window.location.href = '/Admin/Academy/Courses';
+                    });
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Failed to update course. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showError(errorMessage);
+                },
+                complete: function() {
+                    // Reset button state
+                    indicatorLabel.show();
+                    indicatorProgress.hide();
+                    saveBtn.prop('disabled', false);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Load course data on page load
+            loadCourseData();
+
+            // Handle add segment button
+            $('#add-segment-btn').click(function() {
+                addSegment();
+            });
+
+            // Handle form submission
+            $('#edit-course-form').on('submit', function(e) {
+                e.preventDefault();
+                submitForm();
+            });
         });
     </script>
 }

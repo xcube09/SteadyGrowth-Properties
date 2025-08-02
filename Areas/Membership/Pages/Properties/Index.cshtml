@@ -1,24 +1,55 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Properties.IndexModel
 @{
-    ViewData["Title"] = "List Properties";
+    ViewData["Title"] = "Properties";
 }
 
-<h1>List Properties</h1>
-
-<form method="get" class="mb-3">
-    <div class="row g-2">
-        <div class="col-md-3">
-            <select asp-for="StatusFilter" class="form-select">
-                <option value="">All Statuses</option>
-                @foreach (var status in Enum.GetValues(typeof(SteadyGrowth.Web.Models.Entities.PropertyStatus)))
-                {
-                    <option value="@status" selected="@(Model.StatusFilter.HasValue && Model.StatusFilter.Value == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
-                }
-            </select>
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="fw-bold m-0">Available Properties</h3>
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="card-body">
+
+<form method="get" class="mb-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Filter Properties</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" asp-for="TitleFilter" class="form-control" placeholder="Search by title..." />
+                </div>
+                <div class="col-md-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" asp-for="LocationFilter" class="form-control" placeholder="Search by location..." />
+                </div>
+                <div class="col-md-2">
+                    <label for="minPrice" class="form-label">Min Price (NGN)</label>
+                    <input type="number" asp-for="MinPrice" class="form-control" placeholder="0" step="0.01" />
+                </div>
+                <div class="col-md-2">
+                    <label for="maxPrice" class="form-label">Max Price (NGN)</label>
+                    <input type="number" asp-for="MaxPrice" class="form-control" placeholder="0" step="0.01" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="ki-duotone ki-magnifier fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Filter
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <a href="/Membership/Properties" class="btn btn-light btn-sm">Clear Filters</a>
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -32,22 +63,27 @@
                 <div class="card h-100 shadow-sm">
                     @if (property.PropertyImages != null && property.PropertyImages.Any())
                     {
-                        <img src="~/images/properties/@property.PropertyImages.First().FileName" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
+                        <img src="@property.PropertyImages.First().FileName" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
                     }
                     else
                     {
-                        <img src="~/images/no-image.png" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;" />
+                        <img src="~/themes/metronic/v8_2/assets/media/stock/600x400/img-23.jpg" class="card-img-top" alt="Property Image" style="height: 200px; object-fit: cover;" />
                     }
                     <div class="card-body">
                         <h5 class="card-title">@property.Title</h5>
                         <p class="card-text text-truncate">@property.Description</p>
                         <p class="card-text"><strong>Price:</strong> NGN @property.Price.ToString("N2")</p>
                         <p class="card-text"><strong>Location:</strong> @property.Location</p>
-                        <p class="card-text"><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(property.Status)">@property.Status</span></p>
                     </div>
                     <div class="card-footer">
-                        <a asp-page="Edit" asp-route-id="@property.Id" class="btn btn-primary btn-sm">Edit</a>
-                        <a asp-page="Details" asp-route-id="@property.Id" class="btn btn-secondary btn-sm">Details</a>
+                        <a href="/Membership/Properties/Details/@property.Id" class="btn btn-primary btn-sm w-100">
+                            <i class="ki-duotone ki-eye fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            View Details
+                        </a>
                     </div>
                 </div>
             </div>
@@ -57,35 +93,39 @@
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item @(Model.Properties.HasPreviousPage ? "" : "disabled")">
-                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex - 1)" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">Previous</a>
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex - 1)" 
+                   asp-route-title="@Model.TitleFilter" asp-route-location="@Model.LocationFilter" 
+                   asp-route-minPrice="@Model.MinPrice" asp-route-maxPrice="@Model.MaxPrice">Previous</a>
             </li>
             @for (var i = 1; i <= Model.Properties.TotalPages; i++)
             {
                 <li class="page-item @(i == Model.Properties.PageIndex ? "active" : "")">
-                    <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">@i</a>
+                    <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" 
+                       asp-route-title="@Model.TitleFilter" asp-route-location="@Model.LocationFilter" 
+                       asp-route-minPrice="@Model.MinPrice" asp-route-maxPrice="@Model.MaxPrice">@i</a>
                 </li>
             }
             <li class="page-item @(Model.Properties.HasNextPage ? "" : "disabled")">
-                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex + 1)" asp-route-status="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">Next</a>
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex + 1)" 
+                   asp-route-title="@Model.TitleFilter" asp-route-location="@Model.LocationFilter" 
+                   asp-route-minPrice="@Model.MinPrice" asp-route-maxPrice="@Model.MaxPrice">Next</a>
             </li>
         </ul>
     </nav>
 }
 else
 {
-    <p>No properties found.</p>
+    <div class="text-center py-10">
+        <div class="text-center px-4">
+            <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/5.png">
+        </div>
+        <div class="text-center px-4">
+            <h3 class="fs-2hx fw-bold mb-4">No Properties Available</h3>
+            <div class="fw-semibold fs-6 text-gray-500 mb-7">There are currently no properties available for viewing.</div>
+        </div>
+    </div>
 }
 
-@functions {
-    public string GetStatusBadgeClass(SteadyGrowth.Web.Models.Entities.PropertyStatus status)
-    {
-        return status switch
-        {
-            SteadyGrowth.Web.Models.Entities.PropertyStatus.Draft => "bg-secondary",
-            SteadyGrowth.Web.Models.Entities.PropertyStatus.Pending => "bg-warning",
-            SteadyGrowth.Web.Models.Entities.PropertyStatus.Approved => "bg-success",
-            SteadyGrowth.Web.Models.Entities.PropertyStatus.Rejected => "bg-danger",
-            _ => "bg-info",
-        };
-    }
-}
+    </div>
+</div>
+

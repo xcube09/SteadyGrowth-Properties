@@ -28,6 +28,8 @@ namespace SteadyGrowth.Web.Data
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
         public DbSet<CourseProgress> CourseProgresses { get; set; }
+        public DbSet<CourseSegment> CourseSegments { get; set; }
+        public DbSet<SegmentProgress> SegmentProgresses { get; set; }
         public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
         public DbSet<KYCDocument> KYCDocuments { get; set; }
 
@@ -183,6 +185,36 @@ namespace SteadyGrowth.Web.Data
                 entity.HasIndex(e => e.UserId);
                 entity.HasIndex(e => e.Status);
                 entity.HasIndex(e => e.RequestedDate);
+            });
+
+            // CourseSegment configurations
+            builder.Entity<CourseSegment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(cs => cs.Course)
+                      .WithMany()
+                      .HasForeignKey(cs => cs.CourseId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(e => e.CourseId);
+                entity.HasIndex(e => e.Order);
+                entity.HasIndex(e => e.IsActive);
+            });
+
+            // SegmentProgress configurations
+            builder.Entity<SegmentProgress>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(sp => sp.User)
+                      .WithMany()
+                      .HasForeignKey(sp => sp.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(sp => sp.CourseSegment)
+                      .WithMany()
+                      .HasForeignKey(sp => sp.CourseSegmentId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(e => new { e.UserId, e.CourseSegmentId }).IsUnique();
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.IsCompleted);
             });
 
             // KYCDocument configurations

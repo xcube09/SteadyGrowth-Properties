@@ -87,8 +87,8 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
                 _context.KYCDocuments.Add(kycDocument);
 
-                // Update user's overall KYC status if it's not already submitted or approved
-                if (user.KYCStatus == KYCStatus.NotStarted)
+                // Update user's overall KYC status to Submitted when uploading new documents
+                if (user.KYCStatus == KYCStatus.NotStarted || user.KYCStatus == KYCStatus.Rejected)
                 {
                     user.KYCStatus = KYCStatus.Submitted;
                     await _userManager.UpdateAsync(user);

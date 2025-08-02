@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SteadyGrowth.Web.Application.Commands.Academy;
 using SteadyGrowth.Web.Application.Queries.Academy;
+using SteadyGrowth.Web.Application.ViewModels;
 using SteadyGrowth.Web.Models.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Academy
@@ -22,30 +24,15 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.Academy
         public UpdateCourseCommand Course { get; set; } = new UpdateCourseCommand();
 
         public IEnumerable<AcademyPackage> AvailablePackages { get; set; } = new List<AcademyPackage>();
+        
+        public List<CourseSegmentEditViewModel> ExistingSegments { get; set; } = new List<CourseSegmentEditViewModel>();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var course = await _mediator.Send(new GetCourseByIdQuery { Id = id });
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            Course = new UpdateCourseCommand
-            {
-                Id = course.Id,
-                Title = course.Title,
-                Description = course.Description,
-                Content = course.Content,
-                VideoUrl = course.VideoUrl,
-                Duration = course.Duration,
-                Order = course.Order,
-                IsActive = course.IsActive,
-                AcademyPackageId = course.AcademyPackageId
-            };
-
-            AvailablePackages = await _mediator.Send(new GetAvailableAcademyPackagesQuery());
+            // Store the course ID for AJAX loading
+            Course.Id = id;
+            ViewData["CourseId"] = id;
+            ViewData["Breadcrumb"] = new List<(string, string)> { ("Admin", "/Admin/Properties/Index"), ("Academy", "/Admin/Academy/Courses"), ("Edit Course", $"/Admin/Academy/Edit/{id}") };
             return Page();
         }
 

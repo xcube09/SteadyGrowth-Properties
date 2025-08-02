@@ -27,15 +27,7 @@
                         </li>
                         <li>
                             <div class="short-by text-center">
-                                <form method="get">
-                                    <select class="nice-select" asp-for="StatusFilter" onchange="this.form.submit()">
-                                        <option value="">Default Sorting</option>
-                                        @foreach (var status in Enum.GetValues(typeof(SteadyGrowth.Web.Models.Entities.PropertyStatus)))
-                                        {
-                                            <option value="@status" selected="@(Model.StatusFilter.HasValue && Model.StatusFilter.Value == (SteadyGrowth.Web.Models.Entities.PropertyStatus)status)">@status</option>
-                                        }
-                                    </select>
-                                </form>
+                                <span>Approved Properties Only</span>
                             </div>
                         </li>
                     </ul>
@@ -145,19 +137,19 @@
                     <div class="ltn__pagination">
                         <ul>
                             <li class="@(Model.Properties != null && Model.Properties.HasPreviousPage ? "" : "disabled")">
-                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex - 1 : 1)" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)"><i class="fas fa-angle-double-left"></i></a>
+                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex - 1 : 1)"><i class="fas fa-angle-double-left"></i></a>
                             </li>
                             @if (Model.Properties != null)
                             {
                                 @for (var i = 1; i <= Model.Properties.TotalPages; i++)
                                 {
                                     <li class="@(i == Model.Properties.PageIndex ? "active" : "")">
-                                        <a asp-page="./Listings" asp-route-pageIndex="@i" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)">@i</a>
+                                        <a asp-page="./Listings" asp-route-pageIndex="@i">@i</a>
                                     </li>
                                 }
                             }
                             <li class="@(Model.Properties != null && Model.Properties.HasNextPage ? "" : "disabled")">
-                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex + 1 : 1)" asp-route-statusFilter="@(Model.StatusFilter.HasValue ? Model.StatusFilter.ToString() : null)"><i class="fas fa-angle-double-right"></i></a>
+                                <a asp-page="./Listings" asp-route-pageIndex="@(Model.Properties != null ? Model.Properties.PageIndex + 1 : 1)"><i class="fas fa-angle-double-right"></i></a>
                             </li>
                         </ul>
                     </div>

@@ -7,45 +7,47 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SteadyGrowth.Web.Application.Queries.Properties;
-using Microsoft.AspNetCore.Identity;
 
 namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties;
 
 /// <summary>
-/// User properties page model with filtering and pagination.
+/// Admin properties listing page model with filtering and pagination.
 /// </summary>
 [Authorize]
 public class IndexModel : PageModel
 {
     private readonly IMediator _mediator;
-    private readonly UserManager<User> _userManager;
 
-    public IndexModel(IMediator mediator, UserManager<User> userManager)
+    public IndexModel(IMediator mediator)
     {
         _mediator = mediator;
-        _userManager = userManager;
     }
 
     public PaginatedList<Property>? Properties { get; set; }
-    public PropertyStatus? StatusFilter { get; set; }
+    public string? TitleFilter { get; set; }
+    public string? LocationFilter { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 10;
 
-    public async Task OnGetAsync(PropertyStatus? status, int pageIndex = 1)
+    public async Task OnGetAsync(string? title, string? location, decimal? minPrice, decimal? maxPrice, int pageIndex = 1)
     {
-        ViewData["Breadcrumb"] = new List<(string, string)> { ("My Properties", "/Membership/Properties/Index") };
-        var userId = _userManager.GetUserId(User);
-        if (string.IsNullOrEmpty(userId)) return;
-
-        StatusFilter = status;
+        ViewData["Breadcrumb"] = new List<(string, string)> { ("Properties", "/Membership/Properties/Index") };
+        TitleFilter = title;
+        LocationFilter = location;
+        MinPrice = minPrice;
+        MaxPrice = maxPrice;
         PageIndex = pageIndex;
 
-        var query = new GetMemberPropertyListingQuery
+        var query = new GetApprovedPropertyListingQuery
         {
-            UserId = userId,
             PageIndex = PageIndex,
             PageSize = PageSize,
-            StatusFilter = StatusFilter
+            TitleFilter = TitleFilter,
+            LocationFilter = LocationFilter,
+            MinPrice = MinPrice,
+            MaxPrice = MaxPrice
         };
 
         Properties = await _mediator.Send(query);
