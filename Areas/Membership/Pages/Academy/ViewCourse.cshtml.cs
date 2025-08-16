@@ -5,7 +5,7 @@ using MediatR;
 using SteadyGrowth.Web.Application.Queries.Academy;
 using SteadyGrowth.Web.Application.Commands.Academy;
 using SteadyGrowth.Web.Models.Entities;
-using Microsoft.AspNetCore.Identity;
+using SteadyGrowth.Web.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +17,13 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
     public class ViewCourseModel : PageModel
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
         private readonly ApplicationDbContext _context;
 
-        public ViewCourseModel(IMediator mediator, UserManager<User> userManager, ApplicationDbContext context)
+        public ViewCourseModel(IMediator mediator, ICurrentUserService currentUserService, ApplicationDbContext context)
         {
             _mediator = mediator;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
             _context = context;
         }
 
@@ -34,7 +34,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
         public async Task<IActionResult> OnGetAsync(int courseId, int? segmentIndex = null)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");
@@ -83,7 +83,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
         public async Task<IActionResult> OnPostMarkSegmentCompleteAsync(int segmentId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");

@@ -24,7 +24,7 @@
                 <div class="row mb-6">
                     <label asp-for="Command.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
                     <div class="col-lg-8">
-                        <textarea asp-for="Command.Description" class="form-control form-control-lg form-control-solid"></textarea>
+                        <textarea asp-for="Command.Description" class="form-control form-control-lg form-control-solid" id="property-description-editor"></textarea>
                         <span asp-validation-for="Command.Description" class="text-danger"></span>
                     </div>
                 </div>
@@ -69,6 +69,21 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let imageIndex = 0;
+
+            // Initialize TinyMCE for description field
+            tinymce.init({
+                selector: '#property-description-editor',
+                plugins: 'advlist autolink lists link charmap preview anchor',
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link | preview',
+                height: 300,
+                menubar: false,
+                branding: false,
+                setup: function (editor) {
+                    editor.on('change', function () {
+                        editor.save();
+                    });
+                }
+            });
 
             function addImageField() {
                 const container = document.getElementById('image-upload-container');

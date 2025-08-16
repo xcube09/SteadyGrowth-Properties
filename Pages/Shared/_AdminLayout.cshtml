@@ -18,6 +18,9 @@
     <link href="~/themes/metronic/v8_2/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="~/themes/metronic/v8_2/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
+    <!--begin::SteadyGrowth Logo Theme Override-->
+    <link href="~/css/logo-theme-override.css" rel="stylesheet" type="text/css" />
+    <!--end::SteadyGrowth Logo Theme Override-->
 </head>
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
     <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
@@ -168,19 +171,6 @@
                                     </div>
                                 </div>
 
-                                <!-- KYC Management -->
-                                <div class="menu-item @(IsActivePage("/KYC/Index") ? "active" : "")">
-                                    <a class="menu-link" asp-area="Admin" asp-page="/KYC/Index">
-                                        <span class="menu-icon">
-                                            <i class="ki-duotone ki-shield-tick fs-2">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
-                                        </span>
-                                        <span class="menu-title">KYC Management</span>
-                                    </a>
-                                </div>
-
                                 <!-- Academy Management -->
                                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Academy/") ? "show" : "")">
                                     <span class="menu-link">
@@ -214,10 +204,33 @@
                                                 <span class="menu-title">Packages</span>
                                             </a>
                                         </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Academy/UpgradeRequests/Pending") ? "active" : "")" asp-area="Admin" asp-page="/Academy/UpgradeRequests/Pending">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Pending Upgrades</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Academy/UpgradeRequests/Index") ? "active" : "")" asp-area="Admin" asp-page="/Academy/UpgradeRequests/Index">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">All Upgrade Requests</span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
 
-
+                                <!-- KYC Management -->
+                                <div class="menu-item @(IsActivePage("/KYC/Index") ? "active" : "")">
+                                    <a class="menu-link" asp-area="Admin" asp-page="/KYC/Index">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-shield-tick fs-2">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">KYC Management</span>
+                                    </a>
+                                </div>
 
                                 <!-- Settings -->
                                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion @(IsActivePage("/Settings/") ? "show" : "")">
@@ -233,15 +246,21 @@
                                     </span>
                                     <div class="menu-sub menu-sub-accordion">
                                         <div class="menu-item">
+                                            <a class="menu-link @(IsActivePage("/Settings/Currency/") ? "active" : "")" asp-area="Admin" asp-page="/Settings/Currency/Index">
+                                                <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                <span class="menu-title">Currency Settings</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item">
                                             <a class="menu-link @(IsActivePage("/Settings/General") ? "active" : "")" asp-area="Admin" asp-page="/Settings/General">
                                                 <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                <span class="menu-title">General</span>
+                                                <span class="menu-title">General Settings</span>
                                             </a>
                                         </div>
                                         <div class="menu-item">
                                             <a class="menu-link @(IsActivePage("/Settings/Security") ? "active" : "")" asp-area="Admin" asp-page="/Settings/Security">
                                                 <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                <span class="menu-title">Security</span>
+                                                <span class="menu-title">Security Settings</span>
                                             </a>
                                         </div>
                                     </div>

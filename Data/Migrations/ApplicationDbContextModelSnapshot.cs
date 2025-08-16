@@ -183,9 +183,12 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
 
                     b.ToTable("AcademyPackages");
                 });
@@ -323,6 +326,107 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("CourseSegments");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Currency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DecimalPlaces")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ExchangeRate")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("IsDefault");
+
+                    b.ToTable("Currencies");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.CurrencyExchangeRate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CurrencyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EffectiveDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("Rate")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("EffectiveDate");
+
+                    b.HasIndex("CurrencyId", "EffectiveDate");
+
+                    b.ToTable("CurrencyExchangeRates");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.KYCDocument", b =>
                 {
                     b.Property<int>("Id")
@@ -378,6 +482,10 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CurrencyCode")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -425,6 +533,64 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Properties");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyCommission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("CommissionAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("WalletTransactionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddedByUserId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WalletTransactionId")
+                        .IsUnique()
+                        .HasFilter("[WalletTransactionId] IS NOT NULL");
+
+                    b.ToTable("PropertyCommissions");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyImage", b =>
@@ -587,6 +753,54 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.ToTable("SegmentProgresses");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.SystemSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DataType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SettingKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SettingValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsSystem");
+
+                    b.HasIndex("SettingKey")
+                        .IsUnique();
+
+                    b.ToTable("SystemSettings");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.UpgradeRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -702,8 +916,8 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("ReferredBy")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -1048,6 +1262,17 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.CurrencyExchangeRate", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.Currency", "Currency")
+                        .WithMany("ExchangeRates")
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+                });
+
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.KYCDocument", b =>
                 {
                     b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
@@ -1068,6 +1293,40 @@ namespace SteadyGrowth.Web.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyCommission", b =>
+                {
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "AddedBy")
+                        .WithMany()
+                        .HasForeignKey("AddedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteadyGrowth.Web.Models.Entities.WalletTransaction", "WalletTransaction")
+                        .WithOne()
+                        .HasForeignKey("SteadyGrowth.Web.Models.Entities.PropertyCommission", "WalletTransactionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("AddedBy");
+
+                    b.Navigation("Property");
+
+                    b.Navigation("User");
+
+                    b.Navigation("WalletTransaction");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.PropertyImage", b =>
@@ -1234,6 +1493,11 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("Courses");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Currency", b =>
+                {
+                    b.Navigation("ExchangeRates");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Property", b =>

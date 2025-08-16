@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MediatR;
 using SteadyGrowth.Web.Application.Queries.Academy;
 using SteadyGrowth.Web.Models.Entities;
-using Microsoft.AspNetCore.Identity;
+using SteadyGrowth.Web.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,12 +16,12 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
     public class MyProgressModel : PageModel
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
 
-        public MyProgressModel(IMediator mediator, UserManager<User> userManager)
+        public MyProgressModel(IMediator mediator, ICurrentUserService currentUserService)
         {
             _mediator = mediator;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
         }
 
         public List<CourseProgress> CourseProgresses { get; set; } = new List<CourseProgress>();
@@ -31,7 +31,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
         {
             ViewData["Breadcrumb"] = new List<(string, string)> { ("Academy", "/Membership/Academy/MyProgress") };
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 // Handle unauthenticated user, maybe redirect to login
@@ -46,7 +46,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
         public async Task<IActionResult> OnPostMarkLessonCompleteAsync(int courseId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");

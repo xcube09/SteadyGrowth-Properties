@@ -1,0 +1,31 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.ExitImpersonationModel
+@{
+    ViewData["Title"] = "Exiting Impersonation";
+    Layout = "_MembershipLayout";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="ki-duotone ki-check-circle fs-3x text-success"></i>
+        </div>
+        <h3 class="mb-3">Impersonation Ended</h3>
+        <p class="text-muted mb-4">You have successfully exited user impersonation mode.</p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="/Admin/Users" class="btn btn-primary">
+                <i class="ki-duotone ki-arrow-left fs-6 me-2"></i>Back to Admin Users
+            </a>
+            <button type="button" class="btn btn-light-danger" onclick="window.close()">
+                <i class="ki-duotone ki-cross fs-6 me-2"></i>Close Tab
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-redirect to admin users page after 3 seconds
+    setTimeout(function() {
+        window.location.href = '/Admin/Users';
+    }, 3000);
+</script>

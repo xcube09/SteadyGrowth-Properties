@@ -1,0 +1,250 @@
+@page "{id:int}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Properties.EditModel
+@{
+    ViewData["Title"] = "Edit Property";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_property_edit_details" aria-expanded="true" aria-controls="kt_property_edit_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Edit Property: @Model.Property?.Title</h3>
+        </div>
+        <div class="card-toolbar">
+            <a asp-page="./Index" class="btn btn-light-primary">
+                <i class="ki-duotone ki-arrow-left fs-2"></i>Back to Properties
+            </a>
+        </div>
+    </div>
+    <div id="kt_property_edit_details" class="collapse show">
+        <form method="post" class="form" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Command.Id" />
+            <div class="card-body border-top p-9">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="row mb-6">
+                    <label asp-for="Command.Title" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Command.Title" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" />
+                        <span asp-validation-for="Command.Title" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="row mb-6">
+                    <label asp-for="Command.Description" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <textarea asp-for="Command.Description" class="form-control form-control-lg form-control-solid" id="property-description-editor"></textarea>
+                        <span asp-validation-for="Command.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="row mb-6">
+                    <label asp-for="Command.Price" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Command.Price" type="number" step="0.01" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Command.Price" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="row mb-6">
+                    <label asp-for="Command.Location" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                    <div class="col-lg-8">
+                        <input asp-for="Command.Location" class="form-control form-control-lg form-control-solid" />
+                        <span asp-validation-for="Command.Location" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="separator separator-dashed my-10"></div>
+
+                <!-- Existing Images Section -->
+                @if (Model.Property?.ExistingImages.Any() == true)
+                {
+                    <div class="row mb-6">
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Current Images</label>
+                        <div class="col-lg-8">
+                            <div class="row">
+                                @{int imageIndex = 0;}
+                                @foreach (var image in Model.Property.ExistingImages)
+                                {
+                                    <div class="col-lg-6 mb-6" data-image-id="@image.Id">
+                                        <div class="card card-flush">
+                                            <div class="card-header pt-5">
+                                                <div class="card-title">
+                                                    <h5 class="fw-bold text-gray-800 mb-0">Image @image.DisplayOrder</h5>
+                                                </div>
+                                                <div class="card-toolbar">
+                                                    <button type="button" class="btn btn-sm btn-danger delete-image-btn" data-image-id="@image.Id">
+                                                        <i class="ki-duotone ki-trash fs-5 me-1"></i>Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body pt-0">
+                                                <!-- Image Preview -->
+                                                <div class="rounded-3 overflow-hidden mb-4">
+                                                    <img src="@image.FileName" alt="@image.Caption" class="w-100" style="height: 200px; object-fit: cover;" />
+                                                </div>
+                                                
+                                                <!-- Editable Fields -->
+                                                <input type="hidden" name="ExistingImages[@imageIndex].Id" value="@image.Id" />
+                                                <input type="hidden" name="ExistingImages[@imageIndex].FileName" value="@image.FileName" />
+                                                
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label fw-semibold">Caption</label>
+                                                        <input type="text" class="form-control form-control-solid" 
+                                                               name="ExistingImages[@imageIndex].Caption" 
+                                                               value="@image.Caption" 
+                                                               placeholder="Enter image caption" />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">Image Type</label>
+                                                        <input type="text" class="form-control form-control-solid" 
+                                                               name="ExistingImages[@imageIndex].ImageType" 
+                                                               value="@image.ImageType" 
+                                                               placeholder="e.g., Interior, Exterior" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">Display Order</label>
+                                                        <input type="number" class="form-control form-control-solid" 
+                                                               name="ExistingImages[@imageIndex].DisplayOrder" 
+                                                               value="@image.DisplayOrder" 
+                                                               min="1" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    imageIndex++;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="separator separator-dashed my-10"></div>
+                }
+
+                <!-- New Images Upload Section -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Add New Images</label>
+                    <div class="col-lg-8">
+                        <div id="image-upload-container">
+                            <!-- Image upload fields will be added here by JavaScript -->
+                        </div>
+                        <button type="button" id="add-image-field" class="btn btn-light-primary mt-3">
+                            <i class="ki-duotone ki-plus fs-2"></i>Add Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <a asp-page="./Index" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary" id="kt_property_edit_submit">Update Property</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let imageIndex = 0;
+
+            // Initialize TinyMCE for description field
+            tinymce.init({
+                selector: '#property-description-editor',
+                plugins: 'advlist autolink lists link charmap preview anchor',
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link | preview',
+                height: 300,
+                menubar: false,
+                branding: false,
+                setup: function (editor) {
+                    editor.on('change', function () {
+                        editor.save();
+                    });
+                }
+            });
+
+            function addImageField() {
+                const container = document.getElementById('image-upload-container');
+                const newField = document.createElement('div');
+                newField.classList.add('image-field', 'mb-4', 'p-4', 'border', 'rounded');
+                newField.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">New Image #${imageIndex + 1}</h5>
+                        <button type="button" class="btn btn-sm btn-danger remove-image-field">Remove</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__ImageFile" class="form-label">Image File</label>
+                        <input type="file" name="Images[${imageIndex}].ImageFile" id="Images_${imageIndex}__ImageFile" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__Caption" class="form-label">Caption</label>
+                        <input type="text" name="Images[${imageIndex}].Caption" id="Images_${imageIndex}__Caption" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__ImageType" class="form-label">Image Type</label>
+                        <input type="text" name="Images[${imageIndex}].ImageType" id="Images_${imageIndex}__ImageType" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Images_${imageIndex}__DisplayOrder" class="form-label">Display Order</label>
+                        <input type="number" name="Images[${imageIndex}].DisplayOrder" id="Images_${imageIndex}__DisplayOrder" class="form-control" value="${imageIndex + 1}" />
+                    </div>
+                `;
+                container.appendChild(newField);
+
+                newField.querySelector('.remove-image-field').addEventListener('click', function () {
+                    newField.remove();
+                    updateImageFieldIndices();
+                });
+
+                imageIndex++;
+            }
+
+            function updateImageFieldIndices() {
+                const imageFields = document.querySelectorAll('.image-field');
+                imageFields.forEach((field, index) => {
+                    field.querySelector('h5').textContent = `New Image #${index + 1}`;
+                    field.querySelectorAll('input').forEach(input => {
+                        const nameAttr = input.getAttribute('name');
+                        const idAttr = input.getAttribute('id');
+                        if (nameAttr) {
+                            input.setAttribute('name', nameAttr.replace(/Images\[\d+\]/, `Images[${index}]`));
+                        }
+                        if (idAttr) {
+                            input.setAttribute('id', idAttr.replace(/Images_\d+__/, `Images_${index}__`));
+                        }
+                    });
+                });
+                imageIndex = imageFields.length;
+            }
+
+            // Delete existing image functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-image-btn')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-image-btn');
+                    const imageId = button.getAttribute('data-image-id');
+                    const imageCard = button.closest('[data-image-id]');
+                    
+                    if (confirm('Are you sure you want to delete this image?')) {
+                        // Add hidden input to mark for deletion
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'DeletedImageIds';
+                        hiddenInput.value = imageId;
+                        document.querySelector('form').appendChild(hiddenInput);
+                        
+                        // Hide the image card
+                        imageCard.style.display = 'none';
+                    }
+                }
+            });
+
+            document.getElementById('add-image-field').addEventListener('click', addImageField);
+        });
+    </script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

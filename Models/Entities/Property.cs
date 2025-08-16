@@ -34,6 +34,9 @@ namespace SteadyGrowth.Web.Models.Entities
 		
 		[Column(TypeName = "decimal(18,2)")]
 		public decimal Price { get; set; }
+
+		[StringLength(3)]
+		public string? CurrencyCode { get; set; }
 		
 		[Required, StringLength(500)]
 		public string Location { get; set; } = string.Empty;

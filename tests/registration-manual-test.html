@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form Manual Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2>Registration Form Test</h2>
+                <p class="text-muted">This is a standalone test to verify the registration form functionality</p>
+                
+                <form id="registerForm" class="border p-4 rounded">
+                    <div id="generalError" class="alert alert-danger" style="display:none;"></div>
+                    <div id="successMessage" class="alert alert-success" style="display:none;"></div>
+                    
+                    <div class="form-group mb-3">
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name*" required />
+                        <span class="text-danger field-validation" data-field="firstName"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name*" required />
+                        <span class="text-danger field-validation" data-field="lastName"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Email*" required />
+                        <span class="text-danger field-validation" data-field="email"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="Phone Number (optional)" />
+                        <span class="text-danger field-validation" data-field="phoneNumber"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" id="referralCode" name="referralCode" class="form-control" placeholder="Referral Code (optional)" />
+                        <span class="text-danger field-validation" data-field="referralCode"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password*" required />
+                        <span class="text-danger field-validation" data-field="password"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm Password*" required />
+                        <span class="text-danger field-validation" data-field="confirmPassword"></span>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="consent1" name="consent1" required />
+                        <label class="form-check-label" for="consent1">
+                            I consent to processing my personal data
+                        </label>
+                        <span class="text-danger field-validation" data-field="consent1"></span>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="consent2" name="consent2" required />
+                        <label class="form-check-label" for="consent2">
+                            I consent to the privacy policy
+                        </label>
+                        <span class="text-danger field-validation" data-field="consent2"></span>
+                    </div>
+                    
+                    <div class="btn-wrapper">
+                        <button class="btn btn-primary w-100" type="submit" id="submitBtn">
+                            <span id="btnText">CREATE ACCOUNT</span>
+                            <span id="btnSpinner" style="display:none;">
+                                <i class="spinner-border spinner-border-sm"></i> Creating Account...
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+                </form>
+                
+                <div class="mt-3">
+                    <h4>Test Results</h4>
+                    <div id="testResults" class="border p-3 rounded bg-light">
+                        <p><strong>Form Validation:</strong> <span id="validationResult">Not tested</span></p>
+                        <p><strong>AJAX Call:</strong> <span id="ajaxResult">Not tested</span></p>
+                        <p><strong>Error Handling:</strong> <span id="errorHandlingResult">Not tested</span></p>
+                        <p><strong>Referral Code:</strong> <span id="referralResult">Not tested</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Test referral code from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const referrerId = urlParams.get('referrerId');
+            if (referrerId) {
+                $('#referralCode').val(referrerId).prop('readonly', true);
+                $('#referralResult').text('✓ Referral code loaded from URL: ' + referrerId);
+            } else {
+                $('#referralResult').text('✓ No referral code in URL, field is editable');
+            }
+
+            // jQuery Validation setup
+            $("#registerForm").validate({
+                rules: {
+                    firstName: {
+                        required: true,
+                        maxlength: 100
+                    },
+                    lastName: {
+                        required: true,
+                        maxlength: 100
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    phoneNumber: {
+                        // Optional field - no validation rules
+                    },
+                    password: {
+                        required: true,
+                        minlength: 6
+                    },
+                    confirmPassword: {
+                        required: true,
+                        equalTo: "#password"
+                    },
+                    consent1: {
+                        required: true
+                    },
+                    consent2: {
+                        required: true
+                    }
+                },
+                messages: {
+                    firstName: {
+                        required: "First name is required",
+                        maxlength: "First name must be less than 100 characters"
+                    },
+                    lastName: {
+                        required: "Last name is required",
+                        maxlength: "Last name must be less than 100 characters"
+                    },
+                    email: {
+                        required: "Email is required",
+                        email: "Please enter a valid email address"
+                    },
+                    password: {
+                        required: "Password is required",
+                        minlength: "Password must be at least 6 characters"
+                    },
+                    confirmPassword: {
+                        required: "Please confirm your password",
+                        equalTo: "Passwords do not match"
+                    },
+                    consent1: {
+                        required: "You must consent to data processing"
+                    },
+                    consent2: {
+                        required: "You must accept the privacy policy"
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    var fieldName = element.attr('name');
+                    $('.field-validation[data-field="' + fieldName + '"]').html(error);
+                },
+                success: function(label, element) {
+                    var fieldName = $(element).attr('name');
+                    $('.field-validation[data-field="' + fieldName + '"]').html('');
+                    $('#validationResult').text('✓ Client-side validation working');
+                },
+                submitHandler: function(form) {
+                    // Only submit if form is valid
+                    if ($(form).valid()) {
+                        submitRegistration();
+                    }
+                    return false; // Always prevent default form submission
+                },
+                invalidHandler: function(event, validator) {
+                    // Show general error message when form is invalid
+                    $('#generalError').html('Please correct the errors below and try again.').show();
+                }
+            });
+
+            function submitRegistration() {
+                // Clear previous messages (but not validation errors)
+                $('#generalError').hide().html('');
+                $('#successMessage').hide().html('');
+
+                // Double-check form validity before proceeding
+                if (!$('#registerForm').valid()) {
+                    $('#generalError').html('Please correct the errors below and try again.').show();
+                    return;
+                }
+
+                // Show loading state
+                $('#submitBtn').prop('disabled', true);
+                $('#btnText').hide();
+                $('#btnSpinner').show();
+
+                var formData = {
+                    firstName: $('#firstName').val(),
+                    lastName: $('#lastName').val(),
+                    email: $('#email').val(),
+                    phoneNumber: $('#phoneNumber').val(),
+                    referralCode: $('#referralCode').val(),
+                    password: $('#password').val(),
+                    confirmPassword: $('#confirmPassword').val(),
+                    recaptchaToken: $('#recaptchaToken').val()
+                };
+
+                // Test AJAX call to registration API
+                $.ajax({
+                    url: '/api/account/register',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#successMessage').html(response.message || 'Registration successful!').show();
+                            $('#ajaxResult').text('✓ AJAX call successful');
+                        } else {
+                            handleErrors(response);
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#ajaxResult').text('✗ AJAX call failed: ' + xhr.status + ' - ' + xhr.statusText);
+                        
+                        if (xhr.responseJSON) {
+                            handleErrors(xhr.responseJSON);
+                            $('#errorHandlingResult').text('✓ Error handling working');
+                        } else {
+                            $('#generalError').html('An error occurred. Please try again.').show();
+                            $('#errorHandlingResult').text('✗ No error response received');
+                        }
+                        resetButton();
+                    }
+                });
+            }
+
+            function handleErrors(response) {
+                if (response.errors) {
+                    // Handle field-specific errors
+                    for (var field in response.errors) {
+                        if (response.errors.hasOwnProperty(field)) {
+                            var fieldName = field.charAt(0).toLowerCase() + field.slice(1);
+                            var errors = response.errors[field];
+                            if (Array.isArray(errors)) {
+                                $('.field-validation[data-field="' + fieldName + '"]').html(errors.join('<br>'));
+                            }
+                        }
+                    }
+                } else if (response.message) {
+                    $('#generalError').html(response.message).show();
+                } else {
+                    $('#generalError').html('Registration failed. Please check your information and try again.').show();
+                }
+                resetButton();
+            }
+
+            function resetButton() {
+                $('#submitBtn').prop('disabled', false);
+                $('#btnText').show();
+                $('#btnSpinner').hide();
+            }
+
+            // Test validation on empty submit
+            setTimeout(function() {
+                if ($('#firstName').val() === '') {
+                    $('#validationResult').text('Ready for validation test - try submitting empty form');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

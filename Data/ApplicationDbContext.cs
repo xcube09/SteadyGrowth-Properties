@@ -32,6 +32,10 @@ namespace SteadyGrowth.Web.Data
         public DbSet<SegmentProgress> SegmentProgresses { get; set; }
         public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
         public DbSet<KYCDocument> KYCDocuments { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<CurrencyExchangeRate> CurrencyExchangeRates { get; set; }
+        public DbSet<SystemSettings> SystemSettings { get; set; }
+        public DbSet<PropertyCommission> PropertyCommissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -98,6 +102,14 @@ namespace SteadyGrowth.Web.Data
                       .OnDelete(DeleteBehavior.Cascade);
                 entity.HasIndex(e => e.PropertyId);
                 entity.HasIndex(e => e.DisplayOrder);
+            });
+
+            // AcademyPackage configurations
+            builder.Entity<AcademyPackage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Price).HasPrecision(18, 2);
+                entity.HasIndex(e => e.IsActive);
             });
 
             // Course configurations
@@ -228,6 +240,69 @@ namespace SteadyGrowth.Web.Data
                 entity.HasIndex(e => e.UserId);
                 entity.HasIndex(e => e.DocumentType);
                 entity.HasIndex(e => e.Status);
+            });
+
+            // Currency configurations
+            builder.Entity<Currency>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Code).IsRequired().HasMaxLength(3);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Symbol).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.ExchangeRate).HasPrecision(18, 6);
+                entity.HasIndex(e => e.Code).IsUnique();
+                entity.HasIndex(e => e.IsDefault);
+                entity.HasIndex(e => e.IsActive);
+            });
+
+            // CurrencyExchangeRate configurations
+            builder.Entity<CurrencyExchangeRate>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Rate).HasPrecision(18, 6);
+                entity.HasOne(cer => cer.Currency)
+                      .WithMany(c => c.ExchangeRates)
+                      .HasForeignKey(cer => cer.CurrencyId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(e => e.CurrencyId);
+                entity.HasIndex(e => e.EffectiveDate);
+                entity.HasIndex(e => new { e.CurrencyId, e.EffectiveDate });
+            });
+
+            // SystemSettings configurations
+            builder.Entity<SystemSettings>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.SettingKey).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.SettingValue).IsRequired();
+                entity.HasIndex(e => e.SettingKey).IsUnique();
+                entity.HasIndex(e => e.IsSystem);
+            });
+
+            // PropertyCommission configurations
+            builder.Entity<PropertyCommission>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CommissionAmount).HasPrecision(18, 2);
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Property)
+                      .WithMany()
+                      .HasForeignKey(e => e.PropertyId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.AddedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.AddedByUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.WalletTransaction)
+                      .WithOne()
+                      .HasForeignKey<PropertyCommission>(e => e.WalletTransactionId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.PropertyId);
+                entity.HasIndex(e => e.CreatedAt);
             });
         }
     }

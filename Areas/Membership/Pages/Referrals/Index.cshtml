@@ -4,56 +4,369 @@
     ViewData["Title"] = "My Referrals";
 }
 
-<h1>My Referrals</h1>
+<!-- Statistics Cards -->
+<div class="row g-5 g-xl-8 mb-5 mb-xl-10">
+    <!-- Total Referrals -->
+    <div class="col-6 col-lg-3 mb-5">
+        <div class="card card-flush statistics-card bgi-no-repeat bgi-size-contain bgi-position-x-end" style="background-color: #7239EA; min-height: 150px;">
+            <div class="card-header pt-5 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <span class="fs-2x fw-bold text-white text-center">@(Model.Stats?.TotalReferrals ?? 0)</span>
+                    </div>
+                    <span class="text-white opacity-75 text-center fw-semibold fs-6">Total Referrals</span>
+                </div>
+            </div>
+            <div class="card-body d-flex align-items-end pt-2 pb-5">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="text-white opacity-75 fw-semibold fs-7 text-center">All time referrals</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Active Referrals -->
+    <div class="col-6 col-lg-3 mb-5">
+        <div class="card card-flush statistics-card bgi-no-repeat bgi-size-contain bgi-position-x-end" style="background-color: #50CD89; min-height: 150px;">
+            <div class="card-header pt-5 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <span class="fs-2x fw-bold text-white text-center">@(Model.Stats?.ActiveReferrals ?? 0)</span>
+                    </div>
+                    <span class="text-white opacity-75 text-center fw-semibold fs-6">Active Referrals</span>
+                </div>
+            </div>
+            <div class="card-body d-flex align-items-end pt-2 pb-5">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="text-white opacity-75 fw-semibold fs-7 text-center">Currently active</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Commission -->
+    <div class="col-6 col-lg-3 mb-5">
+        <div class="card card-flush statistics-card bgi-no-repeat bgi-size-contain bgi-position-x-end" style="background-color: #009EF7; min-height: 150px;">
+            <div class="card-header pt-5 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <span class="fs-4 fw-bold text-white text-center text-truncate" style="max-width: 100%;">@(Model.Stats?.TotalCommissionEarned.ToString("C") ?? "$0.00")</span>
+                    </div>
+                    <span class="text-white opacity-75 text-center fw-semibold fs-6">Total Earned</span>
+                </div>
+            </div>
+            <div class="card-body d-flex align-items-end pt-2 pb-5">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="text-white opacity-75 fw-semibold fs-7 text-center">Commission earned</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Commission -->
+    <div class="col-6 col-lg-3 mb-5">
+        <div class="card card-flush statistics-card bgi-no-repeat bgi-size-contain bgi-position-x-end" style="background-color: #FFC700; min-height: 150px;">
+            <div class="card-header pt-5 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <span class="fs-4 fw-bold text-white text-center text-truncate" style="max-width: 100%;">@(Model.Stats?.PendingCommission.ToString("C") ?? "$0.00")</span>
+                    </div>
+                    <span class="text-white opacity-75 text-center fw-semibold fs-6">Pending</span>
+                </div>
+            </div>
+            <div class="card-body d-flex align-items-end pt-2 pb-5">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="text-white opacity-75 fw-semibold fs-7 text-center">Awaiting payment</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Referral Code & Link Section -->
 @if (!string.IsNullOrEmpty(Model.ReferralCode))
 {
-    <div class="mb-3">
-        <strong>Your Referral Code:</strong> <span class="badge bg-success">@Model.ReferralCode</span>
-        <br />
-        <strong>Referral Link:</strong> <code>@Url.Page("/Account/Register", null, new { code = Model.ReferralCode }, Request.Scheme)</code>
+    <div class="card mb-5 mb-xl-10">
+        <div class="card-header border-0 pt-5">
+            <div class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">Your Referral Information</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">Share your referral code and link to earn commissions</span>
+            </div>
+        </div>
+        <div class="card-body py-3">
+            <div class="row mb-7">
+                <div class="col-lg-6">
+                    <label class="fw-semibold fs-6 mb-2">Referral Code</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-solid" value="@Model.ReferralCode" readonly id="referralCode">
+                        <button class="btn btn-light-primary" type="button" onclick="copyToClipboard('referralCode')">
+                            <i class="ki-duotone ki-copy fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="fw-semibold fs-6 mb-2">Referral Link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-solid text-break" value="@Model.ReferralLink" readonly id="referralLink" style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <button class="btn btn-light-primary" type="button" onclick="copyToClipboard('referralLink')">
+                            <i class="ki-duotone ki-copy fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Copy
+                        </button>
+                    </div>
+                    <small class="text-muted mt-1">Click the copy button to copy the full referral link</small>
+                </div>
+            </div>
+            
+            <!-- Social Sharing Buttons -->
+            <div class="d-flex flex-wrap gap-3">
+                <button class="btn btn-light-primary btn-sm" onclick="shareWhatsApp()">
+                    <i class="ki-duotone ki-message-text-2 fs-4 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    Share on WhatsApp
+                </button>
+                <button class="btn btn-light-info btn-sm" onclick="shareTwitter()">
+                    <i class="ki-duotone ki-message-text-2 fs-4 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    Share on Twitter
+                </button>
+                <button class="btn btn-light-success btn-sm" onclick="shareEmail()">
+                    <i class="ki-duotone ki-sms fs-4 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Share via Email
+                </button>
+            </div>
+        </div>
     </div>
 }
 
-<section>
-    <h4>Referral Statistics</h4>
-    <ul>
-        <li>Total Referrals: @Model.Stats?.TotalReferrals</li>
-        <li>Active Referrals: @Model.Stats?.ActiveReferrals</li>
-        <li>Total Commission Earned: @Model.Stats?.TotalCommissionEarned.ToString("C")</li>
-        <li>Pending Commission: @Model.Stats?.PendingCommission.ToString("C")</li>
-        <li>Commission Paid: @Model.Stats?.CommissionPaid.ToString("C")</li>
-    </ul>
-</section>
+<!-- Referral History -->
+<div class="card">
+    <div class="card-header border-0 pt-6">
+        <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <input type="text" data-kt-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search referrals..." />
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex justify-content-end">
+                <span class="badge badge-light-primary fs-7 fw-bold">@Model.Referrals.Count referrals found</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body py-4">
+        @if (Model.Referrals.Count == 0)
+        {
+            <!-- Empty State -->
+            <div class="text-center py-10">
+                <div class="text-center px-4">
+                    <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/5.png">
+                </div>
+                <div class="text-center px-4">
+                    <h3 class="fs-2hx fw-bold mb-4">No Referrals Yet</h3>
+                    <div class="fw-semibold fs-6 text-gray-500 mb-7">
+                        Start earning commissions by sharing your referral link with friends and family.
+                    </div>
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model.ReferralCode))
+                        {
+                            <button class="btn btn-primary" onclick="copyToClipboard('referralLink')">
+                                <i class="ki-duotone ki-share fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                Copy Referral Link
+                            </button>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No referral code available</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Referrals Table -->
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_referrals">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-125px">Referred User</th>
+                            <th class="min-w-100px">Join Date</th>
+                            <th class="min-w-100px">Commission</th>
+                            <th class="min-w-100px">Status</th>
+                            <th class="min-w-100px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                        @foreach (var referral in Model.Referrals)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-35px me-3">
+                                            <div class="symbol-label bg-light-primary">
+                                                <i class="ki-duotone ki-user fs-2 text-primary">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-bold">@(referral.ReferredUser?.FirstName ?? "Unknown") @(referral.ReferredUser?.LastName ?? "User")</span>
+                                            <span class="text-muted fs-7">@(referral.ReferredUser?.Email ?? "N/A")</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@referral.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                        <span class="text-muted fs-7">@referral.CreatedAt.ToString("HH:mm")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold text-success">@referral.CommissionEarned.ToString("C")</span>
+                                        @if (referral.CommissionEarned == 0)
+                                        {
+                                            <span class="text-muted fs-7">No commission yet</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = referral.CommissionPaid ? "badge-light-success" : "badge-light-warning";
+                                        var statusText = referral.CommissionPaid ? "Paid" : "Pending";
+                                    }
+                                    <span class="badge @statusClass fw-bold">@statusText</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-shrink-0">
+                                        @if (referral.ReferredUser != null)
+                                        {
+                                            <span class="badge badge-light-info fw-bold fs-8">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-light-secondary fw-bold fs-8">Inactive</span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
 
-<section>
-    <h4>Referral History</h4>
-    @if (Model.Referrals.Count == 0)
-    {
-        <p>No referrals yet.</p>
-    }
-    else
-    {
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Referred User</th>
-                    <th>Date</th>
-                    <th>Commission</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var referral in Model.Referrals)
-            {
-                <tr>
-                    <td>@referral.ReferredUser?.Email</td>
-                    <td>@referral.CreatedAt.ToString("yyyy-MM-dd")</td>
-                    <td>@referral.CommissionEarned.ToString("C")</td>
-                    <td>@(referral.CommissionPaid ? "Paid" : "Pending")</td>
-                </tr>
+@section Scripts {
+    <style>
+        /* Custom responsive styles for referral cards */
+        @@media (max-width: 576px) {
+            .card {
+                margin-bottom: 1rem !important;
             }
-            </tbody>
-        </table>
-    }
-</section>
+            .fs-4 {
+                font-size: 1.1rem !important;
+            }
+            .fs-2x {
+                font-size: 1.75rem !important;
+            }
+        }
+        
+        @@media (max-width: 768px) {
+            .col-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        
+        /* Ensure currency text doesn't overflow */
+        .text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Better spacing for cards */
+        .statistics-card {
+            transition: transform 0.2s ease;
+        }
+        
+        .statistics-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <script>
+        // Copy to clipboard functionality
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            element.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            
+            // Show success message
+            toastr.success('Copied to clipboard!');
+        }
+
+        // Social sharing functions
+        function shareWhatsApp() {
+            const referralLink = document.getElementById('referralLink');
+            const text = `Join SteadyGrowth and start your property investment journey! Use my referral code: @Model.ReferralCode`;
+            const url = `https://wa.me/?text=${encodeURIComponent(text + ' ' + (referralLink ? referralLink.value : '@Model.ReferralLink'))}`;
+            window.open(url, '_blank');
+        }
+
+        function shareTwitter() {
+            const referralLink = document.getElementById('referralLink');
+            const text = `Join SteadyGrowth and start your property investment journey! Use my referral code: @Model.ReferralCode`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink ? referralLink.value : '@Model.ReferralLink')}`;
+            window.open(url, '_blank');
+        }
+
+        function shareEmail() {
+            const referralLink = document.getElementById('referralLink');
+            const subject = 'Join SteadyGrowth with My Referral';
+            const linkToUse = referralLink ? referralLink.value : '@Model.ReferralLink';
+            const body = `Hi there!\n\nI'd like to invite you to join SteadyGrowth, a great platform for property investment.\n\nUse my referral code: @Model.ReferralCode\nOr click this link to register: ${linkToUse}\n\nBest regards!`;
+            const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = url;
+        }
+
+        // Initialize search functionality
+        document.querySelector('[data-kt-filter="search"]').addEventListener('keyup', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const table = document.getElementById('kt_table_referrals');
+            if (table) {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(function (row) {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }
+        });
+    </script>
+}

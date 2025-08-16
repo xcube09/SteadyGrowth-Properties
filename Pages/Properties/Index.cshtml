@@ -64,7 +64,7 @@
                             <h5 class="card-title">@property.Title</h5>
                             <p class="card-text text-truncate">@property.Description</p>
                             <div class="mb-2"><span class="badge bg-secondary">@property.PropertyType</span></div>
-                            <div class="fw-bold text-primary">@property.Price.ToString("C")</div>
+                            <div class="fw-bold text-primary">@await Model.GetFormattedPriceWithUSDAsync(property)</div>
                         </div>
                         <div class="card-footer bg-white border-0">
                             <a href="/Properties/Details/@property.Id" class="btn btn-outline-primary w-100">View Details</a>

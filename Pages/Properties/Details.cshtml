@@ -51,7 +51,7 @@
         <div class="col-md-5">
             <h1>@Model.Property?.Title</h1>
             <div class="mb-2"><span class="badge bg-secondary">@Model.Property?.PropertyType</span></div>
-            <div class="fw-bold text-primary fs-4">@Model.Property?.Price.ToString("C")</div>
+            <div class="fw-bold text-primary fs-4">@(Model.Property != null ? await Model.GetFormattedPriceWithUSDAsync(Model.Property) : "")</div>
             <p class="mt-3">@Model.Property?.Description</p>
             <ul class="list-unstyled mb-3">
                 <li><i class="bi bi-geo-alt"></i> @Model.Property?.Location</li>

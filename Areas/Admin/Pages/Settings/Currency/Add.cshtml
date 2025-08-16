@@ -1,0 +1,163 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Settings.Currency.AddModel
+@{
+    ViewData["Title"] = "Add Currency";
+}
+
+<div class="d-flex flex-column flex-column-fluid">
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Add Currency</h1>
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin" class="text-muted text-hover-primary">Admin</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin/Settings" class="text-muted text-hover-primary">Settings</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin/Settings/Currency" class="text-muted text-hover-primary">Currency Management</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">Add Currency</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <div id="kt_app_content_container" class="app-container container-xxl">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Currency Details</h3>
+                    <div class="card-toolbar">
+                        <div class="alert alert-info d-flex align-items-center p-4">
+                            <i class="ki-duotone ki-information fs-2hx text-info me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <div class="text-info">
+                                Exchange rates are relative to the default currency. For example, if NGN is default and 1 USD = 1550 NGN, enter 1550.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="form">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Code" class="required form-label">Currency Code</label>
+                                <input asp-for="Input.Code" class="form-control" placeholder="USD" maxlength="3" style="text-transform: uppercase;" />
+                                <div class="form-text">3-letter ISO currency code (e.g., USD, EUR, GBP)</div>
+                                <span asp-validation-for="Input.Code" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.Name" class="required form-label">Currency Name</label>
+                                <input asp-for="Input.Name" class="form-control" placeholder="US Dollar" />
+                                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Symbol" class="required form-label">Symbol</label>
+                                <input asp-for="Input.Symbol" class="form-control" placeholder="$" />
+                                <div class="form-text">Currency symbol (e.g., $, €, £, ₦)</div>
+                                <span asp-validation-for="Input.Symbol" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.ExchangeRate" class="required form-label">Exchange Rate</label>
+                                <input asp-for="Input.ExchangeRate" class="form-control" placeholder="1.00" step="0.000001" />
+                                <div class="form-text">Exchange rate relative to the default currency</div>
+                                <span asp-validation-for="Input.ExchangeRate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label asp-for="Input.DecimalPlaces" class="required form-label">Decimal Places</label>
+                                <input asp-for="Input.DecimalPlaces" class="form-control" placeholder="2" type="number" min="0" max="4" />
+                                <div class="form-text">Number of decimal places for display (0-4)</div>
+                                <span asp-validation-for="Input.DecimalPlaces" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Options</label>
+                                <div class="form-check form-check-custom form-check-solid mb-3">
+                                    <input asp-for="Input.IsActive" class="form-check-input" />
+                                    <label asp-for="Input.IsActive" class="form-check-label">
+                                        Active
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-custom form-check-solid">
+                                    <input asp-for="Input.IsDefault" class="form-check-input" />
+                                    <label asp-for="Input.IsDefault" class="form-check-label">
+                                        Set as Default Currency
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <div class="col-12">
+                                <label asp-for="Input.Notes" class="form-label">Initial Rate Notes</label>
+                                <textarea asp-for="Input.Notes" class="form-control" rows="3" placeholder="Optional notes about the initial exchange rate..."></textarea>
+                                <div class="form-text">Optional notes that will be saved with the initial exchange rate entry</div>
+                                <span asp-validation-for="Input.Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end py-6 px-9">
+                            <a href="/Admin/Settings/Currency" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Add Currency</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Auto-uppercase currency code
+        document.getElementById('Input_Code').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Real-time validation for currency code format
+        document.getElementById('Input_Code').addEventListener('blur', function() {
+            var code = this.value;
+            var pattern = /^[A-Z]{3}$/;
+            var feedback = this.parentElement.querySelector('.invalid-feedback') || 
+                          this.parentElement.querySelector('.text-danger');
+            
+            if (code && !pattern.test(code)) {
+                this.classList.add('is-invalid');
+                if (!feedback) {
+                    feedback = document.createElement('div');
+                    feedback.className = 'text-danger mt-1';
+                    this.parentElement.appendChild(feedback);
+                }
+                feedback.textContent = 'Currency code must be exactly 3 uppercase letters (e.g., USD, EUR)';
+            } else {
+                this.classList.remove('is-invalid');
+                if (feedback) {
+                    feedback.textContent = '';
+                }
+            }
+        });
+    </script>
+}

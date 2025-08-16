@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SteadyGrowth.Web.Areas.Identity.Pages;
 
-    [ValidateRecaptcha(Action = "register")]
     public class RegisterModel : PageModel
     {
         private readonly UserManager<User> _userManager;
@@ -21,14 +20,16 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
         private readonly IReferralService _referralService;
         private readonly IRewardService _rewardService;
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager, IReferralService referralService, IRewardService rewardService, ApplicationDbContext context)
+        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager, IReferralService referralService, IRewardService rewardService, ApplicationDbContext context, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _referralService = referralService;
             _rewardService = rewardService;
             _context = context;
+            _configuration = configuration;
         }
 
     [BindProperty]
@@ -57,50 +58,15 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
     public void OnGet(string? referrerId = null)
     {
         ReferralCode = referrerId;
+        // Set reCAPTCHA site key for the view
+        ViewData["RecaptchaSiteKey"] = _configuration["Recaptcha:SiteKey"];
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-            return Page();
-
-        var user = new User
-        {
-            UserName = Email,
-            Email = Email,
-            FirstName = FirstName,
-            LastName = LastName,
-            PhoneNumber = PhoneNumber
-        };
-
-        // Generate unique referral code
-        string generatedReferralCode;
-        do
-        {
-            generatedReferralCode = GenerateReferralCode();
-        } while (await _userManager.FindByNameAsync(generatedReferralCode) != null); // Check for collision
-
-        user.ReferralCode = generatedReferralCode;
-
-        var result = await _userManager.CreateAsync(user, Password);
-        if (result.Succeeded)
-        {
-            // Assign Basic Package by default
-            var basicPackage = await _context.AcademyPackages.FirstOrDefaultAsync(p => p.Name == "Basic Package");
-            if (basicPackage != null)
-            {
-                user.AcademyPackageId = basicPackage.Id;
-                await _userManager.UpdateAsync(user);
-            }
-
-            if (!string.IsNullOrWhiteSpace(ReferralCode))
-                await _referralService.ProcessReferralAsync(ReferralCode, user.Id);
-            // TODO: Send welcome email and referral rewards
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            return RedirectToPage("/Membership/Dashboard/Index");
-        }
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(string.Empty, error.Description);
+        // This method is kept for backward compatibility
+        // The actual registration is handled via AJAX through AccountApiController
+        // If someone tries to post directly, redirect them to the page
         return Page();
     }
 

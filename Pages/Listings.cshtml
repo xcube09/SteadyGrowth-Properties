@@ -11,48 +11,86 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="ltn__shop-options">
-                    <ul>
+                    <ul class="justify-content-start">
                         <li>
                             <div class="ltn__grid-list-tab-menu ">
                                 <div class="nav">
-                                    <a class="active show" data-bs-toggle="tab" href="#liton_product_grid"><i class="fas fa-th-large"></i></a>
-                                    <a data-bs-toggle="tab" href="#liton_product_list"><i class="fas fa-list"></i></a>
+                                    <a data-bs-toggle="tab" href="#liton_product_grid"><i class="fas fa-th-large"></i></a>
+                                    <a class="active show" data-bs-toggle="tab" href="#liton_product_list"><i class="fas fa-list"></i></a>
                                 </div>
                             </div>
                         </li>
-                        <li>
+                        <li class="d-none">
                             <div class="showing-product-number text-right">
                                 <span>Showing @(Model.Properties != null ? (Model.Properties.PageIndex - 1) * Model.Properties.PageSize + 1 : 0)–@(Model.Properties != null ? Math.Min(Model.Properties.PageIndex * Model.Properties.PageSize, Model.Properties.TotalCount) : 0) of @(Model.Properties != null ? Model.Properties.TotalCount : 0) results</span>
                             </div>
                         </li>
                         <li>
                             <div class="short-by text-center">
-                                <span>Approved Properties Only</span>
+                                <select class="nice-select">
+                                    <option>Default Sorting</option>
+                                    <option>Sort by popularity</option>
+                                    <option>Sort by new arrivals</option>
+                                    <option>Sort by price: low to high</option>
+                                    <option>Sort by price: high to low</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="short-by text-center">
+                                <select class="nice-select">
+                                    <option>Per Page: 9</option>
+                                    <option>Per Page: 12</option>
+                                    <option>Per Page: 20</option>
+                                    <option>Per Page: 30</option>
+                                    <option>Per Page: 50</option>
+                                </select>
                             </div>
                         </li>
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div class="tab-pane fade active show" id="liton_product_grid">
+                    <div class="tab-pane fade" id="liton_product_grid">
                         <div class="ltn__product-tab-content-inner ltn__product-grid-view">
                             <div class="row">
+                                <div class="col-lg-12">
+                                    <!-- Search Widget -->
+                                    <div class="ltn__search-widget mb-30">
+                                        <form action="#">
+                                            <input type="text" name="search" placeholder="Search your keyword...">
+                                            <button type="submit"><i class="fas fa-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
                                 @if (Model.Properties != null && Model.Properties.Any())
                                 {
                                     @foreach (var property in Model.Properties)
                                     {
-                                        <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="col-xl-6 col-sm-6 col-12">
                                             <div class="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
                                                 <div class="product-img">
                                                     @if (property.PropertyImages != null && property.PropertyImages.Any())
                                                     {
-                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/properties/@property.PropertyImages.First().FileName" alt="@property.Title"></a>
+                                                        var fileName = property.PropertyImages.First().FileName;
+                                                        var imageSrc = fileName.StartsWith("/") ? fileName : $"/images/properties/{fileName}";
+                                                        <a href="/Properties/Details/@property.Id"><img src="@imageSrc" alt="@property.Title"></a>
                                                     }
                                                     else
                                                     {
                                                         <a href="/Properties/Details/@property.Id"><img src="~/images/no-image.png" alt="No Image"></a>
                                                     }
+                                                    <div class="real-estate-agent">
+                                                        <div class="agent-img">
+                                                            <a href="#"><img src="/images/default-agent.jpg" alt="Agent"></a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="product-info">
+                                                    <div class="product-badge">
+                                                        <ul>
+                                                            <li class="sale-badg">@property.Status</li>
+                                                        </ul>
+                                                    </div>
                                                     <h2 class="product-title"><a href="/Properties/Details/@property.Id">@property.Title</a></h2>
                                                     <div class="product-img-location">
                                                         <ul>
@@ -61,10 +99,41 @@
                                                             </li>
                                                         </ul>
                                                     </div>
+                                                    <ul class="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
+                                                        <li><span>3 </span>
+                                                            Bed
+                                                        </li>
+                                                        <li><span>2 </span>
+                                                            Bath
+                                                        </li>
+                                                        <li><span>1200 </span>
+                                                            Square Ft
+                                                        </li>
+                                                    </ul>
+                                                    <div class="product-hover-action">
+                                                        <ul>
+                                                            <li>
+                                                                <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                                    <i class="flaticon-expand"></i>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                                                    <i class="flaticon-heart-1"></i>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="/Properties/Details/@property.Id" title="Property Details">
+                                                                    <i class="flaticon-add"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="product-info-bottom">
                                                     <div class="product-price">
                                                         <span>NGN @property.Price.ToString("N2")</span>
                                                     </div>
-                                                    <p>Status: <span class="badge @GetStatusBadgeClass(property.Status)">@property.Status</span></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -79,9 +148,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="liton_product_list">
+                    <div class="tab-pane fade active show" id="liton_product_list">
                         <div class="ltn__product-tab-content-inner ltn__product-list-view">
                             <div class="row">
+                                <div class="col-lg-12">
+                                    <!-- Search Widget -->
+                                    <div class="ltn__search-widget mb-30">
+                                        <form action="#">
+                                            <input type="text" name="search" placeholder="Search your keyword...">
+                                            <button type="submit"><i class="fas fa-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
                                 @if (Model.Properties != null && Model.Properties.Any())
                                 {
                                     @foreach (var property in Model.Properties)
@@ -91,7 +169,9 @@
                                                 <div class="product-img">
                                                     @if (property.PropertyImages != null && property.PropertyImages.Any())
                                                     {
-                                                        <a href="/Properties/Details/@property.Id"><img src="~/images/properties/@property.PropertyImages.First().FileName" alt="@property.Title"></a>
+                                                        var fileName = property.PropertyImages.First().FileName;
+                                                        var imageSrc = fileName.StartsWith("/") ? fileName : $"/images/properties/{fileName}";
+                                                        <a href="/Properties/Details/@property.Id"><img src="@imageSrc" alt="@property.Title"></a>
                                                     }
                                                     else
                                                     {
@@ -117,7 +197,47 @@
                                                             </li>
                                                         </ul>
                                                     </div>
-                                                    <p>@property.Description</p>
+                                                    <ul class="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
+                                                        <li><span>3 </span>
+                                                            Bed
+                                                        </li>
+                                                        <li><span>2 </span>
+                                                            Bath
+                                                        </li>
+                                                        <li><span>1200 </span>
+                                                            Square Ft
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="product-info-bottom">
+                                                    <div class="real-estate-agent">
+                                                        <div class="agent-img">
+                                                            <a href="#"><img src="/images/default-agent.jpg" alt="Agent"></a>
+                                                        </div>
+                                                        <div class="agent-brief">
+                                                            <h6><a href="#">SteadyGrowth Agent</a></h6>
+                                                            <small>Estate Agent</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-hover-action">
+                                                        <ul>
+                                                            <li>
+                                                                <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                                    <i class="flaticon-expand"></i>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                                                    <i class="flaticon-heart-1"></i>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="/Properties/Details/@property.Id" title="Property Details">
+                                                                    <i class="flaticon-add"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,6 +278,7 @@
             <div class="col-lg-4">
                 <aside class="sidebar ltn__shop-sidebar ltn__right-sidebar">
                     <h3 class="mb-10">Advance Information</h3>
+                    <label class="mb-30"><small>About @(Model.Properties?.TotalCount ?? 0) results</small></label>
                     <!-- Price Filter Widget -->
                     <div class="widget ltn__price-filter-widget">
                         <h4 class="ltn__widget-title ltn__widget-title-border---">Filter by price</h4>

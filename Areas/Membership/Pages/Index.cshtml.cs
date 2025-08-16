@@ -7,7 +7,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages
     {
         public IActionResult OnGet()
         {
-            return RedirectToPage("/Dashboard/Index");
+            return RedirectToPage("./Dashboard/Index");
         }
     }
 }

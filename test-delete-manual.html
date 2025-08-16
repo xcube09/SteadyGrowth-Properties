@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Manual Delete Test</h1>
+    
+    <h2>Step 1: Get Antiforgery Token</h2>
+    <p>Navigate to https://localhost:7147/Admin/Properties/Index</p>
+    <p>Open browser console and run: <code>$('input[name="__RequestVerificationToken"]').val()</code></p>
+    <input type="text" id="token" placeholder="Paste token here" style="width: 500px;">
+    
+    <h2>Step 2: Enter Property ID</h2>
+    <input type="number" id="propertyId" placeholder="Property ID" value="1">
+    
+    <h2>Step 3: Test Delete</h2>
+    <button onclick="testDelete()">Test Delete</button>
+    
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+    
+    <script>
+        function testDelete() {
+            const token = document.getElementById('token').value;
+            const propertyId = document.getElementById('propertyId').value;
+            
+            if (!token) {
+                alert('Please enter the antiforgery token');
+                return;
+            }
+            
+            console.log('Testing delete with:', { propertyId, token });
+            
+            $.ajax({
+                url: 'https://localhost:7147/Admin/Properties/Index?handler=Delete',
+                type: 'POST',
+                data: { id: propertyId },
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function(response) {
+                    console.log('Success:', response);
+                    document.getElementById('response').textContent = JSON.stringify(response, null, 2);
+                    
+                    if (response.success) {
+                        Swal.fire('Success!', response.message, 'success');
+                    } else {
+                        Swal.fire('Error!', response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr, status, error);
+                    document.getElementById('response').textContent = 
+                        'Status: ' + xhr.status + '\n' +
+                        'StatusText: ' + xhr.statusText + '\n' +
+                        'Response: ' + xhr.responseText + '\n' +
+                        'Error: ' + error;
+                    
+                    Swal.fire('Error!', 'Request failed: ' + error, 'error');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

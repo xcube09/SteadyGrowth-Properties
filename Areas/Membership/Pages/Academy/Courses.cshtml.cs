@@ -5,7 +5,7 @@ using MediatR;
 using SteadyGrowth.Web.Application.Queries.Academy;
 using SteadyGrowth.Web.Models.DTOs;
 using SteadyGrowth.Web.Models.Entities;
-using Microsoft.AspNetCore.Identity;
+using SteadyGrowth.Web.Services.Interfaces;
 using System.Threading.Tasks;
 using SteadyGrowth.Web.Application.Commands.Academy;
 
@@ -15,12 +15,12 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
     public class CoursesModel : PageModel
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CoursesModel(IMediator mediator, UserManager<User> userManager)
+        public CoursesModel(IMediator mediator, ICurrentUserService currentUserService)
         {
             _mediator = mediator;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
         }
 
         public PaginatedResultDto<Course>? Courses { get; set; }
@@ -34,7 +34,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
             PageIndex = pageIndex;
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserWithDetailsAsync(includePackage: true);
             bool isPremiumMember = user?.AcademyPackageId != null;
 
             var query = new GetPaginatedCoursesQuery
@@ -56,7 +56,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
         public async Task<IActionResult> OnPostStartCourseAsync(int courseId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");

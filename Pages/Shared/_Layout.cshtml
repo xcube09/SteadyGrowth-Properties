@@ -44,7 +44,7 @@
                         <div class="col-md-7">
                             <div class="ltn__top-bar-menu">
                                 <ul>
-                                    <li><a href="mailto:Info@steadygrowth.com"><i class="icon-mail"></i> Info@steadygrowth.com</a></li>
+                                    <li><span data-email-protected="info[at]steadygrowthproperties[dot]com" data-email-link="true"><i class="icon-mail"></i> Loading...</span></li>
                                     <li><a href="#"><i class="icon-placeholder"></i> Block B, Cluster B, Admiralty Estate Asokoro, Abuja</a></li>
                                 </ul>
                             </div>
@@ -191,13 +191,13 @@
                             <a href="/">Home</a>
                         </li>
                         <li>
-                            <a asp-page="/AboutUs">About</a>
+                            <a asp-page="/About">About</a>
                         </li>
                         <li>
-                            <a asp-page="/OurServices">Our Services</a>
+                            <a asp-page="/Services">Our Services</a>
                         </li>
                         <li>
-                            <a asp-page="/ContactUs">Contact</a>
+                            <a asp-page="/Contact">Contact</a>
                         </li>
                     </ul>
                 </div>
@@ -257,7 +257,7 @@
                                 <p>We can help you realize your dream of a new home</p>
                             </div>
                             <div class="btn-wrapper">
-                                <a class="btn btn-effect-3 btn-white" href="/ContactUs">Explore Properties <i class="icon-next"></i></a>
+                                <a class="btn btn-effect-3 btn-white" asp-page="/Listings">Explore Properties <i class="icon-next"></i></a>
                             </div>
                         </div>
                     </div>
@@ -296,7 +296,7 @@
                                                 <i class="icon-call"></i>
                                             </div>
                                             <div class="footer-address-info">
-                                                <p><a href="tel:+0123-456789">+0123-456789</a></p>
+                                                <p><a href="tel:+2348026744139">+234-802-674-4139</a></p>
                                             </div>
                                         </li>
                                         <li>
@@ -304,7 +304,7 @@
                                                 <i class="icon-mail"></i>
                                             </div>
                                             <div class="footer-address-info">
-                                                <p><a href="mailto:Info@steadygrowth.com">Info@steadygrowth.com</a></p>
+                                                <p><a href="#" onclick="window.location.href='mailto:' + 'info' + '@@' + 'steadygrowthproperties' + '.' + 'com'; return false;" style="unicode-bidi: bidi-override; direction: rtl;">moc.seitreporphtworgydeats@ofni</a></p>
                                             </div>
                                         </li>
                                     </ul>
@@ -329,7 +329,7 @@
                                         <li><a href="shop.html">All Products</a></li>
                                         <li><a href="locations.html">Locations Map</a></li>
                                         <li><a href="faq.html">FAQ</a></li> *@
-                                        <li><a href="contact.html">Contact </a></li>
+                                        <li><a asp-page="/Contact">Contact </a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -356,7 +356,7 @@
                                         <li><a href="#">Login</a></li>
                                         <li><a href="#">My account</a></li>
                                         <li><a href="#">FAQ</a></li>
-                                        <li><a asp-page="/ContactUs">Contact us</a></li>
+                                        <li><a asp-page="/Contact">Contact us</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -419,6 +419,7 @@
     <script src="/themes/quarter/js/plugins.js"></script>
     <!-- Main JS -->
     <script src="/themes/quarter/js/main.js"></script>
+    <script src="/js/email-protection.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

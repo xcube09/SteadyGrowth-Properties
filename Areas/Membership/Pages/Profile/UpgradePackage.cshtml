@@ -1,34 +1,172 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Profile.UpgradePackageModel
 @{
-    ViewData["Title"] = "Upgrade Package";
+    ViewData["Title"] = "Request Package Upgrade";
 }
 
 <div class="card mb-5 mb-xl-10">
     <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
         <div class="card-title m-0">
-            <h3 class="fw-bold m-0">Upgrade Your Academy Package</h3>
+            <h3 class="fw-bold m-0">Request Academy Package Upgrade</h3>
         </div>
     </div>
     <div id="kt_account_profile_details" class="collapse show">
-        <form method="post" class="form">
-            <div class="card-body border-top p-9">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <p>Your current package: <strong>@Model.CurrentPackageName</strong></p>
+        <div class="card-body border-top p-9">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4"><span class="path1"></span><span class="path2"></span></i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-success">Success!</h4>
+                        <span>@TempData["SuccessMessage"]</span>
+                    </div>
+                </div>
+            }
+            
+            <p>Your current package: <strong>@Model.CurrentPackageName</strong></p>
+            
+            @if (Model.PendingRequest != null)
+            {
+                <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-information fs-2hx text-warning me-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-warning">Upgrade Request Pending</h4>
+                        <span>You have a pending upgrade request for <strong>@Model.PendingRequest.RequestedPackage.Name</strong>. Please wait for admin approval.</span>
+                        <small class="text-muted mt-1">Submitted on: @Model.PendingRequest.RequestedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                    </div>
+                </div>
+            }
 
+            @if (Model.IsPremiumUser)
+            {
+                <!-- Premium User Message -->
+                <div class="alert alert-success d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-crown fs-2hx text-success me-4"><span class="path1"></span><span class="path2"></span></i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-success">🎉 You're on the Premium Package!</h4>
+                        <span>You have access to the highest tier with all premium features and courses.</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body text-center py-10">
+                        <h3 class="fw-bold mb-4">Premium Benefits</h3>
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <i class="ki-duotone ki-book fs-3x text-primary mb-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                                <h5>Full Academy Access</h5>
+                                <p class="text-muted">Access to all courses and advanced materials</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <i class="ki-duotone ki-medal-star fs-3x text-success mb-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <h5>Premium Support</h5>
+                                <p class="text-muted">Priority customer support and guidance</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <i class="ki-duotone ki-rocket fs-3x text-warning mb-3">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <h5>Advanced Features</h5>
+                                <p class="text-muted">Exclusive tools and premium functionality</p>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <a href="/Membership/Academy/Courses" class="btn btn-primary me-3">
+                                <i class="ki-duotone ki-book fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                                Explore Academy
+                            </a>
+                            <a href="/Membership/Dashboard" class="btn btn-light-primary">
+                                <i class="ki-duotone ki-element-11 fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                                Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.PendingRequest == null)
+            {
                 <h4 class="mt-5">Available Packages:</h4>
                 @if (Model.AvailablePackages != null && Model.AvailablePackages.Any())
                 {
                     <div class="row">
                         @foreach (var package in Model.AvailablePackages)
                         {
-                            <div class="col-md-4 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">@package.Name</h5>
                                         <p class="card-text">@package.Description</p>
-                                        <p class="card-text"><strong>Price:</strong> NGN @package.Price.ToString("N2")</p>
-                                        <button type="submit" asp-page-handler="Upgrade" asp-route-packageId="@package.Id" class="btn btn-primary">Upgrade to @package.Name</button>
+                                        <p class="card-text"><strong>Price:</strong> @package.Price.ToString("C")</p>
+                                        
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upgradeModal_@package.Id">
+                                            Request Upgrade to @package.Name
+                                        </button>
+                                        
+                                        <!-- Modal for this package -->
+                                        <div class="modal fade" id="upgradeModal_@package.Id" tabindex="-1" aria-labelledby="upgradeModalLabel_@package.Id" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="SubmitRequest" asp-route-packageId="@package.Id">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="upgradeModalLabel_@package.Id">Request Upgrade to @package.Name</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label asp-for="PaymentMethod" class="form-label">Payment Method</label>
+                                                                <select asp-for="PaymentMethod" class="form-select" required>
+                                                                    <option value="">Select payment method</option>
+                                                                    <option value="Bank Transfer">Bank Transfer</option>
+                                                                    <option value="Credit Card">Credit Card</option>
+                                                                    <option value="Debit Card">Debit Card</option>
+                                                                    <option value="Mobile Money">Mobile Money</option>
+                                                                    <option value="Cash Deposit">Cash Deposit</option>
+                                                                </select>
+                                                                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label asp-for="PaymentDetails" class="form-label">Payment Details</label>
+                                                                <textarea asp-for="PaymentDetails" class="form-control" rows="4" 
+                                                                    placeholder="Please provide payment details such as transaction ID, bank account info, or any relevant payment information..."></textarea>
+                                                                <span asp-validation-for="PaymentDetails" class="text-danger"></span>
+                                                                <small class="text-muted">This information will help admin verify your payment.</small>
+                                                            </div>
+                                                            <div class="alert alert-info">
+                                                                <strong>Note:</strong> Your upgrade request will be reviewed by an administrator. 
+                                                                Please ensure you have made the payment of <strong>@package.Price.ToString("C")</strong> 
+                                                                before submitting this request.
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary">Submit Upgrade Request</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +177,18 @@
                 {
                     <p>No other packages available for upgrade.</p>
                 }
-            </div>
-        </form>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">You cannot request another upgrade while you have a pending request.</p>
+                    <a href="/Membership/Profile/UpgradeStatus" class="btn btn-light-primary">View My Upgrade Requests</a>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

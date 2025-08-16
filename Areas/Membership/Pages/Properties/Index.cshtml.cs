@@ -11,16 +11,18 @@ using SteadyGrowth.Web.Application.Queries.Properties;
 namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties;
 
 /// <summary>
-/// Admin properties listing page model with filtering and pagination.
+/// Membership properties listing page model with filtering and pagination.
 /// </summary>
 [Authorize]
 public class IndexModel : PageModel
 {
     private readonly IMediator _mediator;
+    private readonly ICurrencyService _currencyService;
 
-    public IndexModel(IMediator mediator)
+    public IndexModel(IMediator mediator, ICurrencyService currencyService)
     {
         _mediator = mediator;
+        _currencyService = currencyService;
     }
 
     public PaginatedList<Property>? Properties { get; set; }
@@ -51,5 +53,27 @@ public class IndexModel : PageModel
         };
 
         Properties = await _mediator.Send(query);
+    }
+
+    public async Task<string> GetFormattedPriceWithUSDAsync(Property property)
+    {
+        var currencyCode = property.CurrencyCode ?? "USD";
+        var currencySymbol = await _currencyService.GetCurrencySymbolAsync(currencyCode);
+        var originalPrice = $"{currencySymbol}{property.Price:N2}";
+
+        if (currencyCode == "USD")
+        {
+            return originalPrice;
+        }
+
+        try
+        {
+            var usdPrice = await _currencyService.ConvertAmountAsync(property.Price, currencyCode, "USD");
+            return $"{originalPrice} (${usdPrice:N2} USD)";
+        }
+        catch
+        {
+            return originalPrice;
+        }
     }
 }

@@ -106,6 +106,15 @@ builder.Services.AddResponseCompression(options =>
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
 
+// Session configuration
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 // File upload size limits
 builder.Services.Configure<FormOptions>(options =>
 {
@@ -115,6 +124,7 @@ builder.Services.Configure<FormOptions>(options =>
 builder.Services.AddRecaptchaService();
 
 // Register services (Scoped)
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IReferralService, ReferralService>();
@@ -122,6 +132,9 @@ builder.Services.AddScoped<IRewardService, RewardService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVettingService, VettingService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+builder.Services.AddScoped<IUpgradeRequestService, UpgradeRequestService>();
+builder.Services.AddScoped<IPropertyCommissionService, PropertyCommissionService>();
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
 builder.Services.AddHttpClient();
@@ -194,6 +207,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseResponseCompression();
 app.UseRouting();
 //app.UseCors("ApiCorsPolicy");
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();

@@ -1,0 +1,169 @@
+@page
+@model SteadyGrowth.Web.Areas.Membership.Pages.Profile.UpgradeStatusModel
+@{
+    ViewData["Title"] = "My Upgrade Requests";
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-6">
+        <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+                <h3 class="fw-bold m-0">My Upgrade Requests</h3>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex justify-content-end">
+                <a href="/Membership/Profile/UpgradePackage" class="btn btn-primary">
+                    <i class="ki-duotone ki-plus fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Request New Upgrade
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body py-4">
+        @if (Model.UpgradeRequests.Count == 0)
+        {
+            <!-- Empty State -->
+            <div class="text-center py-10">
+                <div class="text-center px-4">
+                    <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/5.png">
+                </div>
+                <div class="text-center px-4">
+                    <h3 class="fs-2hx fw-bold mb-4">No Upgrade Requests Yet</h3>
+                    <div class="fw-semibold fs-6 text-gray-500 mb-7">
+                        You haven't submitted any upgrade requests. Start by requesting an upgrade to unlock premium features.
+                    </div>
+                    <div class="mb-3">
+                        <a href="/Membership/Profile/UpgradePackage" class="btn btn-primary">
+                            <i class="ki-duotone ki-rocket fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Request Package Upgrade
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Upgrade Requests Table -->
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-200px">Requested Package</th>
+                            <th class="min-w-100px">Payment Method</th>
+                            <th class="min-w-100px">Status</th>
+                            <th class="min-w-150px">Request Date</th>
+                            <th class="min-w-150px">Processed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                        @foreach (var request in Model.UpgradeRequests)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-35px me-3">
+                                            <div class="symbol-label bg-light-primary">
+                                                <i class="ki-duotone ki-rocket fs-2 text-primary">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-bold">@request.RequestedPackage.Name</span>
+                                            <span class="text-muted fs-7">$@request.RequestedPackage.Price.ToString("N2")</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@request.PaymentMethod</span>
+                                        @if (!string.IsNullOrEmpty(request.PaymentDetails))
+                                        {
+                                            <span class="text-muted fs-7" title="@request.PaymentDetails">
+                                                @(request.PaymentDetails.Length > 30 ? request.PaymentDetails.Substring(0, 30) + "..." : request.PaymentDetails)
+                                            </span>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = request.Status switch
+                                        {
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Pending => "badge-light-warning",
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Approved => "badge-light-success",
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Rejected => "badge-light-danger",
+                                            _ => "badge-light-secondary"
+                                        };
+                                        var statusIcon = request.Status switch
+                                        {
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Pending => "⏳",
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Approved => "✅",
+                                            SteadyGrowth.Web.Models.Entities.UpgradeRequestStatus.Rejected => "❌",
+                                            _ => "ℹ️"
+                                        };
+                                    }
+                                    <span class="badge @statusClass fw-bold">@statusIcon @request.Status</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@request.RequestedAt.ToString("MMM dd, yyyy")</span>
+                                        <span class="text-muted fs-7">@request.RequestedAt.ToString("HH:mm")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (request.ProcessedAt.HasValue)
+                                    {
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-bold">@request.ProcessedAt.Value.ToString("MMM dd, yyyy")</span>
+                                            <span class="text-muted fs-7">@request.ProcessedAt.Value.ToString("HH:mm")</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Status Legend -->
+<div class="card mt-5">
+    <div class="card-body p-5">
+        <h5 class="card-title">Status Legend</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge badge-light-warning fw-bold me-3">⏳ Pending</span>
+                    <span class="text-muted fs-7">Request submitted, awaiting admin review</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge badge-light-success fw-bold me-3">✅ Approved</span>
+                    <span class="text-muted fs-7">Request approved, package upgraded</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge badge-light-danger fw-bold me-3">❌ Rejected</span>
+                    <span class="text-muted fs-7">Request rejected by admin</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

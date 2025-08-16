@@ -1,0 +1,280 @@
+@page "{id:int}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Settings.Currency.EditModel
+@{
+    ViewData["Title"] = "Edit Currency";
+}
+
+<div class="d-flex flex-column flex-column-fluid">
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edit Currency</h1>
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin" class="text-muted text-hover-primary">Admin</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin/Settings" class="text-muted text-hover-primary">Settings</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/Admin/Settings/Currency" class="text-muted text-hover-primary">Currency Management</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <li class="breadcrumb-item text-muted">Edit Currency</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <div id="kt_app_content_container" class="app-container container-xxl">
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-dismissible bg-light-success d-flex flex-column flex-sm-row p-5 mb-10">
+                    <i class="ki-duotone ki-check fs-2hx text-success me-4 mb-5 mb-sm-0">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="d-flex flex-column pe-0 pe-sm-10">
+                        <span>@Model.StatusMessage</span>
+                    </div>
+                    <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                        <i class="ki-duotone ki-cross fs-1 text-success">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </button>
+                </div>
+            }
+
+            <div class="row g-5 g-xl-10">
+                <!-- Currency Info Card -->
+                <div class="col-xl-4">
+                    <div class="card card-flush h-xl-100">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3>Currency Information</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-7">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="fs-2 fw-bold text-gray-800 me-2">@Model.Currency?.Symbol</span>
+                                    <span class="badge badge-light-primary">@Model.Currency?.Code</span>
+                                </div>
+                                <div class="text-muted">@Model.Currency?.Name</div>
+                            </div>
+                            
+                            <div class="separator separator-dashed my-5"></div>
+                            
+                            <div class="mb-7">
+                                <div class="fw-bold text-gray-800 mb-2">Current Exchange Rate</div>
+                                <div class="fs-2 fw-bold text-primary">@Model.Currency?.ExchangeRate.ToString("N6")</div>
+                                <div class="text-muted">Per 1 unit of default currency</div>
+                            </div>
+
+                            <div class="mb-7">
+                                <div class="fw-bold text-gray-800 mb-2">Status</div>
+                                <div>
+                                    @if (Model.Currency?.IsDefault == true)
+                                    {
+                                        <span class="badge badge-primary me-2">Default Currency</span>
+                                    }
+                                    @if (Model.Currency?.IsActive == true)
+                                    {
+                                        <span class="badge badge-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Inactive</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <div class="fw-bold text-gray-800 mb-2">Decimal Places</div>
+                                <div class="text-gray-600">@Model.Currency?.DecimalPlaces places</div>
+                            </div>
+
+                            <!-- Quick Rate Update -->
+                            <div class="separator separator-dashed my-5"></div>
+                            <div>
+                                <div class="fw-bold text-gray-800 mb-3">Quick Rate Update</div>
+                                <form method="post" asp-page-handler="QuickRateUpdate" asp-route-id="@Model.Currency?.Id" class="d-flex flex-column">
+                                    <input type="number" name="newRate" step="0.000001" placeholder="New rate" class="form-control form-control-sm mb-2" value="@Model.Currency?.ExchangeRate" />
+                                    <input type="text" name="notes" placeholder="Optional notes" class="form-control form-control-sm mb-3" />
+                                    <button type="submit" class="btn btn-sm btn-light-primary" onclick="return confirm('Update exchange rate immediately?');">Update Rate</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <div class="col-xl-8">
+                    <div class="card card-flush h-xl-100">
+                        <div class="card-header">
+                            <h3 class="card-title">Edit Currency: @Model.Currency?.Code</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" class="form">
+                                <input asp-for="Input.Id" type="hidden" />
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                                
+                                <div class="row mb-7">
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.Code" class="required form-label">Currency Code</label>
+                                        <input asp-for="Input.Code" class="form-control" readonly style="background-color: #f5f5f5;" />
+                                        <div class="form-text">Currency code cannot be changed after creation</div>
+                                        <span asp-validation-for="Input.Code" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.Name" class="required form-label">Currency Name</label>
+                                        <input asp-for="Input.Name" class="form-control" placeholder="US Dollar" />
+                                        <span asp-validation-for="Input.Name" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7">
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.Symbol" class="required form-label">Symbol</label>
+                                        <input asp-for="Input.Symbol" class="form-control" placeholder="$" />
+                                        <div class="form-text">Currency symbol (e.g., $, €, £, ₦)</div>
+                                        <span asp-validation-for="Input.Symbol" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.ExchangeRate" class="required form-label">Exchange Rate</label>
+                                        <input asp-for="Input.ExchangeRate" class="form-control" placeholder="1.00" step="0.000001" id="exchangeRateInput" />
+                                        <div class="form-text">
+                                            <span id="rateChangeIndicator">
+                                                Current rate: @Model.Currency?.ExchangeRate.ToString("N6")
+                                            </span>
+                                        </div>
+                                        <span asp-validation-for="Input.ExchangeRate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7" id="rateChangeSection" style="display: none;">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning d-flex align-items-center p-4">
+                                            <i class="ki-duotone ki-warning fs-2hx text-warning me-3">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <div class="text-warning">
+                                                <strong>Exchange Rate Change Detected</strong><br />
+                                                This change will be logged in the exchange rate history. Please provide notes explaining the reason for this change.
+                                            </div>
+                                        </div>
+                                        <label asp-for="Input.RateChangeNotes" class="form-label">Notes for Rate Change</label>
+                                        <textarea asp-for="Input.RateChangeNotes" class="form-control" rows="3" placeholder="Reason for exchange rate change (e.g., market fluctuation, policy update, correction)..."></textarea>
+                                        <div class="form-text">
+                                            Provide context for the rate change or check "Force Update" below to proceed without detailed notes.
+                                        </div>
+                                        <span asp-validation-for="Input.RateChangeNotes" class="text-danger"></span>
+                                        
+                                        <div class="form-check form-check-custom form-check-solid mt-3">
+                                            <input asp-for="Input.ForceRateUpdate" class="form-check-input" />
+                                            <label asp-for="Input.ForceRateUpdate" class="form-check-label">
+                                                Force Rate Update (proceed without detailed notes)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7">
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.DecimalPlaces" class="required form-label">Decimal Places</label>
+                                        <input asp-for="Input.DecimalPlaces" class="form-control" placeholder="2" type="number" min="0" max="4" />
+                                        <div class="form-text">Number of decimal places for display (0-4)</div>
+                                        <span asp-validation-for="Input.DecimalPlaces" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Currency Options</label>
+                                        <div class="form-check form-check-custom form-check-solid mb-3">
+                                            <input asp-for="Input.IsActive" class="form-check-input" disabled="@(Model.Currency?.IsDefault == true)" />
+                                            <label asp-for="Input.IsActive" class="form-check-label">
+                                                Active
+                                            </label>
+                                            @if (Model.Currency?.IsDefault == true)
+                                            {
+                                                <div class="form-text text-warning">Default currency cannot be deactivated</div>
+                                            }
+                                        </div>
+                                        <div class="form-check form-check-custom form-check-solid">
+                                            <input asp-for="Input.IsDefault" class="form-check-input" id="defaultCurrencyCheck" />
+                                            <label asp-for="Input.IsDefault" class="form-check-label">
+                                                Set as Default Currency
+                                            </label>
+                                            @if (Model.Currency?.IsDefault == true)
+                                            {
+                                                <div class="form-text text-info">This is currently the default currency</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer d-flex justify-content-end py-6 px-9">
+                                    <a href="/Admin/Settings/Currency" class="btn btn-light btn-active-light-primary me-2">Cancel</a>
+                                    <a href="/Admin/Settings/Currency/History/@Model.Currency?.Id" class="btn btn-light-info me-2">View History</a>
+                                    <button type="submit" class="btn btn-primary" id="updateButton">Update Currency</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Show/hide rate change section when exchange rate is modified
+        var originalRate = @Model.Currency?.ExchangeRate.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
+        var rateInput = document.getElementById('exchangeRateInput');
+        var rateSection = document.getElementById('rateChangeSection');
+        var rateIndicator = document.getElementById('rateChangeIndicator');
+        var updateButton = document.getElementById('updateButton');
+        var defaultCheck = document.getElementById('defaultCurrencyCheck');
+        
+        function checkRateChange() {
+            var currentRate = parseFloat(rateInput.value);
+            var hasChanged = Math.abs(currentRate - originalRate) > 0.000001;
+            
+            if (hasChanged) {
+                rateSection.style.display = 'block';
+                rateIndicator.innerHTML = 'Current rate: ' + originalRate.toFixed(6) + ' → <span class="text-warning fw-bold">New rate: ' + currentRate.toFixed(6) + '</span>';
+                updateButton.textContent = 'Update Currency & Rate';
+            } else {
+                rateSection.style.display = 'none';
+                rateIndicator.innerHTML = 'Current rate: ' + originalRate.toFixed(6);
+                updateButton.textContent = 'Update Currency';
+            }
+        }
+        
+        rateInput.addEventListener('input', checkRateChange);
+        rateInput.addEventListener('blur', checkRateChange);
+        
+        // Confirmation for setting as default currency
+        defaultCheck.addEventListener('change', function() {
+            if (this.checked) {
+                if (!confirm('Are you sure you want to set this as the default currency? This will affect how all monetary amounts are displayed throughout the system.')) {
+                    this.checked = false;
+                }
+            }
+        });
+        
+        // Initial check on page load
+        checkRateChange();
+    </script>
+}

@@ -5,6 +5,7 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<!-- KYC Alert -->
 @if (Model.KYCStatus != KYCStatus.Approved)
 {
     <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
@@ -27,47 +28,439 @@
     </div>
 }
 
-<section>
-    <h3>Welcome!</h3>
-    <p>Your statistics and recent activity are shown below.</p>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Properties</h5>
-                    <p>Total: @Model.UserStats?.TotalProperties</p>
-                    <p>Approved: @Model.UserStats?.ApprovedProperties</p>
-                    <p>Pending: @Model.UserStats?.PendingProperties</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Referrals</h5>
-                    <p>Total: @Model.ReferralStats?.TotalReferrals</p>
-                    <p>Active: @Model.ReferralStats?.ActiveReferrals</p>
-                    <p>Commission Earned: @Model.ReferralStats?.TotalCommissionEarned.ToString("C")</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Rewards</h5>
-                    <p>Points: @Model.RewardPoints</p>
+<!-- Hero Welcome Section -->
+<div class="row mb-8">
+    <div class="col-xl-12">
+        <div class="card card-flush h-md-100" style="background: linear-gradient(112.14deg, #00D2FF 0%, #3A7BD5 100%);">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-60px me-4">
+                                <div class="symbol-label" style="background-image:url('@(Model.CurrentUser != null && !string.IsNullOrEmpty(Model.CurrentUser.ProfilePictureUrl) ? "/images/profilepictures/" + Model.CurrentUser.ProfilePictureUrl : "/themes/metronic/v8_2/assets/media/avatars/blank.png")')"></div>
+                            </div>
+                            <div>
+                                <h1 class="fw-bolder text-white mb-2">Welcome back, @(Model.CurrentUser?.FirstName ?? "Member")!</h1>
+                                <p class="text-white opacity-75 mb-0 fs-6">You've been a valued member for @Model.DaysSinceJoined days</p>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <div class="border border-white border-dashed rounded p-3 me-3 mb-3">
+                                <span class="text-white fw-semibold fs-7">Membership Level</span>
+                                <h6 class="text-white fw-bold mb-0">@(Model.CurrentUser?.AcademyPackage?.Name ?? "Basic Package")</h6>
+                            </div>
+                            <div class="border border-white border-dashed rounded p-3 me-3 mb-3">
+                                <span class="text-white fw-semibold fs-7">Profile Completion</span>
+                                <h6 class="text-white fw-bold mb-0">@Model.ProfileCompletionPercentage%</h6>
+                            </div>
+                            <div class="border border-white border-dashed rounded p-3 mb-3">
+                                <span class="text-white fw-semibold fs-7">KYC Status</span>
+                                <h6 class="text-white fw-bold mb-0">@Model.KYCStatus.ToString()</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        @if (Model.IsPremiumUser)
+                        {
+                            <div class="btn btn-bg-white btn-active-color-success btn-color-success">
+                                <i class="ki-duotone ki-crown fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>Premium Member
+                            </div>
+                        }
+                        else if (Model.PendingUpgradeRequest != null)
+                        {
+                            <a href="/Membership/Profile/UpgradeStatus" class="btn btn-bg-white btn-active-color-warning btn-color-warning">
+                                <i class="ki-duotone ki-information fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>Upgrade Pending
+                            </a>
+                        }
+                        else if (Model.HasUpgradeOpportunity)
+                        {
+                            <a href="/Membership/Profile/UpgradePackage" class="btn btn-bg-white btn-active-color-primary btn-color-primary">
+                                <i class="ki-duotone ki-rocket fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>Upgrade Package
+                            </a>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section>
-    <h4>Recent Properties</h4>
-    <ul>
-        @foreach (var property in Model.RecentProperties)
-        {
-            <li>@property.Title (@property.Status)</li>
+<!-- Statistics Grid -->
+<div class="row g-5 g-xl-8 mb-8">
+    <!-- Properties Overview -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-2x fw-bold text-white">@(Model.UserStats?.TotalProperties ?? 0)</span>
+                        <i class="ki-duotone ki-home text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Total Properties</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="d-flex justify-content-between text-white opacity-75 fs-7 mb-2">
+                    <span>Approved: @(Model.UserStats?.ApprovedProperties ?? 0)</span>
+                    <span>Pending: @(Model.UserStats?.PendingProperties ?? 0)</span>
+                </div>
+                <div class="progress h-5px bg-white bg-opacity-25">
+                    @{
+                        var approvalRate = Model.UserStats?.TotalProperties > 0 ? (Model.UserStats.ApprovedProperties * 100) / Model.UserStats.TotalProperties : 0;
+                    }
+                    <div class="progress-bar bg-white" style="width: @(approvalRate)%"></div>
+                </div>
+                <div class="text-white opacity-75 fs-8 mt-2">@(approvalRate)% approval rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Performance -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-2x fw-bold text-white">@(Model.ReferralStats?.TotalReferrals ?? 0)</span>
+                        <i class="ki-duotone ki-people text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                            <span class="path5"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Total Referrals</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="d-flex justify-content-between text-white opacity-75 fs-7 mb-2">
+                    <span>Active: @(Model.ReferralStats?.ActiveReferrals ?? 0)</span>
+                    @if (Model.CommissionGrowthPercentage > 0)
+                    {
+                        <span class="text-success">+@(Model.CommissionGrowthPercentage)%</span>
+                    }
+                </div>
+                <div class="text-white opacity-75 fs-8">Commission: @(Model.ReferralStats?.TotalCommissionEarned.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US")) ?? "$0.00")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Summary -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-2x fw-bold text-white">@Model.WalletBalance.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</span>
+                        <i class="ki-duotone ki-wallet text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Wallet Balance</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="d-flex justify-content-between text-white opacity-75 fs-7 mb-2">
+                    <span>Earned: @(Model.ReferralStats?.TotalCommissionEarned.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US")) ?? "$0.00")</span>
+                    <span>Pending: @(Model.ReferralStats?.PendingCommission.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US")) ?? "$0.00")</span>
+                </div>
+                @if (Model.ReferralStats?.PendingCommission > 0)
+                {
+                    <div class="text-white opacity-75 fs-8">💰 Commission payment pending</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Points -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-2x fw-bold text-white">@Model.RewardPoints</span>
+                        <i class="ki-duotone ki-award text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Reward Points</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="text-white opacity-75 fs-7">Available for redemption</div>
+                @if (Model.RewardPoints >= 1000)
+                {
+                    <div class="text-white opacity-75 fs-8 mt-1">🎁 Eligible for rewards!</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Health -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-2x fw-bold text-white">@Model.ProfileCompletionPercentage%</span>
+                        <i class="ki-duotone ki-shield-tick text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Profile Complete</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="progress h-5px bg-white bg-opacity-25 mb-2">
+                    <div class="progress-bar bg-white" style="width: @Model.ProfileCompletionPercentage%"></div>
+                </div>
+                <div class="text-white opacity-75 fs-8">
+                    @if (Model.ProfileCompletionPercentage == 100)
+                    {
+                        <text>✅ Profile is complete!</text>
+                    }
+                    else
+                    {
+                        <text>Complete your profile to unlock more features</text>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academy Progress -->
+    <div class="col-6 col-lg-4 mb-5">
+        <div class="card card-flush statistics-card h-100" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <div class="card-header pt-7 pb-0">
+                <div class="card-title d-flex flex-column w-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-6 fw-bold text-white">@(Model.CurrentUser?.AcademyPackage?.Name ?? "Basic Package")</span>
+                        <i class="ki-duotone ki-book text-white fs-2x opacity-50">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i>
+                    </div>
+                    <span class="text-white opacity-75 fw-semibold fs-6">Academy Package</span>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                @if (Model.IsPremiumUser)
+                {
+                    <div class="text-white opacity-75 fs-7">🎉 Premium member</div>
+                }
+                else if (Model.PendingUpgradeRequest != null)
+                {
+                    <div class="text-white opacity-75 fs-7 mb-2">⏳ Upgrade request pending</div>
+                    <a href="/Membership/Profile/UpgradeStatus" class="btn btn-sm btn-white btn-active-warning">View Status</a>
+                }
+                else if (Model.HasUpgradeOpportunity)
+                {
+                    <div class="text-white opacity-75 fs-7 mb-2">🚀 Premium upgrade available</div>
+                    <a href="/Membership/Profile/UpgradePackage" class="btn btn-sm btn-white btn-active-primary">Upgrade Now</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-8">
+    <div class="col-xl-12">
+        <div class="card card-flush">
+            <div class="card-header pt-7">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold text-dark">Quick Actions</span>
+                    <span class="text-muted mt-1 fw-semibold fs-7">Frequently used features</span>
+                </h3>
+            </div>
+            <div class="card-body pt-5">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <a href="/Membership/Properties/Add" class="btn btn-light-primary btn-active-primary w-100 py-4">
+                            <i class="ki-duotone ki-plus fs-2x mb-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <span class="d-block fw-semibold fs-7">Add Property</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="/Membership/Referrals/Index" class="btn btn-light-success btn-active-success w-100 py-4">
+                            <i class="ki-duotone ki-share fs-2x mb-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <span class="d-block fw-semibold fs-7">Share Referral</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="/Membership/Wallet/Index" class="btn btn-light-warning btn-active-warning w-100 py-4">
+                            <i class="ki-duotone ki-wallet fs-2x mb-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            <span class="d-block fw-semibold fs-7">My Wallet</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        @if (Model.PendingUpgradeRequest != null)
+                        {
+                            <a href="/Membership/Profile/UpgradeStatus" class="btn btn-light-warning btn-active-warning w-100 py-4">
+                                <i class="ki-duotone ki-information fs-2x mb-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <span class="d-block fw-semibold fs-7">Upgrade Status</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Membership/Profile/Index" class="btn btn-light-info btn-active-info w-100 py-4">
+                                <i class="ki-duotone ki-profile-circle fs-2x mb-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <span class="d-block fw-semibold fs-7">Edit Profile</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Properties -->
+@if (Model.RecentProperties.Any())
+{
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card card-flush">
+                <div class="card-header pt-7">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-dark">Commission Properties</span>
+                        <span class="text-muted mt-1 fw-semibold fs-7">Properties you've earned commission on</span>
+                    </h3>
+                    <div class="card-toolbar">
+                        <a href="/Membership/Properties/Index" class="btn btn-sm btn-light-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body pt-5">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-row-dashed fs-6 gy-3">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th>Property</th>
+                                    <th>Location</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Commission Earned</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 fw-semibold">
+                                @foreach (var property in Model.RecentProperties)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="symbol symbol-40px me-3">
+                                                    <div class="symbol-label bg-light-primary">
+                                                        <i class="ki-duotone ki-home fs-2 text-primary">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                        </i>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold">@property.Title</span>
+                                                    <span class="text-muted fs-7">@property.PropertyType</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@property.Location</td>
+                                        <td>@property.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</td>
+                                        <td>
+                                            @{
+                                                var statusClass = property.Status switch
+                                                {
+                                                    SteadyGrowth.Web.Models.Entities.PropertyStatus.Approved => "badge-light-success",
+                                                    SteadyGrowth.Web.Models.Entities.PropertyStatus.Pending => "badge-light-warning",
+                                                    SteadyGrowth.Web.Models.Entities.PropertyStatus.Rejected => "badge-light-danger",
+                                                    _ => "badge-light-secondary"
+                                                };
+                                            }
+                                            <span class="badge @statusClass fw-bold">@property.Status</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="fw-bold text-success">@(Model.PropertyCommissions.GetValueOrDefault(property.Id, 0).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US")))</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <style>
+        /* Custom styles for sophisticated dashboard */
+        .statistics-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
         }
-    </ul>
-</section>
+        
+        .statistics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .progress {
+            border-radius: 0.475rem;
+        }
+        
+        .btn {
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        @@media (max-width: 576px) {
+            .fs-2x {
+                font-size: 1.75rem !important;
+            }
+        }
+    </style>
+}

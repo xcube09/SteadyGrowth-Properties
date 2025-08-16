@@ -1,6 +1,7 @@
 using MediatR;
 using SteadyGrowth.Web.Data;
 using SteadyGrowth.Web.Models.Entities;
+using SteadyGrowth.Web.Services.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +22,9 @@ namespace SteadyGrowth.Web.Application.Commands.Properties
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
         public decimal Price { get; set; }
 
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency code must be exactly 3 characters.")]
+        public string? CurrencyCode { get; set; }
+
         [Required(ErrorMessage = "Location is required.")]
         [StringLength(500, ErrorMessage = "Location cannot exceed 500 characters.")]
         public required string Location { get; set; }
@@ -31,19 +35,30 @@ namespace SteadyGrowth.Web.Application.Commands.Properties
         public class AddPropertyCommandHandler : IRequestHandler<AddPropertyCommand, Property>
         {
             private readonly ApplicationDbContext _context;
+            private readonly ICurrencyService _currencyService;
 
-            public AddPropertyCommandHandler(ApplicationDbContext context)
+            public AddPropertyCommandHandler(ApplicationDbContext context, ICurrencyService currencyService)
             {
                 _context = context;
+                _currencyService = currencyService;
             }
 
             public async Task<Property> Handle(AddPropertyCommand request, CancellationToken cancellationToken)
             {
+                // Set default currency if not provided
+                var currencyCode = request.CurrencyCode;
+                if (string.IsNullOrEmpty(currencyCode))
+                {
+                    var defaultCurrency = await _currencyService.GetDefaultCurrencyAsync();
+                    currencyCode = defaultCurrency?.Code ?? "NGN";
+                }
+
                 var property = new Property
                 {
                     Title = request.Title,
                     Description = request.Description,
                     Price = request.Price,
+                    CurrencyCode = currencyCode,
                     Location = request.Location,
                     UserId = request.UserId,
                     Status = PropertyStatus.Pending

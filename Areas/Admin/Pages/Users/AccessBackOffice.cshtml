@@ -1,0 +1,25 @@
+@page "{id}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Users.AccessBackOfficeModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "Accessing User BackOffice";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+    <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h4>Accessing User BackOffice...</h4>
+        <p class="text-muted">You will be redirected to the membership area momentarily.</p>
+    </div>
+</div>
+
+<script>
+    // Auto-redirect if not redirected by server
+    setTimeout(function() {
+        window.location.href = '/Membership';
+    }, 2000);
+</script>

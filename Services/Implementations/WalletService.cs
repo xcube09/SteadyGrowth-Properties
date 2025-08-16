@@ -51,7 +51,7 @@ namespace SteadyGrowth.Web.Services.Implementations
                     _db.Wallets.Add(wallet);
                     await _db.SaveChangesAsync();
 
-                    _logger.LogInformation("Created new wallet for user {UserId}", userId);
+                    _logger.LogInformation("Created new wallet for user {UserId} in USD", userId);
                 }
 
                 return wallet;
@@ -142,14 +142,14 @@ namespace SteadyGrowth.Web.Services.Implementations
                 await _db.SaveChangesAsync();
                 scope.Complete();
 
-                _logger.LogInformation("Credited wallet for user {UserId} with amount {Amount}. New balance: {Balance}", 
+                _logger.LogInformation("Credited wallet for user {UserId} with ${Amount} USD. New balance: ${Balance}", 
                     userId, amount, balanceAfter);
 
                 return transaction;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error crediting wallet for user {UserId} with amount {Amount}", userId, amount);
+                _logger.LogError(ex, "Error crediting wallet for user {UserId} with amount ${Amount} USD", userId, amount);
                 throw;
             }
         }

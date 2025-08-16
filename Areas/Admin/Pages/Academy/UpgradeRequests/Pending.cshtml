@@ -1,0 +1,151 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Academy.UpgradeRequests.PendingModel
+@{
+    ViewData["Title"] = "Pending Academy Upgrade Requests";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-6">
+        <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-user-tick fs-3 position-absolute ms-5 text-primary"></i>
+                <h3 class="fw-bold m-0 ps-12">Pending Academy Upgrade Requests</h3>
+            </div>
+        </div>
+        <div class="card-toolbar">
+            <div class="d-flex justify-content-end">
+                <a asp-page="./Index" class="btn btn-light-primary btn-sm fw-bold">
+                    <i class="ki-duotone ki-eye fs-2 me-1"></i>View All Requests
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body py-4">
+        @if (Model.PendingRequests.Any())
+        {
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-125px">User</th>
+                            <th class="min-w-125px">Package</th>
+                            <th class="min-w-100px">Payment Method</th>
+                            <th class="min-w-150px">Payment Details</th>
+                            <th class="min-w-100px">Requested Date</th>
+                            <th class="text-end min-w-200px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                        @foreach (var request in Model.PendingRequests)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="symbol symbol-35px me-3">
+                                            <div class="symbol-label bg-light-primary">
+                                                <i class="ki-duotone ki-user fs-2 text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-bold">@request.User.FirstName @request.User.LastName</span>
+                                            <span class="text-muted fs-7">@request.User.Email</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@request.RequestedPackage.Name</span>
+                                        <span class="text-muted fs-7">$@request.RequestedPackage.Price.ToString("N2")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-light-info">@request.PaymentMethod</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted fs-7">@(request.PaymentDetails ?? "No details provided")</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted fs-7">@request.RequestedAt.ToString("MMM dd, yyyy")</span>
+                                    <br />
+                                    <span class="text-muted fs-8">@request.RequestedAt.ToString("HH:mm")</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end flex-shrink-0">
+                                        <form method="post" asp-page-handler="Approve" class="me-2" onsubmit="return confirm('Are you sure you want to approve this upgrade request?')">
+                                            <input type="hidden" name="requestId" value="@request.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="ki-duotone ki-check fs-2"></i>
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal_@request.Id">
+                                            <i class="ki-duotone ki-cross fs-2"></i>
+                                            Reject
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade" id="rejectModal_@request.Id" tabindex="-1" aria-labelledby="rejectModalLabel_@request.Id" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rejectModalLabel_@request.Id">Reject Upgrade Request</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" asp-page-handler="Reject">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="requestId" value="@request.Id" />
+                                                <p>Are you sure you want to reject the upgrade request from <strong>@request.User.FirstName @request.User.LastName</strong>?</p>
+                                                <div class="mb-3">
+                                                    <label for="rejectionReason_@request.Id" class="form-label">Rejection Reason (Optional)</label>
+                                                    <textarea class="form-control" id="rejectionReason_@request.Id" name="rejectionReason" rows="3" placeholder="Provide a reason for rejection..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger">Reject Request</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-10">
+                <div class="text-center px-4">
+                    <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/5.png">
+                </div>
+                <div class="text-center px-4">
+                    <h3 class="fs-2hx fw-bold mb-4">No Pending Requests</h3>
+                    <div class="fw-semibold fs-6 text-gray-500 mb-7">There are currently no pending academy upgrade requests.</div>
+                    <div class="mb-3">
+                        <a asp-page="./Index" class="btn btn-primary">View All Requests</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

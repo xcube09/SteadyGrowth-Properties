@@ -15,7 +15,7 @@ namespace SteadyGrowth.Web.Models.Entities
         [Required, StringLength(100)]
         public string LastName { get; set; } = string.Empty;
 
-        [StringLength(8)]
+        [StringLength(450)]
         public string? ReferredBy { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

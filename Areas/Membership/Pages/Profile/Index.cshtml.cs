@@ -6,19 +6,18 @@ using SteadyGrowth.Web.Application.Commands.Users;
 using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 
 namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IMediator _mediator;
         private readonly IUserService _userService;
 
-        public IndexModel(UserManager<User> userManager, IMediator mediator, IUserService userService)
+        public IndexModel(ICurrentUserService currentUserService, IMediator mediator, IUserService userService)
         {
-            _userManager = userManager;
+            _currentUserService = currentUserService;
             _mediator = mediator;
             _userService = userService;
         }
@@ -35,7 +34,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
         {
             ViewData["Breadcrumb"] = new List<(string, string)> { ("My Profile", "/Membership/Profile/Index") };
 
-            var userId = _userManager.GetUserId(User);
+            var userId = _currentUserService.GetUserId();
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToPage("/Identity/Login");
@@ -65,11 +64,11 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
                 return Page();
             }
 
-            if (User.Identity == null || User.Identity.Name == null)
+            if (!_currentUserService.IsAuthenticated())
             {
                 return RedirectToPage("/Identity/Login");
             }
-            Command.UserId = _userManager.GetUserId(User);
+            Command.UserId = _currentUserService.GetUserId();
 
             if (!ModelState.IsValid)
             {

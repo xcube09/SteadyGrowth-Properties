@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SteadyGrowth.Web.Models.Entities;
+using SteadyGrowth.Web.Services.Interfaces;
 using MediatR;
 using SteadyGrowth.Web.Application.Queries.Properties;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties
     public class DetailsModel : PageModel
     {
         private readonly IMediator _mediator;
+        private readonly ICurrencyService _currencyService;
 
-        public DetailsModel(IMediator mediator)
+        public DetailsModel(IMediator mediator, ICurrencyService currencyService)
         {
             _mediator = mediator;
+            _currencyService = currencyService;
         }
 
         public Property? Property { get; set; }
@@ -44,6 +47,28 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Properties
             }
 
             return Page();
+        }
+
+        public async Task<string> GetFormattedPriceWithUSDAsync(Property property)
+        {
+            var currencyCode = property.CurrencyCode ?? "USD";
+            var currencySymbol = await _currencyService.GetCurrencySymbolAsync(currencyCode);
+            var originalPrice = $"{currencySymbol}{property.Price:N2}";
+
+            if (currencyCode == "USD")
+            {
+                return originalPrice;
+            }
+
+            try
+            {
+                var usdPrice = await _currencyService.ConvertAmountAsync(property.Price, currencyCode, "USD");
+                return $"{originalPrice} (${usdPrice:N2} USD)";
+            }
+            catch
+            {
+                return originalPrice;
+            }
         }
     }
 }

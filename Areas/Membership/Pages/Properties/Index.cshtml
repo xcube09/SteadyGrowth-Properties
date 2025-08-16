@@ -28,11 +28,11 @@
                     <input type="text" asp-for="LocationFilter" class="form-control" placeholder="Search by location..." />
                 </div>
                 <div class="col-md-2">
-                    <label for="minPrice" class="form-label">Min Price (NGN)</label>
+                    <label for="minPrice" class="form-label">Min Price</label>
                     <input type="number" asp-for="MinPrice" class="form-control" placeholder="0" step="0.01" />
                 </div>
                 <div class="col-md-2">
-                    <label for="maxPrice" class="form-label">Max Price (NGN)</label>
+                    <label for="maxPrice" class="form-label">Max Price</label>
                     <input type="number" asp-for="MaxPrice" class="form-control" placeholder="0" step="0.01" />
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
@@ -63,7 +63,9 @@
                 <div class="card h-100 shadow-sm">
                     @if (property.PropertyImages != null && property.PropertyImages.Any())
                     {
-                        <img src="@property.PropertyImages.First().FileName" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
+                        var fileName = property.PropertyImages.First().FileName;
+                        var imageSrc = fileName.StartsWith("/") ? fileName : $"/images/properties/{fileName}";
+                        <img src="@imageSrc" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
                     }
                     else
                     {
@@ -72,7 +74,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@property.Title</h5>
                         <p class="card-text text-truncate">@property.Description</p>
-                        <p class="card-text"><strong>Price:</strong> NGN @property.Price.ToString("N2")</p>
+                        <p class="card-text"><strong>Price:</strong> @await Model.GetFormattedPriceWithUSDAsync(property)</p>
                         <p class="card-text"><strong>Location:</strong> @property.Location</p>
                     </div>
                     <div class="card-footer">

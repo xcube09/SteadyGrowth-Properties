@@ -5,9 +5,12 @@ using SteadyGrowth.Web.Application.Queries.Properties;
 using SteadyGrowth.Web.Models.Entities;
 using System.Collections.Generic;
 using SteadyGrowth.Web.Application.Commands.Properties;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SteadyGrowth.Web.Areas.Admin.Pages.Properties;
 
+[Authorize(Roles = "Admin")]
 public class IndexModel : PageModel
 {
     private readonly IMediator _mediator;
@@ -50,13 +53,46 @@ public class IndexModel : PageModel
         var result = await _mediator.Send(command);
         if (result)
         {
-            TempData["SuccessMessage"] = "Property approved successfully.";
+            TempData["PropertySuccessMessage"] = "Property approved successfully.";
         }
         else
         {
             TempData["ErrorMessage"] = "Failed to approve property.";
         }
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeleteAsync(int id)
+    {
+        var command = new DeletePropertyCommand { PropertyId = id };
+        var result = await _mediator.Send(command);
+        
+        return new JsonResult(new 
+        { 
+            success = result,
+            message = result ? "Property deleted successfully." : "Failed to delete property."
+        });
+    }
+
+    public async Task<IActionResult> OnPostDeleteMultipleAsync(List<int> ids)
+    {
+        if (ids == null || !ids.Any())
+        {
+            return new JsonResult(new 
+            { 
+                success = false,
+                message = "No properties selected for deletion."
+            });
+        }
+
+        var command = new DeleteMultiplePropertiesCommand { PropertyIds = ids };
+        var result = await _mediator.Send(command);
+        
+        return new JsonResult(new 
+        { 
+            success = result,
+            message = result ? $"{ids.Count} properties deleted successfully." : "Failed to delete properties."
+        });
     }
 }
 

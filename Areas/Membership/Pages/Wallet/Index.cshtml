@@ -32,7 +32,7 @@
             <div class="card-header pt-5">
                 <div class="card-title d-flex flex-column">
                     <div class="d-flex align-items-center">
-                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">₦@Model.CurrentBalance.ToString("N2")</span>
+                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">$@Model.CurrentBalance.ToString("N2")</span>
                     </div>
                     <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Available Balance</span>
                 </div>
@@ -164,16 +164,16 @@
                                     <span class="fw-bold">
                                         @if (transaction.TransactionType == SteadyGrowth.Web.Models.Entities.WalletTransactionType.Debit)
                                         {
-                                            <span class="text-danger">-₦@transaction.Amount.ToString("N2")</span>
+                                            <span class="text-danger">-$@transaction.Amount.ToString("N2")</span>
                                         }
                                         else
                                         {
-                                            <span class="text-success">+₦@transaction.Amount.ToString("N2")</span>
+                                            <span class="text-success">+$@transaction.Amount.ToString("N2")</span>
                                         }
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-gray-800">₦@transaction.BalanceAfter.ToString("N2")</span>
+                                    <span class="fw-bold text-gray-800">$@transaction.BalanceAfter.ToString("N2")</span>
                                 </td>
                                 <td>
                                     @{

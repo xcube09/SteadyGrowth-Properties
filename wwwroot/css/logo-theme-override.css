@@ -1,0 +1,147 @@
+/*
+* SteadyGrowth Menu Theme Override CSS
+* 
+* This file only styles the sidebar/menu to match the SteadyGrowth logo colors:
+* - Navy Blue sidebar background (from logo bottom section)
+* - Red menu highlights (from logo house structure)
+* - All other UI elements use default Metronic styling
+*/
+
+:root {
+    /* Logo-based color palette - only for menu use */
+    --sg-primary-red: #E31837;
+    --sg-red-dark: #C1142E;
+    --sg-red-light: #E94A63;
+    --sg-red-hover: #D01529;
+    
+    --sg-navy-blue: #1B365C;
+    --sg-navy-dark: #142B4A;
+}
+
+/* ===== SIDEBAR BACKGROUND (Navy Blue) ===== */
+.app-sidebar {
+    background: linear-gradient(180deg, var(--sg-navy-blue) 0%, var(--sg-navy-dark) 100%) !important;
+}
+
+.app-sidebar-menu {
+    background: transparent !important;
+}
+
+/* ===== SIDEBAR LOGO AREA ===== */
+.app-sidebar-logo {
+    background-color: var(--sg-navy-dark) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ===== SIDEBAR TOGGLE BUTTON ===== */
+.app-sidebar-toggle {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.app-sidebar-toggle:hover {
+    background-color: var(--sg-primary-red) !important;
+    color: #FFFFFF !important;
+    border-color: var(--sg-primary-red) !important;
+}
+
+/* ===== DEFAULT MENU ITEMS ===== */
+.app-sidebar .menu-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: all 0.3s ease !important;
+    border-radius: 8px !important;
+    margin: 2px 12px !important;
+    padding: 12px 16px !important;
+}
+
+.app-sidebar .menu-link .menu-icon i {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: color 0.3s ease !important;
+}
+
+.app-sidebar .menu-link .menu-title {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: color 0.3s ease !important;
+    font-weight: 500 !important;
+}
+
+/* ===== MENU HOVER STATES ===== */
+.app-sidebar .menu-link:hover {
+    background-color: rgba(227, 24, 55, 0.15) !important;
+    color: #FFFFFF !important;
+    transform: translateX(4px) !important;
+}
+
+.app-sidebar .menu-link:hover .menu-icon i,
+.app-sidebar .menu-link:hover .menu-title {
+    color: #FFFFFF !important;
+}
+
+/* ===== SIDEBAR ACTIVE MENU ITEMS ===== */
+.app-sidebar .menu-item.active > .menu-link,
+.app-sidebar .menu-link.active {
+    background: linear-gradient(135deg, var(--sg-primary-red) 0%, var(--sg-red-light) 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(227, 24, 55, 0.3) !important;
+    transform: translateX(4px) !important;
+}
+
+.app-sidebar .menu-item.active > .menu-link .menu-icon i,
+.app-sidebar .menu-link.active .menu-icon i,
+.app-sidebar .menu-item.active > .menu-link .menu-title,
+.app-sidebar .menu-link.active .menu-title {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+/* ===== MENU ACCORDION ARROWS ===== */
+.app-sidebar .menu-arrow {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: color 0.3s ease !important;
+}
+
+.app-sidebar .menu-item.show > .menu-link .menu-arrow,
+.app-sidebar .menu-item:hover > .menu-link .menu-arrow {
+    color: #FFFFFF !important;
+}
+
+/* ===== MENU BULLET POINTS ===== */
+.app-sidebar .menu-item.active .bullet {
+    background-color: #FFFFFF !important;
+}
+
+/* ===== TABLE ACTION DROPDOWN MENUS ===== */
+/* Expand dropdown menus in tables to accommodate longer text */
+.table .menu-sub-dropdown {
+    min-width: 250px !important;
+    width: auto !important;
+}
+
+.table .menu-sub-dropdown .menu-link {
+    white-space: nowrap !important;
+    padding-right: 30px !important;
+}
+
+/* Specific fix for w-125px, w-150px, w-200px classes in table dropdowns */
+.table .w-125px.menu-sub-dropdown,
+.table .w-150px.menu-sub-dropdown,
+.table .w-200px.menu-sub-dropdown {
+    min-width: 250px !important;
+    width: auto !important;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS FOR MENU ONLY ===== */
+@media (max-width: 768px) {
+    .app-sidebar .menu-link {
+        margin: 2px 8px !important;
+        padding: 10px 12px !important;
+    }
+    
+    .app-sidebar .menu-link:hover,
+    .app-sidebar .menu-item.active > .menu-link,
+    .app-sidebar .menu-link.active {
+        transform: none !important;
+    }
+}

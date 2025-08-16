@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build)",
+      "Bash(dotnet run:*)",
+      "Bash(powershell:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npm install)"
+    ],
+    "deny": []
+  }
+}

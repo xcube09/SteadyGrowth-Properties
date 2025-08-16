@@ -15,14 +15,14 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 {
     public class KYCModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUserService _userService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public KYCModel(UserManager<User> userManager, IUserService userService, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public KYCModel(ICurrentUserService currentUserService, IUserService userService, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
-            _userManager = userManager;
+            _currentUserService = currentUserService;
             _userService = userService;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -33,7 +33,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = _currentUserService.GetUserId();
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToPage("/Identity/Login");
@@ -52,7 +52,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
         public async Task<IActionResult> OnPostUploadDocumentAsync(IFormFile document, DocumentType documentType)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _currentUserService.GetCurrentUserAsync();
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");
@@ -91,7 +91,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
                 if (user.KYCStatus == KYCStatus.NotStarted || user.KYCStatus == KYCStatus.Rejected)
                 {
                     user.KYCStatus = KYCStatus.Submitted;
-                    await _userManager.UpdateAsync(user);
+                    _context.Users.Update(user);
                 }
 
                 await _context.SaveChangesAsync();

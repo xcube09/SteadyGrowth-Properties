@@ -1,9 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SteadyGrowth.Web.Application.Commands.UpgradeRequests;
+using SteadyGrowth.Web.Services.Interfaces;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using SteadyGrowth.Web.Models.Entities;
 
 namespace SteadyGrowth.Web.Controllers.Api
 {
@@ -12,18 +11,19 @@ namespace SteadyGrowth.Web.Controllers.Api
     public class UpgradeRequestApiController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UpgradeRequestApiController(IMediator mediator, UserManager<User> userManager)
+        public UpgradeRequestApiController(IMediator mediator, ICurrentUserService currentUserService)
         {
             _mediator = mediator;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUpgradeRequest([FromBody] CreateUpgradeRequestCommand command)
         {
-            var userId = _userManager.GetUserId(User);
+            // GetUserId() from ICurrentUserService automatically handles impersonation
+            var userId = _currentUserService.GetUserId();
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();

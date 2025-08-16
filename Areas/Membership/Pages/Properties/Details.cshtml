@@ -23,8 +23,10 @@
                                 }
                                 @for (int i = 0; i < imagesList.Count; i++)
                                 {
+                                    var fileName = imagesList[i].FileName;
+                                    var imageSrc = fileName.StartsWith("/") ? fileName : $"/images/properties/{fileName}";
                                     <div class="carousel-item @(i == 0 ? "active" : "")">
-                                        <img src="@imagesList[i].FileName" class="d-block w-100" alt="Property Image" style="height: 400px; object-fit: cover;" />
+                                        <img src="@imageSrc" class="d-block w-100" alt="Property Image" style="height: 400px; object-fit: cover;" />
                                     </div>
                                 }
                             </div>
@@ -47,8 +49,10 @@
                             <div class="row mb-4">
                                 @for (int i = 0; i < imagesList.Count; i++)
                                 {
+                                    var thumbFileName = imagesList[i].FileName;
+                                    var thumbImageSrc = thumbFileName.StartsWith("/") ? thumbFileName : $"/images/properties/{thumbFileName}";
                                     <div class="col-2">
-                                        <img src="@imagesList[i].FileName" 
+                                        <img src="@thumbImageSrc" 
                                              class="img-thumbnail cursor-pointer" 
                                              style="height: 60px; width: 100%; object-fit: cover;" 
                                              onclick="$('#propertyImageCarousel').carousel(@i)" />
@@ -76,7 +80,7 @@
                             <h5 class="mb-3">Property Information</h5>
                             <ul class="list-unstyled">
                                 <li><i class="ki-duotone ki-home fs-3 text-primary me-2"></i><strong>Type:</strong> @Model.Property.PropertyType</li>
-                                <li><i class="ki-duotone ki-price-tag fs-3 text-primary me-2"></i><strong>Price:</strong> NGN @Model.Property.Price.ToString("N2")</li>
+                                <li><i class="ki-duotone ki-price-tag fs-3 text-primary me-2"></i><strong>Price:</strong> @await Model.GetFormattedPriceWithUSDAsync(Model.Property)</li>
                                 <li><i class="ki-duotone ki-geolocation fs-3 text-primary me-2"></i><strong>Location:</strong> @Model.Property.Location</li>
                                 @if (Model.Property.ApprovedAt.HasValue)
                                 {
@@ -108,7 +112,7 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
-                        <h3 class="text-primary mb-0">NGN @Model.Property.Price.ToString("N2")</h3>
+                        <h3 class="text-primary mb-0">@await Model.GetFormattedPriceWithUSDAsync(Model.Property)</h3>
                         <small class="text-muted">Total Price</small>
                     </div>
 

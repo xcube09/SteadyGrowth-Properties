@@ -1,0 +1,389 @@
+/*
+* Orange Theme Override CSS
+* 
+* This file overrides the default blue theme colors in admin and membership areas
+* to match the orange color scheme of the public-facing site (Quarter theme).
+* 
+* Primary Orange: #FF5A3C (from Quarter theme --ltn__secondary-color)
+* Orange variants: #cb3421, #fb412a, #fd7e14, #f90
+*/
+
+:root {
+    /* Override Metronic primary colors with orange theme */
+    --kt-primary: #FF5A3C !important;
+    --kt-primary-active: #cb3421 !important;
+    --kt-primary-light: #ffebe7 !important;
+    --kt-primary-inverse: #FFFFFF !important;
+    
+    /* Orange color variants */
+    --orange-primary: #FF5A3C;
+    --orange-dark: #cb3421;
+    --orange-light: #fb412a;
+    --orange-bootstrap: #fd7e14;
+    --orange-web: #f90;
+    --orange-pale: #ffebe7;
+    --orange-hover: #e54a2e;
+    
+    /* Darker orange sidebar colors */
+    --orange-sidebar: #d4491f;
+    --orange-sidebar-darker: #b8391a;
+}
+
+/* ===== PRIMARY BUTTONS ===== */
+.btn-primary {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--orange-hover) !important;
+    border-color: var(--orange-hover) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-light-primary {
+    background-color: var(--orange-pale) !important;
+    border-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+.btn-light-primary:hover,
+.btn-light-primary:focus,
+.btn-light-primary:active {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+/* ===== SIDEBAR BACKGROUND ===== */
+.app-sidebar {
+    background-color: var(--orange-sidebar) !important;
+}
+
+.app-sidebar-menu {
+    background-color: var(--orange-sidebar) !important;
+}
+
+/* ===== SIDEBAR LOGO AREA ===== */
+.app-sidebar-logo {
+    background-color: var(--orange-sidebar-darker) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ===== SIDEBAR TOGGLE BUTTON ===== */
+.app-sidebar-toggle {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.app-sidebar-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #FFFFFF !important;
+}
+
+/* ===== MENU ACCORDION ARROWS ===== */
+.menu-arrow {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.menu-item.show > .menu-link .menu-arrow,
+.menu-item:hover > .menu-link .menu-arrow {
+    color: #FFFFFF !important;
+}
+
+/* ===== SIDEBAR ACTIVE MENU ITEMS ===== */
+.menu-item.active > .menu-link,
+.menu-link.active {
+    background-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.menu-item.active > .menu-link .menu-icon i,
+.menu-link.active .menu-icon i {
+    color: #FFFFFF !important;
+}
+
+.menu-item.active > .menu-link .menu-title,
+.menu-link.active .menu-title {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+/* ===== DEFAULT MENU ITEMS (NON-ACTIVE) ===== */
+.menu-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.3s ease !important;
+    border-radius: 6px !important;
+    margin: 2px 8px !important;
+}
+
+.menu-link .menu-icon i {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: color 0.3s ease !important;
+}
+
+.menu-link .menu-title {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: color 0.3s ease !important;
+}
+
+/* ===== MENU HOVER STATES ===== */
+.menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #FFFFFF !important;
+}
+
+.menu-link:hover .menu-icon i,
+.menu-link:hover .menu-title {
+    color: #FFFFFF !important;
+}
+
+/* ===== FORM CONTROLS FOCUS ===== */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--orange-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 90, 60, 0.25) !important;
+}
+
+/* ===== BADGES ===== */
+.badge-light-primary {
+    background-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+.badge-primary {
+    background-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+/* ===== LINKS AND TEXT COLORS ===== */
+.text-primary {
+    color: var(--orange-primary) !important;
+}
+
+.text-hover-primary:hover {
+    color: var(--orange-primary) !important;
+}
+
+a.text-hover-primary:hover {
+    color: var(--orange-primary) !important;
+}
+
+/* ===== PAGINATION ===== */
+.page-item.active .page-link {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.page-link:hover {
+    color: var(--orange-primary) !important;
+    background-color: var(--orange-pale) !important;
+    border-color: var(--orange-primary) !important;
+}
+
+/* ===== CARDS AND BORDERS ===== */
+.border-primary {
+    border-color: var(--orange-primary) !important;
+}
+
+.card-header {
+    border-bottom-color: var(--orange-pale) !important;
+}
+
+/* ===== PROGRESS BARS ===== */
+.progress-bar {
+    background-color: var(--orange-primary) !important;
+}
+
+/* ===== ALERTS ===== */
+.alert-primary {
+    background-color: var(--orange-pale) !important;
+    border-color: var(--orange-primary) !important;
+    color: var(--orange-dark) !important;
+}
+
+/* ===== TABS ===== */
+.nav-pills .nav-link.active {
+    background-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--orange-primary) !important;
+    border-bottom-color: var(--orange-primary) !important;
+}
+
+/* ===== SWITCHES/TOGGLES ===== */
+.form-check-input:checked {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+}
+
+/* ===== DROPDOWNS ===== */
+.dropdown-item:active {
+    background-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+/* ===== TABLE ELEMENTS ===== */
+.table-hover tbody tr:hover {
+    background-color: var(--orange-pale) !important;
+}
+
+/* ===== SPINNER/LOADING INDICATORS ===== */
+.spinner-border-primary {
+    color: var(--orange-primary) !important;
+}
+
+/* ===== METRONIC SPECIFIC OVERRIDES ===== */
+/* Header active colors */
+.btn-active-color-primary.active,
+.btn-active-color-primary:active {
+    color: var(--orange-primary) !important;
+}
+
+/* Toolbar and header elements */
+.app-toolbar .btn-primary {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+}
+
+/* Sidebar toggle button */
+.app-sidebar-toggle:hover {
+    color: var(--orange-primary) !important;
+}
+
+/* Menu bullet points */
+.bullet {
+    background-color: var(--orange-primary) !important;
+}
+
+.menu-item.active .bullet {
+    background-color: var(--orange-primary) !important;
+}
+
+/* ===== MEMBERSHIP SPECIFIC ELEMENTS ===== */
+/* Package badges */
+.badge-light-info {
+    background-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+/* User profile elements */
+.symbol-label {
+    background-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+/* ===== ADMIN SPECIFIC ELEMENTS ===== */
+/* Analytics cards and charts */
+.card .card-toolbar .btn-primary {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+}
+
+/* Status indicators */
+.badge-light-success {
+    background-color: var(--orange-pale) !important;
+    color: var(--orange-primary) !important;
+}
+
+/* ===== SWEET ALERT OVERRIDES ===== */
+.swal2-confirm {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+}
+
+.swal2-confirm:hover,
+.swal2-confirm:focus {
+    background-color: var(--orange-hover) !important;
+    border-color: var(--orange-hover) !important;
+}
+
+/* ===== SCROLLBAR CUSTOMIZATION ===== */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar-thumb {
+    background-color: var(--orange-primary) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--orange-hover) !important;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+    /* Mobile-specific orange theme adjustments */
+    .btn-primary {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .menu-link {
+        padding: 0.75rem 1rem !important;
+    }
+}
+
+/* ===== HOVER EFFECTS ===== */
+.btn-outline-primary {
+    border-color: var(--orange-primary) !important;
+    color: var(--orange-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+    background-color: var(--orange-primary) !important;
+    border-color: var(--orange-primary) !important;
+    color: #FFFFFF !important;
+}
+
+/* ===== MISCELLANEOUS ELEMENTS ===== */
+/* Loading states */
+[data-kt-indicator="on"] .indicator-progress {
+    color: var(--orange-primary) !important;
+}
+
+/* Success states using primary color */
+.text-success {
+    color: var(--orange-primary) !important;
+}
+
+/* Border colors */
+.border-light-primary {
+    border-color: var(--orange-pale) !important;
+}
+
+/* Background colors */
+.bg-light-primary {
+    background-color: var(--orange-pale) !important;
+}
+
+.bg-primary {
+    background-color: var(--orange-primary) !important;
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+/* Ensure sufficient contrast for accessibility */
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Focus indicators */
+.btn:focus,
+.form-control:focus,
+.menu-link:focus {
+    outline: 2px solid var(--orange-primary) !important;
+    outline-offset: 2px !important;
+}
+
+/* ===== END OF ORANGE THEME OVERRIDE ===== */

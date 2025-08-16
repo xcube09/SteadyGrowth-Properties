@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SteadyGrowth.Web.Models.Entities;
+using SteadyGrowth.Web.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace SteadyGrowth.Web.Data
             context.Database.Migrate();
 
             var adminUser = await SeedUsersAndRolesAsync(context, userManager, roleManager);
+            await SeedCurrenciesAsync(serviceProvider);
             await SeedPropertiesAsync(context, adminUser);
             await SeedAcademyPackagesAndCoursesAsync(context);
             await SeedCourseSegmentsAsync(context);
@@ -70,6 +72,22 @@ namespace SteadyGrowth.Web.Data
             return adminUser;
         }
 
+        private static async Task SeedCurrenciesAsync(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var currencyService = scope.ServiceProvider.GetRequiredService<ICurrencyService>();
+            
+            try
+            {
+                await currencyService.InitializeDefaultCurrenciesAsync();
+                Console.WriteLine("Initialized default currencies successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing currencies: {ex.Message}");
+            }
+        }
+
         private static async Task SeedPropertiesAsync(ApplicationDbContext context, User adminUser)
         {
             // Seed showcase properties for landing page
@@ -82,6 +100,7 @@ namespace SteadyGrowth.Web.Data
                         Title = "Modern Family Home in Lekki",
                         Description = "A beautiful, fully-furnished 4-bedroom family home with a private pool and garden. Perfect for modern living in the heart of Lekki.",
                         Price = 120_000_000,
+                        CurrencyCode = "NGN",
                         Location = "Lekki, Lagos",
                         PropertyType = PropertyType.Residential,
                         Status = PropertyStatus.Approved,
@@ -101,6 +120,7 @@ namespace SteadyGrowth.Web.Data
                         Title = "Luxury Office Space in Victoria Island",
                         Description = "Premium commercial office space with ocean views, 24/7 security, and modern amenities. Ideal for growing businesses.",
                         Price = 350_000_000,
+                        CurrencyCode = "NGN",
                         Location = "Victoria Island, Lagos",
                         PropertyType = PropertyType.Commercial,
                         Status = PropertyStatus.Approved,
@@ -120,6 +140,7 @@ namespace SteadyGrowth.Web.Data
                         Title = "Serviced Land Plot in Ajah",
                         Description = "A 600sqm serviced land plot in a gated estate, ready for development. Secure your investment today!",
                         Price = 30_000_000,
+                        CurrencyCode = "NGN",
                         Location = "Ajah, Lagos",
                         PropertyType = PropertyType.Land,
                         Status = PropertyStatus.Approved,
