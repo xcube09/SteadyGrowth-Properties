@@ -11,6 +11,8 @@ namespace SteadyGrowth.Web.Models.ViewModels
         public string Role { get; set; } = string.Empty;
         public DateTime RegisteredAt { get; set; }
         public decimal WalletBalance { get; set; }
+        public string AcademyPackageName { get; set; } = string.Empty;
+        public int? AcademyPackageId { get; set; }
     }
 
     public class AuditLogViewModel

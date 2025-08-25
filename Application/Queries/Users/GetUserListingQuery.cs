@@ -16,6 +16,7 @@ namespace SteadyGrowth.Web.Application.Queries.Users
         public int PageSize { get; set; }
         public string SearchTerm { get; set; } = string.Empty;
         public string StatusFilter { get; set; } = string.Empty;
+        public int? PackageFilter { get; set; }
 
         public class GetUserListingQueryHandler : IRequestHandler<GetUserListingQuery, PaginatedList<UserAdminViewModel>>
         {
@@ -28,7 +29,10 @@ namespace SteadyGrowth.Web.Application.Queries.Users
 
             public async Task<PaginatedList<UserAdminViewModel>> Handle(GetUserListingQuery request, CancellationToken cancellationToken)
             {
-                var query = _context.Users.AsQueryable();
+                var query = _context.Users
+                    .Include(u => u.AcademyPackage)
+                    .Include(u => u.Wallet)
+                    .AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm))
                 {
@@ -52,6 +56,11 @@ namespace SteadyGrowth.Web.Application.Queries.Users
                     // you might need another property on User entity or a different logic.
                 }
 
+                if (request.PackageFilter.HasValue)
+                {
+                    query = query.Where(u => u.AcademyPackageId == request.PackageFilter.Value);
+                }
+
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var users = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -64,7 +73,9 @@ namespace SteadyGrowth.Web.Application.Queries.Users
                                          Status = u.LockoutEnd.HasValue && u.LockoutEnd > DateTime.UtcNow ? "Suspended" : "Active",
                                          Role = "User", // Placeholder, actual role fetching might be more complex
                                          RegisteredAt = u.CreatedAt,
-                                         WalletBalance = u.Wallet != null ? u.Wallet.Balance : 0m
+                                         WalletBalance = u.Wallet != null ? u.Wallet.Balance : 0m,
+                                         AcademyPackageName = u.AcademyPackage != null ? u.AcademyPackage.Name : "No Package",
+                                         AcademyPackageId = u.AcademyPackageId
                                      })
                                      .ToListAsync(cancellationToken);
 

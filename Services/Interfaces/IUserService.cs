@@ -28,6 +28,16 @@ public interface IUserService
     Task<bool> DeactivateUserAsync(string userId);
 
     /// <summary>
+    /// Deletes a user account and all related data.
+    /// </summary>
+    Task<bool> DeleteUserAsync(string userId);
+
+    /// <summary>
+    /// Deletes multiple user accounts and all their related data.
+    /// </summary>
+    Task<bool> DeleteMultipleUsersAsync(List<string> userIds);
+
+    /// <summary>
     /// Gets all users with paging support.
     /// </summary>
     // Task<IEnumerable<User>> GetAllUsersAsync(int page = 1, int pageSize = 50);

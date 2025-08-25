@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Data;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using SteadyGrowth.Web.Application.Commands.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +16,13 @@ namespace SteadyGrowth.Web.Services.Implementations
     {
         private readonly ILogger<UserService> _logger;
         private readonly ApplicationDbContext _db;
-        public UserService(ApplicationDbContext db, ILogger<UserService> logger)
+        private readonly IMediator _mediator;
+        
+        public UserService(ApplicationDbContext db, ILogger<UserService> logger, IMediator mediator)
         {
             _db = db;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public async Task<User?> GetUserByIdAsync(string userId)
@@ -69,6 +74,34 @@ namespace SteadyGrowth.Web.Services.Implementations
         public async Task<int> GetTotalUsersCountAsync()
         {
             return await _db.Users.CountAsync();
+        }
+
+        public async Task<bool> DeleteUserAsync(string userId)
+        {
+            try
+            {
+                var command = new DeleteUserCommand { UserId = userId };
+                return await _mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user {UserId}", userId);
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteMultipleUsersAsync(List<string> userIds)
+        {
+            try
+            {
+                var command = new DeleteMultipleUsersCommand { UserIds = userIds };
+                return await _mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting multiple users: {UserIds}", string.Join(", ", userIds));
+                return false;
+            }
         }
     }
 }

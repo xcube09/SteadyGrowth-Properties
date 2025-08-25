@@ -25,12 +25,19 @@
                 const link = document.createElement('a');
                 link.href = 'mailto:' + decodedEmail;
                 link.innerHTML = '<i class="icon-mail"></i> ' + obfuscateDisplay(decodedEmail);
+                link.className = element.className; // Preserve any existing classes
                 
                 // Replace the element
                 element.parentNode.replaceChild(link, element);
             } else {
-                // Just display the email
-                element.innerHTML = obfuscateDisplay(decodedEmail);
+                // Create mailto link for non-link elements too
+                const link = document.createElement('a');
+                link.href = 'mailto:' + decodedEmail;
+                link.innerHTML = obfuscateDisplay(decodedEmail);
+                link.className = element.className; // Preserve any existing classes
+                
+                // Replace the element
+                element.parentNode.replaceChild(link, element);
             }
         });
     }

@@ -135,6 +135,7 @@ builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.AddScoped<IUpgradeRequestService, UpgradeRequestService>();
 builder.Services.AddScoped<IPropertyCommissionService, PropertyCommissionService>();
+builder.Services.AddScoped<IAcademyPackageService, AcademyPackageService>();
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
 builder.Services.AddHttpClient();

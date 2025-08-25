@@ -6,6 +6,10 @@
     ViewData["Title"] = "User Management";
 }
 
+<form method="post">
+    @Html.AntiForgeryToken()
+</form>
+
 <div class="card">
     <div class="card-header border-0 pt-6">
         <div class="card-title">
@@ -32,6 +36,19 @@
                                 <option value="Active" selected="@(Model.StatusFilter == "Active")">Active</option>
                                 <option value="Suspended" selected="@(Model.StatusFilter == "Suspended")">Suspended</option>
                                 <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
+                            </select>
+                        </div>
+                        <div class="mb-10">
+                            <label class="form-label fs-6 fw-semibold">Academy Package:</label>
+                            <select class="form-select form-select-solid fw-bold" data-kt-select2="true" data-placeholder="Select package" data-allow-clear="true" data-kt-user-table-filter="package" data-hide-search="true">
+                                <option></option>
+                                @if (Model.AvailablePackages != null)
+                                {
+                                    @foreach (var package in Model.AvailablePackages)
+                                    {
+                                        <option value="@package.Id" selected="@(Model.PackageFilter == package.Id)">@package.Name</option>
+                                    }
+                                }
                             </select>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -63,6 +80,7 @@
                     </th>
                     <th class="min-w-125px">User</th>
                     <th class="min-w-125px">Role</th>
+                    <th class="min-w-125px">Academy Package</th>
                     <th class="min-w-125px">Status</th>
                     <th class="min-w-125px">Joined Date</th>
                     <th class="min-w-125px">Wallet Balance</th>
@@ -93,6 +111,16 @@
                             </td>
                             <td>@user.Role</td>
                             <td>
+                                @if (!string.IsNullOrEmpty(user.AcademyPackageName) && user.AcademyPackageName != "No Package")
+                                {
+                                    <span class="badge badge-light-@(user.AcademyPackageName.Contains("Premium") ? "success" : "primary") fw-bold">@user.AcademyPackageName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Package</span>
+                                }
+                            </td>
+                            <td>
                                 <div class="badge badge-light-@(GetStatusColor(user.Status)) fw-bold">@user.Status</div>
                             </td>
                             <td>@user.RegisteredAt.ToShortDateString()</td>
@@ -106,7 +134,7 @@
                                         <a asp-page="./Details" asp-route-id="@user.Id" class="menu-link px-3">View</a>
                                     </div>
                                     <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
+                                        <a href="#" class="menu-link px-3" data-kt-users-table-filter="delete_row" data-user-id="@user.Id">Delete</a>
                                     </div>
                                     <div class="menu-item px-3">
                                         <a href="#" class="menu-link px-3 wallet-action-btn" data-user-id="@user.Id" data-user-name="@user.FullName" data-user-email="@user.Email">Wallet</a>
@@ -328,6 +356,7 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         var KTUsersList = function () {
             var table = document.querySelector('#kt_table_users');
@@ -364,6 +393,7 @@
                 if (filterButton) {
                     filterButton.addEventListener('click', function () {
                         const statusFilter = document.querySelector('[data-kt-user-table-filter="status"]');
+                        const packageFilter = document.querySelector('[data-kt-user-table-filter="package"]');
                         const searchFilter = document.querySelector('[data-kt-user-table-filter="search"]');
                         
                         const currentUrl = new URL(window.location);
@@ -371,6 +401,11 @@
                             currentUrl.searchParams.set('status', statusFilter.value);
                         } else {
                             currentUrl.searchParams.delete('status');
+                        }
+                        if (packageFilter && packageFilter.value) {
+                            currentUrl.searchParams.set('packageFilter', packageFilter.value);
+                        } else {
+                            currentUrl.searchParams.delete('packageFilter');
                         }
                         if (searchFilter && searchFilter.value) {
                             currentUrl.searchParams.set('search', searchFilter.value);
@@ -387,6 +422,7 @@
                         const currentUrl = new URL(window.location);
                         currentUrl.searchParams.delete('search');
                         currentUrl.searchParams.delete('status');
+                        currentUrl.searchParams.delete('packageFilter');
                         currentUrl.searchParams.set('pageIndex', '1');
                         window.location.href = currentUrl.toString();
                     });
@@ -399,6 +435,8 @@
                     d.addEventListener('click', function (e) {
                         e.preventDefault();
                         const userName = e.target.closest('tr').querySelector('td:nth-child(2) a').textContent;
+                        const userId = e.target.getAttribute('data-user-id');
+                        
                         Swal.fire({
                             text: "Are you sure you want to delete " + userName + "?",
                             icon: "warning",
@@ -412,16 +450,51 @@
                             }
                         }).then(function (result) {
                             if (result.value) {
-                                Swal.fire({
-                                    text: "You have deleted " + userName + "!",
-                                    icon: "success",
-                                    buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn fw-bold btn-primary",
+                                // Make AJAX call to delete user
+                                fetch('?handler=Delete', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-XSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                                    },
+                                    body: JSON.stringify({ Id: userId })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            text: "You have deleted " + userName + "!",
+                                            icon: "success",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        }).then(function () {
+                                            e.target.closest('tr').remove();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            text: data.message || "Error deleting user.",
+                                            icon: "error",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        });
                                     }
-                                }).then(function () {
-                                    e.target.closest('tr').remove();
+                                })
+                                .catch(error => {
+                                    Swal.fire({
+                                        text: "Error deleting user: " + error.message,
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn fw-bold btn-primary",
+                                        }
+                                    });
                                 });
                             } else if (result.dismiss === 'cancel') {
                                 Swal.fire({
@@ -464,21 +537,65 @@
                             }
                         }).then(function (result) {
                             if (result.value) {
-                                Swal.fire({
-                                    text: "You have deleted all selected users!",
-                                    icon: "success",
-                                    buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn fw-bold btn-primary",
+                                // Get selected user IDs
+                                const selectedUserIds = [];
+                                checkboxes.forEach(c => {
+                                    if (c.checked) {
+                                        selectedUserIds.push(c.value);
                                     }
-                                }).then(function () {
-                                    checkboxes.forEach(c => {
-                                        if (c.checked) {
-                                            c.closest('tr').remove();
+                                });
+
+                                // Make AJAX call to delete selected users
+                                fetch('?handler=DeleteSelected', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-XSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                                    },
+                                    body: JSON.stringify(selectedUserIds)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            text: "You have deleted all selected users!",
+                                            icon: "success",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        }).then(function () {
+                                            checkboxes.forEach(c => {
+                                                if (c.checked) {
+                                                    c.closest('tr').remove();
+                                                }
+                                            });
+                                            table.querySelectorAll('[type="checkbox"]')[0].checked = false;
+                                            toggleToolbar(); // Reset toolbar
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            text: data.message || "Error deleting selected users.",
+                                            icon: "error",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    Swal.fire({
+                                        text: "Error deleting users: " + error.message,
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn fw-bold btn-primary",
                                         }
                                     });
-                                    table.querySelectorAll('[type="checkbox"]')[0].checked = false;
                                 });
                             } else if (result.dismiss === 'cancel') {
                                 Swal.fire({

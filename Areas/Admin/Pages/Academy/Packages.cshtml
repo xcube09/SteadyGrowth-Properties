@@ -1,0 +1,336 @@
+@page
+@model SteadyGrowth.Web.Areas.Admin.Pages.Academy.PackagesModel
+@{
+    ViewData["Title"] = "Academy Packages";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex flex-column-fluid">
+    <div class="container-fluid">
+        <!-- Page Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-custom">
+                    <div class="card-header flex-wrap py-5">
+                        <div class="card-title">
+                            <h3 class="card-label">Academy Packages
+                                <span class="text-muted pt-2 font-size-sm d-block">Manage academy package pricing and availability</span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Packages Table -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header border-0 pt-6">
+                        <div class="card-title">
+                            <span class="card-label fw-bold fs-3">Package Management</span>
+                        </div>
+                    </div>
+                    <div class="card-body py-4">
+                        <div class="table-responsive">
+                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="packagesTable">
+                                <thead>
+                                    <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                        <th class="min-w-125px">Package Name</th>
+                                        <th class="min-w-200px">Description</th>
+                                        <th class="min-w-125px">Current Price</th>
+                                        <th class="min-w-100px">Active Users</th>
+                                        <th class="min-w-100px">Status</th>
+                                        <th class="text-end min-w-100px">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 fw-semibold">
+                                    @foreach (var item in Model.PackagesWithUserCount)
+                                    {
+                                        <tr data-package-id="@item.Package.Id">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="symbol symbol-circle symbol-50px overflow-hidden me-3">
+                                                        <div class="symbol-label fs-3 @(item.Package.Name.Contains("Premium") ? "bg-light-success text-success" : "bg-light-primary text-primary")">
+                                                            @item.Package.Name.Substring(0, 1)
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="text-gray-800 fw-bold">@item.Package.Name</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-gray-600">@(item.Package.Description ?? "No description available")</span>
+                                            </td>
+                                            <td>
+                                                <div class="price-display" id="price-display-@item.Package.Id">
+                                                    <span class="fw-bold text-primary fs-6">@item.Package.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</span>
+                                                    <button class="btn btn-icon btn-sm btn-light-primary ms-2 edit-price-btn" data-package-id="@item.Package.Id" title="Edit Price">
+                                                        <i class="ki-duotone ki-pencil fs-6"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="price-edit d-none" id="price-edit-@item.Package.Id">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" class="form-control form-control-sm price-input" 
+                                                               value="@item.Package.Price" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               data-package-id="@item.Package.Id">
+                                                        <button class="btn btn-sm btn-success save-price-btn" data-package-id="@item.Package.Id" title="Save">
+                                                            <i class="ki-duotone ki-check fs-6"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-light cancel-price-btn" data-package-id="@item.Package.Id" title="Cancel">
+                                                            <i class="ki-duotone ki-cross fs-6"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-light-info fw-bold">@item.UserCount users</span>
+                                            </td>
+                                            <td>
+                                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                                    <input class="form-check-input status-toggle" 
+                                                           type="checkbox" 
+                                                           @(item.Package.IsActive ? "checked" : "") 
+                                                           data-package-id="@item.Package.Id">
+                                                    <label class="form-check-label">
+                                                        <span class="badge @(item.Package.IsActive ? "badge-light-success" : "badge-light-danger")">
+                                                            @(item.Package.IsActive ? "Active" : "Inactive")
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-light-primary edit-price-btn" data-package-id="@item.Package.Id">
+                                                    <i class="ki-duotone ki-pencil fs-6 me-1"></i>Edit Price
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<form id="antiforgery-form" method="post">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Edit price functionality
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.edit-price-btn')) {
+                const btn = e.target.closest('.edit-price-btn');
+                const packageId = btn.getAttribute('data-package-id');
+                showPriceEdit(packageId);
+            }
+            
+            if (e.target.closest('.save-price-btn')) {
+                const btn = e.target.closest('.save-price-btn');
+                const packageId = btn.getAttribute('data-package-id');
+                savePriceEdit(packageId);
+            }
+            
+            if (e.target.closest('.cancel-price-btn')) {
+                const btn = e.target.closest('.cancel-price-btn');
+                const packageId = btn.getAttribute('data-package-id');
+                cancelPriceEdit(packageId);
+            }
+        });
+
+        // Status toggle functionality
+        document.addEventListener('change', function (e) {
+            if (e.target.classList.contains('status-toggle')) {
+                const packageId = e.target.getAttribute('data-package-id');
+                togglePackageStatus(packageId);
+            }
+        });
+
+        function showPriceEdit(packageId) {
+            document.getElementById(`price-display-${packageId}`).classList.add('d-none');
+            document.getElementById(`price-edit-${packageId}`).classList.remove('d-none');
+        }
+
+        function cancelPriceEdit(packageId) {
+            document.getElementById(`price-display-${packageId}`).classList.remove('d-none');
+            document.getElementById(`price-edit-${packageId}`).classList.add('d-none');
+        }
+
+        async function savePriceEdit(packageId) {
+            const priceInput = document.querySelector(`input[data-package-id="${packageId}"]`);
+            const newPrice = parseFloat(priceInput.value);
+
+            if (isNaN(newPrice) || newPrice < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Price',
+                    text: 'Please enter a valid price (0 or greater)',
+                    timer: 3000
+                });
+                return;
+            }
+
+            try {
+                // Get the antiforgery token
+                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (!tokenElement) {
+                    console.error('Antiforgery token not found');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Security Error',
+                        text: 'Security token not found. Please refresh the page.',
+                        timer: 3000
+                    });
+                    return;
+                }
+                
+                const response = await fetch('/Admin/Academy/Packages?handler=UpdatePrice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-XSRF-TOKEN': tokenElement.value
+                    },
+                    body: JSON.stringify({
+                        packageId: parseInt(packageId),
+                        newPrice: newPrice
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update display
+                    const displaySpan = document.querySelector(`#price-display-${packageId} span`);
+                    displaySpan.textContent = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    }).format(newPrice);
+
+                    cancelPriceEdit(packageId);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Price updated successfully!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'Failed to update price',
+                        timer: 3000
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating price:', error);
+                console.error('Error details:', error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the price: ' + error.message,
+                    timer: 5000
+                });
+            }
+        }
+
+        async function togglePackageStatus(packageId) {
+            try {
+                // Get the antiforgery token
+                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (!tokenElement) {
+                    console.error('Antiforgery token not found');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Security Error',
+                        text: 'Security token not found. Please refresh the page.',
+                        timer: 3000
+                    });
+                    // Revert toggle if failed
+                    const toggle = document.querySelector(`input[data-package-id="${packageId}"]`);
+                    toggle.checked = !toggle.checked;
+                    return;
+                }
+                
+                const response = await fetch('/Admin/Academy/Packages?handler=ToggleStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-XSRF-TOKEN': tokenElement.value
+                    },
+                    body: JSON.stringify({
+                        packageId: parseInt(packageId)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update status badge
+                    const toggle = document.querySelector(`input[data-package-id="${packageId}"]`);
+                    const badge = toggle.parentElement.querySelector('.badge');
+                    
+                    if (toggle.checked) {
+                        badge.textContent = 'Active';
+                        badge.className = 'badge badge-light-success';
+                    } else {
+                        badge.textContent = 'Inactive';
+                        badge.className = 'badge badge-light-danger';
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Package status updated successfully!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    // Revert toggle if failed
+                    const toggle = document.querySelector(`input[data-package-id="${packageId}"]`);
+                    toggle.checked = !toggle.checked;
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'Failed to update package status',
+                        timer: 3000
+                    });
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+                
+                // Revert toggle if failed
+                const toggle = document.querySelector(`input[data-package-id="${packageId}"]`);
+                toggle.checked = !toggle.checked;
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the status',
+                    timer: 3000
+                });
+            }
+        }
+    });
+</script>
