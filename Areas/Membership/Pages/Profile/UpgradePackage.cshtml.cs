@@ -16,12 +16,14 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
         private readonly ICurrentUserService _currentUserService;
         private readonly IMediator _mediator;
         private readonly ApplicationDbContext _context;
+        private readonly ICurrencyService _currencyService;
 
-        public UpgradePackageModel(ICurrentUserService currentUserService, IMediator mediator, ApplicationDbContext context)
+        public UpgradePackageModel(ICurrentUserService currentUserService, IMediator mediator, ApplicationDbContext context, ICurrencyService currencyService)
         {
             _currentUserService = currentUserService;
             _mediator = mediator;
             _context = context;
+            _currencyService = currencyService;
         }
 
         public string CurrentPackageName { get; set; } = "Basic Package";
@@ -131,6 +133,20 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
                 ModelState.AddModelError(string.Empty, "Failed to submit upgrade request. Please try again.");
                 await OnGetAsync(); // Reload data
                 return Page();
+            }
+        }
+
+        public async Task<string> GetNairaEquivalentAsync(decimal usdAmount)
+        {
+            try
+            {
+                var nairaAmount = await _currencyService.ConvertAmountAsync(usdAmount, "USD", "NGN");
+                return $"₦{nairaAmount:N2}";
+            }
+            catch
+            {
+                // Fallback if currency service fails
+                return "₦N/A";
             }
         }
     }

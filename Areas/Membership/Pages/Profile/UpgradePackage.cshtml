@@ -118,7 +118,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">@package.Name</h5>
                                         <p class="card-text">@package.Description</p>
-                                        <p class="card-text"><strong>Price:</strong> @package.Price.ToString("C")</p>
+                                        <p class="card-text"><strong>Price:</strong> $@package.Price.ToString("N2")</p>
                                         
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upgradeModal_@package.Id">
                                             Request Upgrade to @package.Name
@@ -153,10 +153,71 @@
                                                                 <span asp-validation-for="PaymentDetails" class="text-danger"></span>
                                                                 <small class="text-muted">This information will help admin verify your payment.</small>
                                                             </div>
-                                                            <div class="alert alert-info">
-                                                                <strong>Note:</strong> Your upgrade request will be reviewed by an administrator. 
-                                                                Please ensure you have made the payment of <strong>@package.Price.ToString("C")</strong> 
-                                                                before submitting this request.
+                                                            <div class="alert alert-warning">
+                                                                <h5><i class="ki-duotone ki-bank fs-2 text-warning me-2">
+                                                                    <span class="path1"></span>
+                                                                    <span class="path2"></span>
+                                                                </i>Payment Instructions</h5>
+                                                                <div class="mb-3">
+                                                                    <strong>Package Price:</strong> $@package.Price.ToString("N2") 
+                                                                    (<span class="text-primary">@await Model.GetNairaEquivalentAsync(package.Price)</span> at current exchange rate)
+                                                                </div>
+                                                                
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body p-3">
+                                                                                <h6 class="text-success mb-2">
+                                                                                    <i class="ki-duotone ki-bank fs-3 text-success me-1">
+                                                                                        <span class="path1"></span>
+                                                                                        <span class="path2"></span>
+                                                                                    </i>Naira Payment
+                                                                                </h6>
+                                                                                <div class="text-dark">
+                                                                                    <strong>Bank:</strong> Stanbic IBTC<br>
+                                                                                    <strong>Account Name:</strong> SteadyGrowth Limited<br>
+                                                                                    <strong>Account Number:</strong> <span class="fw-bold text-primary">0060344712</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body p-3">
+                                                                                <h6 class="text-info mb-2">
+                                                                                    <i class="ki-duotone ki-bank fs-3 text-info me-1">
+                                                                                        <span class="path1"></span>
+                                                                                        <span class="path2"></span>
+                                                                                    </i>USD Payment
+                                                                                </h6>
+                                                                                <div class="text-dark">
+                                                                                    <strong>Bank:</strong> UBA<br>
+                                                                                    <strong>Account Name:</strong> SteadyGrowth Limited<br>
+                                                                                    <strong>Account Number:</strong> <span class="fw-bold text-primary">3004597381</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="separator my-3"></div>
+                                                                
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    <i class="ki-duotone ki-whatsapp fs-2 text-success me-2">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                    <span><strong>WhatsApp Support:</strong> <a href="https://wa.me/2348026744139" target="_blank" class="text-success">+234 802 674 4139</a></span>
+                                                                </div>
+                                                                
+                                                                <div class="alert alert-light-primary">
+                                                                    <i class="ki-duotone ki-information fs-2 text-primary me-2">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                        <span class="path3"></span>
+                                                                    </i>
+                                                                    <strong>Important:</strong> After making payment, upload your proof of payment in the form above or contact us via WhatsApp. Your upgrade request will be reviewed by an administrator.
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">

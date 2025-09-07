@@ -767,7 +767,7 @@
                                 item.style.cursor = 'pointer';
                                 item.innerHTML = `
                                     <div class="fw-bold">${property.title}</div>
-                                    <div class="text-muted small">${property.location} - $${property.price.toLocaleString()}</div>
+                                    <div class="text-muted small">${property.location} - ₦${property.price.toLocaleString()}</div>
                                     <div class="text-muted small">Owner: ${property.ownerName}</div>
                                 `;
                                 item.onclick = () => selectProperty(property);
@@ -797,7 +797,7 @@
                     <div class="alert alert-light-primary">
                         <strong>Selected Property:</strong> ${property.title}<br/>
                         <strong>Location:</strong> ${property.location}<br/>
-                        <strong>Price:</strong> $${property.price.toLocaleString()}<br/>
+                        <strong>Price:</strong> ₦${property.price.toLocaleString()}<br/>
                         <strong>Owner:</strong> ${property.ownerName}
                     </div>
                 `;

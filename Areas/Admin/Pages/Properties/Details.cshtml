@@ -15,7 +15,7 @@ else
         <strong>Title:</strong> @Model.Property.Title<br />
         <strong>User:</strong> @Model.Property.User?.Email<br />
         <strong>Location:</strong> @Model.Property.Location<br />
-        <strong>Price:</strong> @Model.Property.Price.ToString("C")<br />
+        <strong>Price:</strong> ₦@Model.Property.Price.ToString("N2")<br />
         <strong>Status:</strong> @Model.Property.Status<br />
         <strong>Description:</strong> @Model.Property.Description
     </div>

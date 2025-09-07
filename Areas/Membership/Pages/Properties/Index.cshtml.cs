@@ -57,23 +57,6 @@ public class IndexModel : PageModel
 
     public async Task<string> GetFormattedPriceWithUSDAsync(Property property)
     {
-        var currencyCode = property.CurrencyCode ?? "USD";
-        var currencySymbol = await _currencyService.GetCurrencySymbolAsync(currencyCode);
-        var originalPrice = $"{currencySymbol}{property.Price:N2}";
-
-        if (currencyCode == "USD")
-        {
-            return originalPrice;
-        }
-
-        try
-        {
-            var usdPrice = await _currencyService.ConvertAmountAsync(property.Price, currencyCode, "USD");
-            return $"{originalPrice} (${usdPrice:N2} USD)";
-        }
-        catch
-        {
-            return originalPrice;
-        }
+        return $"₦{property.Price:N2}";
     }
 }
