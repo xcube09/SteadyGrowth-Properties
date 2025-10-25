@@ -4,6 +4,17 @@
     ViewData["Title"] = "Register";
 }
 
+<style>
+    input[type="text"], input[type="email"], input[type="password"], input[type="submit"], textarea {
+        
+        margin-bottom: 0px;
+    }
+
+    div.form-group{
+        margin-bottom:30px!important;
+    }
+</style>
+
 <div class="ltn__login-area pb-110">
     <div class="container">
         <div class="row">
@@ -20,82 +31,85 @@
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
                 <div class="account-login-inner">
-                    <form id="registerForm" class="ltn__form-box contact-form-box">
-                        <div id="generalError" class="alert alert-danger" style="display:none;"></div>
-                        <div id="successMessage" class="alert alert-success" style="display:none;"></div>
-                        
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <form method="post" class="ltn__form-box contact-form-box">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
                         <div class="form-group">
-                            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name*" required />
-                            <span class="text-danger field-validation" data-field="firstName"></span>
+                            <input asp-for="FirstName" class="form-control" placeholder="First Name*" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name*" required />
-                            <span class="text-danger field-validation" data-field="lastName"></span>
+                            <input asp-for="LastName" class="form-control" placeholder="Last Name*" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Email*" required />
-                            <span class="text-danger field-validation" data-field="email"></span>
+                            <input asp-for="Email" class="form-control" placeholder="Email*" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="Phone Number (optional)" />
-                            <span class="text-danger field-validation" data-field="phoneNumber"></span>
+                            <input asp-for="PhoneNumber" type="text" class="form-control" placeholder="Phone Number (optional)" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             @if (!string.IsNullOrWhiteSpace(Model.ReferralCode))
                             {
-                                <input type="text" id="referralCode" name="referralCode" class="form-control" 
-                                       placeholder="Referral Code" value="@Model.ReferralCode" readonly />
+                                <input asp-for="ReferralCode" class="form-control" placeholder="Referral Code" readonly />
                             }
                             else
                             {
-                                <input type="text" id="referralCode" name="referralCode" class="form-control" 
-                                       placeholder="Referral Code (optional)" />
+                                <input asp-for="ReferralCode" class="form-control" placeholder="Referral Code (optional)" />
                             }
-                            <span class="text-danger field-validation" data-field="referralCode"></span>
+                            <span asp-validation-for="ReferralCode" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Password*" required />
-                            <span class="text-danger field-validation" data-field="password"></span>
+                            <input asp-for="Password" class="form-control" placeholder="Password*" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm Password*" required />
-                            <span class="text-danger field-validation" data-field="confirmPassword"></span>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password*" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
 
                         <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="consent1" name="consent1" required />
-                            <label class="form-check-label" for="consent1">
+                            <input asp-for="Consent1" class="form-check-input" />
+                            <label asp-for="Consent1" class="form-check-label">
                                 I consent to SteadyGrowth processing my personal data in order to send personalized marketing material in accordance with the consent form and the privacy policy.
                             </label>
-                            <span class="text-danger field-validation" data-field="consent1"></span>
+                            <span asp-validation-for="Consent1" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="form-check mb-3">
-                            <input type="checkbox" class="form-check-input" id="consent2" name="consent2" required />
-                            <label class="form-check-label" for="consent2">
+                            <input asp-for="Consent2" class="form-check-input" />
+                            <label asp-for="Consent2" class="form-check-label">
                                 By clicking "create account", I consent to the privacy policy.
                             </label>
-                            <span class="text-danger field-validation" data-field="consent2"></span>
+                            <span asp-validation-for="Consent2" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="btn-wrapper">
-                            <button class="theme-btn-1 btn reverse-color btn-block" type="submit" id="submitBtn">
+                            <button id="submitBtn" class="theme-btn-1 btn reverse-color btn-block" type="submit">
                                 <span id="btnText">CREATE ACCOUNT</span>
                                 <span id="btnSpinner" style="display:none;">
                                     <i class="fa fa-spinner fa-spin"></i> Creating Account...
                                 </span>
                             </button>
                         </div>
-                        
-                        <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+
                     </form>
-                    
+
                     <div class="by-agree text-center">
                         <p>By creating an account, you agree to our:</p>
                         <p><a href="#">TERMS OF CONDITIONS  &nbsp; &nbsp; | &nbsp; &nbsp;  PRIVACY POLICY</a></p>
@@ -111,207 +125,31 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
-    <!-- Google reCAPTCHA v3 -->
-    <script src="https://www.google.com/recaptcha/api.js?render=@ViewData["RecaptchaSiteKey"]"></script>
-    
-    <!-- jQuery Validation -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
-    
     <script>
         $(document).ready(function() {
-            // jQuery Validation setup
-            $("#registerForm").validate({
-                rules: {
-                    firstName: {
-                        required: true,
-                        maxlength: 100
-                    },
-                    lastName: {
-                        required: true,
-                        maxlength: 100
-                    },
-                    email: {
-                        required: true,
-                        email: true
-                    },
-                    phoneNumber: {
-                        // Optional field - no validation rules
-                    },
-                    password: {
-                        required: true,
-                        minlength: 6
-                    },
-                    confirmPassword: {
-                        required: true,
-                        equalTo: "#password"
-                    },
-                    consent1: {
-                        required: true
-                    },
-                    consent2: {
-                        required: true
-                    }
-                },
-                messages: {
-                    firstName: {
-                        required: "First name is required",
-                        maxlength: "First name must be less than 100 characters"
-                    },
-                    lastName: {
-                        required: "Last name is required",
-                        maxlength: "Last name must be less than 100 characters"
-                    },
-                    email: {
-                        required: "Email is required",
-                        email: "Please enter a valid email address"
-                    },
-                    password: {
-                        required: "Password is required",
-                        minlength: "Password must be at least 6 characters"
-                    },
-                    confirmPassword: {
-                        required: "Please confirm your password",
-                        equalTo: "Passwords do not match"
-                    },
-                    consent1: {
-                        required: "You must consent to data processing"
-                    },
-                    consent2: {
-                        required: "You must accept the privacy policy"
-                    }
-                },
-                errorPlacement: function(error, element) {
-                    var fieldName = element.attr('name');
-                    var errorContainer = $('.field-validation[data-field="' + fieldName + '"]');
-                    if (errorContainer.length) {
-                        errorContainer.html(error);
-                    } else {
-                        // For checkboxes, place error after the label
-                        if (element.attr('type') === 'checkbox') {
-                            error.insertAfter(element.closest('.form-check'));
-                        } else {
-                            error.insertAfter(element);
-                        }
-                    }
-                },
-                success: function(label, element) {
-                    var fieldName = $(element).attr('name');
-                    $('.field-validation[data-field="' + fieldName + '"]').html('');
-                    // Remove any error labels for checkboxes
-                    if ($(element).attr('type') === 'checkbox') {
-                        $(element).closest('.form-check').next('label.error').remove();
-                    }
-                },
-                submitHandler: function(form) {
-                    // Only submit if form is valid
-                    if ($(form).valid()) {
-                        submitRegistration();
-                    }
-                    return false; // Always prevent default form submission
-                },
-                invalidHandler: function(event, validator) {
-                    // Show general error message when form is invalid
-                    $('#generalError').html('Please correct the errors below and try again.').show();
-                }
-            });
+            $('form').on('submit', function(e) {
+                var form = this;
+                var submitBtn = $('#submitBtn');
 
-            function submitRegistration() {
-                // Clear previous messages (but not validation errors)
-                $('#generalError').hide().html('');
-                $('#successMessage').hide().html('');
-
-                // Double-check form validity before proceeding
-                if (!$('#registerForm').valid()) {
-                    $('#generalError').html('Please correct the errors below and try again.').show();
-                    return;
+                // Check if form is valid (using jQuery validation if present)
+                if (typeof $(form).valid === 'function' && !$(form).valid()) {
+                    return false;
                 }
 
-                // Show loading state
-                $('#submitBtn').prop('disabled', true);
+                // Prevent double submission
+                if (submitBtn.prop('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Disable button and show loading state
+                submitBtn.prop('disabled', true);
                 $('#btnText').hide();
                 $('#btnSpinner').show();
 
-                // Get reCAPTCHA token
-                if (typeof grecaptcha !== 'undefined' && '@ViewData["RecaptchaSiteKey"]' && '@ViewData["RecaptchaSiteKey"]' !== '') {
-                    grecaptcha.ready(function() {
-                        grecaptcha.execute('@ViewData["RecaptchaSiteKey"]', {action: 'register'}).then(function(token) {
-                            $('#recaptchaToken').val(token);
-                            performRegistration();
-                        });
-                    });
-                } else {
-                    // No reCAPTCHA configured, proceed without it
-                    performRegistration();
-                }
-            }
-
-            function performRegistration() {
-                var formData = {
-                    firstName: $('#firstName').val(),
-                    lastName: $('#lastName').val(),
-                    email: $('#email').val(),
-                    phoneNumber: $('#phoneNumber').val(),
-                    referralCode: $('#referralCode').val(),
-                    password: $('#password').val(),
-                    confirmPassword: $('#confirmPassword').val(),
-                    recaptchaToken: $('#recaptchaToken').val()
-                };
-
-                $.ajax({
-                    url: '/api/account/register',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#successMessage').html(response.message || 'Registration successful! Redirecting...').show();
-                            
-                            // Redirect after 2 seconds
-                            setTimeout(function() {
-                                window.location.href = response.redirectUrl || '/Membership/Dashboard/Index';
-                            }, 2000);
-                        } else {
-                            handleErrors(response);
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseJSON) {
-                            handleErrors(xhr.responseJSON);
-                        } else {
-                            $('#generalError').html('An error occurred. Please try again.').show();
-                        }
-                        resetButton();
-                    }
-                });
-            }
-
-            function handleErrors(response) {
-                if (response.errors) {
-                    // Handle field-specific errors
-                    for (var field in response.errors) {
-                        if (response.errors.hasOwnProperty(field)) {
-                            var fieldName = field.charAt(0).toLowerCase() + field.slice(1);
-                            var errors = response.errors[field];
-                            if (Array.isArray(errors)) {
-                                $('.field-validation[data-field="' + fieldName + '"]').html(errors.join('<br>'));
-                            }
-                        }
-                    }
-                } else if (response.message) {
-                    $('#generalError').html(response.message).show();
-                } else {
-                    $('#generalError').html('Registration failed. Please check your information and try again.').show();
-                }
-                resetButton();
-            }
-
-            function resetButton() {
-                $('#submitBtn').prop('disabled', false);
-                $('#btnText').show();
-                $('#btnSpinner').hide();
-            }
+                // Allow form to submit
+                return true;
+            });
         });
     </script>
 }

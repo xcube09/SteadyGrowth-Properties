@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /CHANGELOG.md
 /wwwroot/kycdocuments
 /nul
+/.claude/settings.local.json

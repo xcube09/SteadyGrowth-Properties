@@ -10,6 +10,7 @@ using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
 using SteadyGrowth.Web.Services.Implementations;
 using SteadyGrowth.Web.Authorization;
+using SteadyGrowth.Web.BackgroundServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using MediatR;
@@ -121,7 +122,7 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
 });
 
-builder.Services.AddRecaptchaService();
+// builder.Services.AddRecaptchaService(); // Disabled temporarily
 
 // Register services (Scoped)
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -137,6 +138,7 @@ builder.Services.AddScoped<IUpgradeRequestService, UpgradeRequestService>();
 builder.Services.AddScoped<IPropertyCommissionService, PropertyCommissionService>();
 builder.Services.AddScoped<IAcademyPackageService, AcademyPackageService>();
 builder.Services.AddScoped<PropertyService>();
+builder.Services.AddScoped<IKycStatusService, KycStatusService>();
 builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
 builder.Services.AddHttpClient();
 
@@ -144,7 +146,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddMediatR(typeof(Program).Assembly);
 
 // Register background services (Singleton)
-// builder.Services.AddHostedService<YourBackgroundService>(); // Example
+builder.Services.AddHostedService<KycStatusCorrectionService>();
 
 // Razor Pages with Areas
 builder.Services.AddRazorPages(options =>

@@ -88,6 +88,14 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.KYC
 
             var allDocuments = await _context.KYCDocuments.Where(d => d.UserId == userId).ToListAsync();
 
+            // If no documents at all, status is NotStarted
+            if (!allDocuments.Any())
+            {
+                user.KYCStatus = KYCStatus.NotStarted;
+                await _userManager.UpdateAsync(user);
+                return;
+            }
+
             bool hasApprovedIdentity = allDocuments.Any(d =>
                 (d.DocumentType == DocumentType.NationalID ||
                  d.DocumentType == DocumentType.Passport ||
@@ -99,22 +107,27 @@ namespace SteadyGrowth.Web.Areas.Admin.Pages.KYC
                  d.DocumentType == DocumentType.ProofOfAddress) &&
                 d.Status == DocumentStatus.Approved);
 
+            // Full approval - both document types approved
             if (hasApprovedIdentity && hasApprovedProofOfAddress)
             {
                 user.KYCStatus = KYCStatus.Approved;
             }
+            // Any document rejected - overall status is rejected
             else if (allDocuments.Any(d => d.Status == DocumentStatus.Rejected))
             {
                 user.KYCStatus = KYCStatus.Rejected;
             }
-            else if (allDocuments.Any(d => d.Status == DocumentStatus.Pending))
+            // Documents exist (submitted/approved) - keep as Submitted
+            else if (allDocuments.Any(d => d.Status == DocumentStatus.Pending || d.Status == DocumentStatus.Approved))
             {
                 user.KYCStatus = KYCStatus.Submitted;
             }
+            // Should never reach here if documents exist, but safety fallback
             else
             {
                 user.KYCStatus = KYCStatus.NotStarted;
             }
+
             await _userManager.UpdateAsync(user);
         }
     }

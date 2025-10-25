@@ -6,7 +6,6 @@ using SteadyGrowth.Web.Models.Entities;
 using SteadyGrowth.Web.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Transactions;
-using Griesoft.AspNetCore.ReCaptcha;
 
 namespace SteadyGrowth.Web.Controllers.Api
 {
@@ -39,7 +38,7 @@ namespace SteadyGrowth.Web.Controllers.Api
         {
             try
             {
-                // Check if ModelState is valid (includes reCAPTCHA validation)
+                // Check if ModelState is valid
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState
@@ -224,6 +223,5 @@ namespace SteadyGrowth.Web.Controllers.Api
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        public string? RecaptchaToken { get; set; }
     }
 }
