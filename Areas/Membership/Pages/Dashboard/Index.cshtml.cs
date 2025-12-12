@@ -53,6 +53,7 @@ public class IndexModel : PageModel
     public bool HasUpgradeOpportunity { get; set; }
     public UpgradeRequest? PendingUpgradeRequest { get; set; }
     public bool IsPremiumUser { get; set; }
+    public bool HasNoPackage { get; set; }
 
     public async Task OnGetAsync()
     {
@@ -85,10 +86,13 @@ public class IndexModel : PageModel
         // Calculate commission growth (simplified example)
         CommissionGrowthPercentage = ReferralStats?.TotalCommissionEarned > 0 ? 15.5m : 0;
         
+        // Check if user has no package
+        HasNoPackage = user.AcademyPackageId == null;
+
         // Check if user is premium
         IsPremiumUser = user.AcademyPackage?.Name == "Premium Package";
-        
-        // Check if user can upgrade academy package (not premium and no pending request)
+
+        // Check if user can upgrade/purchase academy package (not premium and no pending request)
         HasUpgradeOpportunity = !IsPremiumUser;
         
         // Check for pending upgrade request

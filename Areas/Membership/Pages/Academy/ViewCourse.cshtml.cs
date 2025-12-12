@@ -31,13 +31,22 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
         public List<CourseSegmentWithProgress> Segments { get; set; } = new();
         public CourseProgress? UserProgress { get; set; }
         public int CurrentSegmentIndex { get; set; } = 0;
+        public bool HasNoPackage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int courseId, int? segmentIndex = null)
         {
-            var user = await _currentUserService.GetCurrentUserAsync();
+            var user = await _currentUserService.GetCurrentUserWithDetailsAsync(includePackage: true);
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");
+            }
+
+            // Check if user has a package
+            HasNoPackage = user.AcademyPackageId == null;
+            if (HasNoPackage)
+            {
+                TempData["ErrorMessage"] = "You need to purchase a package to access course content.";
+                return RedirectToPage("/Profile/UpgradePackage");
             }
 
             // Get course details
@@ -83,10 +92,16 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
 
         public async Task<IActionResult> OnPostMarkSegmentCompleteAsync(int segmentId)
         {
-            var user = await _currentUserService.GetCurrentUserAsync();
+            var user = await _currentUserService.GetCurrentUserWithDetailsAsync(includePackage: true);
             if (user == null)
             {
                 return RedirectToPage("/Identity/Login");
+            }
+
+            // Check if user has a package
+            if (user.AcademyPackageId == null)
+            {
+                return new JsonResult(new { success = false, message = "You need to purchase a package to access course content." });
             }
 
             var command = new MarkSegmentCompleteCommand

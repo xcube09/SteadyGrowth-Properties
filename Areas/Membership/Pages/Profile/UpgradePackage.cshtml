@@ -1,13 +1,13 @@
 @page
 @model SteadyGrowth.Web.Areas.Membership.Pages.Profile.UpgradePackageModel
 @{
-    ViewData["Title"] = "Request Package Upgrade";
+    ViewData["Title"] = Model.HasNoPackage ? "Select Package" : "Upgrade Package";
 }
 
 <div class="card mb-5 mb-xl-10">
     <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
         <div class="card-title m-0">
-            <h3 class="fw-bold m-0">Request Academy Package Upgrade</h3>
+            <h3 class="fw-bold m-0">@(Model.HasNoPackage ? "Select Academy Package" : "Upgrade Academy Package")</h3>
         </div>
     </div>
     <div id="kt_account_profile_details" class="collapse show">
@@ -32,8 +32,8 @@
                 <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
                     <i class="ki-duotone ki-information fs-2hx text-warning me-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                     <div class="d-flex flex-column">
-                        <h4 class="mb-1 text-warning">Upgrade Request Pending</h4>
-                        <span>You have a pending upgrade request for <strong>@Model.PendingRequest.RequestedPackage.Name</strong>. Please wait for admin approval.</span>
+                        <h4 class="mb-1 text-warning">Package Request Pending</h4>
+                        <span>You have a pending request for <strong>@Model.PendingRequest.RequestedPackage.Name</strong>. Please wait for admin approval.</span>
                         <small class="text-muted mt-1">Submitted on: @Model.PendingRequest.RequestedAt.ToString("MMM dd, yyyy HH:mm")</small>
                     </div>
                 </div>
@@ -107,30 +107,41 @@
             }
             else if (Model.PendingRequest == null)
             {
-                <h4 class="mt-5">Available Packages:</h4>
+                @if (Model.HasNoPackage)
+                {
+                    <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                        <i class="ki-duotone ki-information fs-2hx text-info me-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-info">No Active Package</h4>
+                            <span>You don't have an active package yet. Select a package below to get started with our academy courses.</span>
+                        </div>
+                    </div>
+                }
+                <h4 class="mt-5">@(Model.HasNoPackage ? "Select a Package:" : "Available Packages:")</h4>
                 @if (Model.AvailablePackages != null && Model.AvailablePackages.Any())
                 {
                     <div class="row">
                         @foreach (var package in Model.AvailablePackages)
                         {
+                            var actionText = Model.HasNoPackage ? "Select" : "Upgrade to";
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">@package.Name</h5>
                                         <p class="card-text">@package.Description</p>
                                         <p class="card-text"><strong>Price:</strong> $@package.Price.ToString("N2")</p>
-                                        
+
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upgradeModal_@package.Id">
-                                            Request Upgrade to @package.Name
+                                            @actionText @package.Name
                                         </button>
-                                        
+
                                         <!-- Modal for this package -->
                                         <div class="modal fade" id="upgradeModal_@package.Id" tabindex="-1" aria-labelledby="upgradeModalLabel_@package.Id" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <form method="post" asp-page-handler="SubmitRequest" asp-route-packageId="@package.Id">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="upgradeModalLabel_@package.Id">Request Upgrade to @package.Name</h5>
+                                                            <h5 class="modal-title" id="upgradeModalLabel_@package.Id">@actionText @package.Name</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
@@ -216,13 +227,13 @@
                                                                         <span class="path2"></span>
                                                                         <span class="path3"></span>
                                                                     </i>
-                                                                    <strong>Important:</strong> After making payment, upload your proof of payment in the form above or contact us via WhatsApp. Your upgrade request will be reviewed by an administrator.
+                                                                    <strong>Important:</strong> After making payment, upload your proof of payment in the form above or contact us via WhatsApp. Your request will be reviewed by an administrator.
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-primary">Submit Upgrade Request</button>
+                                                            <button type="submit" class="btn btn-primary">Submit Request</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -236,14 +247,14 @@
                 }
                 else
                 {
-                    <p>No other packages available for upgrade.</p>
+                    <p>No packages available.</p>
                 }
             }
             else
             {
                 <div class="text-center py-5">
-                    <p class="text-muted">You cannot request another upgrade while you have a pending request.</p>
-                    <a href="/Membership/Profile/UpgradeStatus" class="btn btn-light-primary">View My Upgrade Requests</a>
+                    <p class="text-muted">You cannot submit another request while you have a pending request.</p>
+                    <a href="/Membership/Profile/UpgradeStatus" class="btn btn-light-primary">View My Package Requests</a>
                 </div>
             }
         </div>

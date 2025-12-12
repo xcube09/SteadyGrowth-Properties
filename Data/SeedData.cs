@@ -173,7 +173,7 @@ namespace SteadyGrowth.Web.Data
                 {
                     Name = "Basic Package",
                     Description = "Access to fundamental real estate courses.",
-                    Price = 0.00m,
+                    Price = 50.00m,
                     IsActive = true
                 };
                 premiumPackage = new AcademyPackage

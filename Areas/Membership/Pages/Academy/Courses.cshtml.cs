@@ -27,6 +27,8 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
         public Dictionary<int, CourseProgress?> UserCourseProgress { get; set; } = new Dictionary<int, CourseProgress?>();
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 9; // Display 9 courses per page
+        public bool HasNoPackage { get; set; }
+        public bool HasPackage { get; set; }
 
         public async Task OnGetAsync(int pageIndex = 1)
         {
@@ -35,6 +37,8 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Academy
             PageIndex = pageIndex;
 
             var user = await _currentUserService.GetCurrentUserWithDetailsAsync(includePackage: true);
+            HasNoPackage = user?.AcademyPackageId == null;
+            HasPackage = !HasNoPackage;
             bool isPremiumMember = user?.AcademyPackageId != null;
 
             var query = new GetPaginatedCoursesQuery

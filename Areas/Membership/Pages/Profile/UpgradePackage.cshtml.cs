@@ -26,10 +26,11 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             _currencyService = currencyService;
         }
 
-        public string CurrentPackageName { get; set; } = "Basic Package";
+        public string CurrentPackageName { get; set; } = "No Package";
         public IList<AcademyPackage> AvailablePackages { get; set; } = new List<AcademyPackage>();
         public UpgradeRequest? PendingRequest { get; set; }
         public bool IsPremiumUser { get; set; }
+        public bool HasNoPackage { get; set; }
         
         [BindProperty, Required, StringLength(50)]
         public string PaymentMethod { get; set; } = string.Empty;
@@ -39,7 +40,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ViewData["Breadcrumb"] = new List<(string, string)> { ("My Profile", "/Membership/Profile/Index"), ("Upgrade Package", "/Membership/Profile/UpgradePackage") };
+            ViewData["Breadcrumb"] = new List<(string, string)> { ("My Profile", "/Membership/Profile/Index"), ("Select Package", "/Membership/Profile/UpgradePackage") };
 
             var userId = _currentUserService.GetUserId();
             if (string.IsNullOrEmpty(userId))
@@ -48,15 +49,23 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             }
 
             var user = await _currentUserService.GetCurrentUserWithDetailsAsync(includePackage: true);
+
+            // Check if user has no package
+            HasNoPackage = user?.AcademyPackage == null;
+
             if (user != null && user.AcademyPackage != null)
             {
                 CurrentPackageName = user.AcademyPackage.Name;
             }
-            
+            else
+            {
+                CurrentPackageName = "No Package";
+            }
+
             // Check if user is already on Premium Package
             IsPremiumUser = CurrentPackageName == "Premium Package";
 
-            // Check for pending upgrade request
+            // Check for pending package request
             PendingRequest = await _context.UpgradeRequests
                 .Include(ur => ur.RequestedPackage)
                 .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.Status == UpgradeRequestStatus.Pending);
@@ -64,18 +73,17 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             var query = new GetAvailableAcademyPackagesQuery();
             var allPackages = await _mediator.Send(query);
 
-            // Debug: Log all packages for troubleshooting
-            Console.WriteLine($"Current Package: {CurrentPackageName}");
-            Console.WriteLine($"Total packages found: {allPackages.Count}");
-            foreach (var pkg in allPackages)
+            // For users with no package, show ALL packages (Basic + Premium)
+            // For users with Basic package, show only Premium (upgrade)
+            if (HasNoPackage)
             {
-                Console.WriteLine($"Package: {pkg.Name}, Price: {pkg.Price:C}, Active: {pkg.IsActive}");
+                AvailablePackages = allPackages.ToList();
             }
-
-            // Filter out the current package from available packages
-            AvailablePackages = allPackages.Where(p => p.Name != CurrentPackageName).ToList();
-            
-            Console.WriteLine($"Available packages after filtering: {AvailablePackages.Count}");
+            else
+            {
+                // Filter out the current package from available packages
+                AvailablePackages = allPackages.Where(p => p.Name != CurrentPackageName).ToList();
+            }
 
             return Page();
         }
@@ -109,7 +117,7 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
 
             if (existingRequest != null)
             {
-                ModelState.AddModelError(string.Empty, "You already have a pending upgrade request. Please wait for admin approval.");
+                ModelState.AddModelError(string.Empty, "You already have a pending package request. Please wait for admin approval.");
                 await OnGetAsync(); // Reload data
                 return Page();
             }
@@ -125,12 +133,12 @@ namespace SteadyGrowth.Web.Areas.Membership.Pages.Profile
             try
             {
                 var result = await _mediator.Send(command);
-                TempData["SuccessMessage"] = "Your upgrade request has been submitted successfully. An admin will review it shortly.";
+                TempData["SuccessMessage"] = "Your package request has been submitted successfully. An admin will review it shortly.";
                 return RedirectToPage("./UpgradePackage");
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "Failed to submit upgrade request. Please try again.");
+                ModelState.AddModelError(string.Empty, "Failed to submit package request. Please try again.");
                 await OnGetAsync(); // Reload data
                 return Page();
             }

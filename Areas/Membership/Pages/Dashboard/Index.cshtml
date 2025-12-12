@@ -47,7 +47,7 @@
                         <div class="d-flex flex-wrap">
                             <div class="border border-white border-dashed rounded p-3 me-3 mb-3">
                                 <span class="text-white fw-semibold fs-7">Membership Level</span>
-                                <h6 class="text-white fw-bold mb-0">@(Model.CurrentUser?.AcademyPackage?.Name ?? "Basic Package")</h6>
+                                <h6 class="text-white fw-bold mb-0">@(Model.CurrentUser?.AcademyPackage?.Name ?? "No Package")</h6>
                             </div>
                             <div class="border border-white border-dashed rounded p-3 me-3 mb-3">
                                 <span class="text-white fw-semibold fs-7">Profile Completion</span>
@@ -76,7 +76,16 @@
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                     <span class="path3"></span>
-                                </i>Upgrade Pending
+                                </i>Request Pending
+                            </a>
+                        }
+                        else if (Model.HasNoPackage)
+                        {
+                            <a href="/Membership/Profile/UpgradePackage" class="btn btn-bg-white btn-active-color-primary btn-color-primary">
+                                <i class="ki-duotone ki-rocket fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>Select Package
                             </a>
                         }
                         else if (Model.HasUpgradeOpportunity)
@@ -254,7 +263,7 @@
             <div class="card-header pt-7 pb-0">
                 <div class="card-title d-flex flex-column w-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="fs-6 fw-bold text-white">@(Model.CurrentUser?.AcademyPackage?.Name ?? "Basic Package")</span>
+                        <span class="fs-6 fw-bold text-white">@(Model.CurrentUser?.AcademyPackage?.Name ?? "No Package")</span>
                         <i class="ki-duotone ki-book text-white fs-2x opacity-50">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -272,8 +281,13 @@
                 }
                 else if (Model.PendingUpgradeRequest != null)
                 {
-                    <div class="text-white opacity-75 fs-7 mb-2">⏳ Upgrade request pending</div>
+                    <div class="text-white opacity-75 fs-7 mb-2">⏳ Package request pending</div>
                     <a href="/Membership/Profile/UpgradeStatus" class="btn btn-sm btn-white btn-active-warning">View Status</a>
+                }
+                else if (Model.HasNoPackage)
+                {
+                    <div class="text-white opacity-75 fs-7 mb-2">📦 Select a package to access courses</div>
+                    <a href="/Membership/Profile/UpgradePackage" class="btn btn-sm btn-white btn-active-primary">Select Package</a>
                 }
                 else if (Model.HasUpgradeOpportunity)
                 {
@@ -327,7 +341,7 @@
                                     <span class="path2"></span>
                                     <span class="path3"></span>
                                 </i>
-                                <span class="d-block fw-semibold fs-7">Upgrade Status</span>
+                                <span class="d-block fw-semibold fs-7">Request Status</span>
                             </a>
                         }
                         else

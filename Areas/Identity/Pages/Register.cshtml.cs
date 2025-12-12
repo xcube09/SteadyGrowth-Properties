@@ -7,9 +7,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using SteadyGrowth.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
+using SteadyGrowth.Web.Application.Commands.UpgradeRequests;
 
 namespace SteadyGrowth.Web.Areas.Identity.Pages;
 
@@ -70,18 +72,35 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
     [Required(ErrorMessage = "You must accept the privacy policy")]
     [Display(Name = "Privacy Policy Consent")]
     public bool Consent2 { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessage = "Please select a package")]
+    [Display(Name = "Selected Package")]
+    public int SelectedPackageId { get; set; }
+
+    public IList<AcademyPackage> AvailablePackages { get; set; } = new List<AcademyPackage>();
     public string? ErrorMessage { get; set; }
 
-    public void OnGet(string? referrerId = null)
+    public async Task OnGetAsync(string? referrerId = null)
     {
         ReferralCode = referrerId;
-        // reCAPTCHA disabled
+        // Load available packages
+        AvailablePackages = await _context.AcademyPackages
+            .Where(p => p.IsActive)
+            .OrderBy(p => p.Price)
+            .ToListAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         try
         {
+            // Load packages for re-display if validation fails
+            AvailablePackages = await _context.AcademyPackages
+                .Where(p => p.IsActive)
+                .OrderBy(p => p.Price)
+                .ToListAsync();
+
             // Check if ModelState is valid
             if (!ModelState.IsValid)
             {
@@ -123,15 +142,8 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
 
                 if (result.Succeeded)
                 {
-                    // Assign Basic Package by default
-                    var basicPackage = await _context.AcademyPackages
-                        .FirstOrDefaultAsync(p => p.Name == "Basic Package");
-
-                    if (basicPackage != null)
-                    {
-                        user.AcademyPackageId = basicPackage.Id;
-                        await _userManager.UpdateAsync(user);
-                    }
+                    // Note: Users now register without a package
+                    // They must purchase Basic ($50) or Premium ($50,000) after registration
 
                     // Process referral if provided
                     _logger.LogInformation("Processing registration for user {UserId}. Referral code provided: '{ReferralCode}'",
@@ -184,6 +196,24 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
                         _logger.LogInformation("No referral code provided for user {UserId}", user.Id);
                     }
 
+                    // Create UpgradeRequest for selected package
+                    if (SelectedPackageId > 0)
+                    {
+                        var upgradeRequest = new UpgradeRequest
+                        {
+                            UserId = user.Id,
+                            RequestedPackageId = SelectedPackageId,
+                            PaymentMethod = "Pending Payment",
+                            PaymentDetails = "Package selected during registration",
+                            Status = UpgradeRequestStatus.Pending,
+                            RequestedAt = DateTime.UtcNow
+                        };
+                        _context.UpgradeRequests.Add(upgradeRequest);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Created upgrade request for user {UserId} with package {PackageId}",
+                            user.Id, SelectedPackageId);
+                    }
+
                     // Sign in the user
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -192,7 +222,7 @@ namespace SteadyGrowth.Web.Areas.Identity.Pages;
 
                     _logger.LogInformation("User {Email} registered successfully", Email);
 
-                    TempData["SuccessMessage"] = "Registration successful! Welcome to SteadyGrowth.";
+                    TempData["SuccessMessage"] = "Registration successful! Welcome to SteadyGrowth. Your package request is pending approval. Please complete payment to activate your package.";
                     return RedirectToPage("/Dashboard/Index", new { area = "Membership" });
                 }
                 else

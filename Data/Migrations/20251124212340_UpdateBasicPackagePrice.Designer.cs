@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteadyGrowth.Web.Data;
 
@@ -11,9 +12,11 @@ using SteadyGrowth.Web.Data;
 namespace SteadyGrowth.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124212340_UpdateBasicPackagePrice")]
+    partial class UpdateBasicPackagePrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -671,92 +674,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.HasIndex("ReferrerId");
 
                     b.ToTable("Referrals");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.ReferralCommission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademyPackageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BeneficiaryUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("CommissionAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SourceUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("WalletTransactionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademyPackageId");
-
-                    b.HasIndex("BeneficiaryUserId");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("SourceUserId");
-
-                    b.HasIndex("WalletTransactionId");
-
-                    b.ToTable("ReferralCommissions");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.ReferralCommissionLevel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademyPackageId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("CommissionAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademyPackageId");
-
-                    b.HasIndex("IsActive");
-
-                    b.HasIndex("Level", "AcademyPackageId")
-                        .IsUnique();
-
-                    b.ToTable("ReferralCommissionLevels");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Reward", b =>
@@ -1443,51 +1360,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.Navigation("ReferredUser");
 
                     b.Navigation("Referrer");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.ReferralCommission", b =>
-                {
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "AcademyPackage")
-                        .WithMany()
-                        .HasForeignKey("AcademyPackageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "BeneficiaryUser")
-                        .WithMany()
-                        .HasForeignKey("BeneficiaryUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.User", "SourceUser")
-                        .WithMany()
-                        .HasForeignKey("SourceUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.WalletTransaction", "WalletTransaction")
-                        .WithMany()
-                        .HasForeignKey("WalletTransactionId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AcademyPackage");
-
-                    b.Navigation("BeneficiaryUser");
-
-                    b.Navigation("SourceUser");
-
-                    b.Navigation("WalletTransaction");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.ReferralCommissionLevel", b =>
-                {
-                    b.HasOne("SteadyGrowth.Web.Models.Entities.AcademyPackage", "AcademyPackage")
-                        .WithMany()
-                        .HasForeignKey("AcademyPackageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("AcademyPackage");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.Reward", b =>

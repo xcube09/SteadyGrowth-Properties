@@ -139,6 +139,7 @@ builder.Services.AddScoped<IPropertyCommissionService, PropertyCommissionService
 builder.Services.AddScoped<IAcademyPackageService, AcademyPackageService>();
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IKycStatusService, KycStatusService>();
+builder.Services.AddScoped<IReferralCommissionService, ReferralCommissionService>();
 builder.Services.AddScoped<IAuthorizationHandler, KYCRequirementHandler>();
 builder.Services.AddHttpClient();
 

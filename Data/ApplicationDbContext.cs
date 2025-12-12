@@ -36,6 +36,8 @@ namespace SteadyGrowth.Web.Data
         public DbSet<CurrencyExchangeRate> CurrencyExchangeRates { get; set; }
         public DbSet<SystemSettings> SystemSettings { get; set; }
         public DbSet<PropertyCommission> PropertyCommissions { get; set; }
+        public DbSet<ReferralCommissionLevel> ReferralCommissionLevels { get; set; }
+        public DbSet<ReferralCommission> ReferralCommissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -302,6 +304,45 @@ namespace SteadyGrowth.Web.Data
                       .OnDelete(DeleteBehavior.SetNull);
                 entity.HasIndex(e => e.UserId);
                 entity.HasIndex(e => e.PropertyId);
+                entity.HasIndex(e => e.CreatedAt);
+            });
+
+            // ReferralCommissionLevel configurations
+            builder.Entity<ReferralCommissionLevel>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CommissionAmount).HasPrecision(18, 2);
+                entity.HasOne(e => e.AcademyPackage)
+                      .WithMany()
+                      .HasForeignKey(e => e.AcademyPackageId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => new { e.Level, e.AcademyPackageId }).IsUnique();
+                entity.HasIndex(e => e.IsActive);
+            });
+
+            // ReferralCommission configurations
+            builder.Entity<ReferralCommission>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CommissionAmount).HasPrecision(18, 2);
+                entity.HasOne(e => e.BeneficiaryUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.BeneficiaryUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.SourceUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.SourceUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.AcademyPackage)
+                      .WithMany()
+                      .HasForeignKey(e => e.AcademyPackageId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.WalletTransaction)
+                      .WithMany()
+                      .HasForeignKey(e => e.WalletTransactionId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(e => e.BeneficiaryUserId);
+                entity.HasIndex(e => e.SourceUserId);
                 entity.HasIndex(e => e.CreatedAt);
             });
         }

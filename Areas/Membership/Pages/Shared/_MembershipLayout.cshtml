@@ -95,6 +95,10 @@
                                                 {
                                                     <span class="badge badge-light-info mt-1">@currentUser.AcademyPackage.Name</span>
                                                 }
+                                                else
+                                                {
+                                                    <span class="badge badge-light-warning mt-1">No Package</span>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -105,7 +109,13 @@
                                     <div class="menu-item px-5">
                                         <a href="#" class="menu-link px-5" data-bs-toggle="modal" data-bs-target="#referralLinkModal">Referral Link</a>
                                     </div>
-                                    @if (currentUser != null && (currentUser.AcademyPackage == null || currentUser.AcademyPackage.Name != "Premium Package"))
+                                    @if (currentUser != null && currentUser.AcademyPackage == null)
+                                    {
+                                        <div class="menu-item px-5">
+                                            <a asp-area="Membership" asp-page="/Profile/UpgradePackage" class="menu-link px-5">Select Package</a>
+                                        </div>
+                                    }
+                                    else if (currentUser != null && currentUser.AcademyPackage?.Name != "Premium Package")
                                     {
                                         <div class="menu-item px-5">
                                             <a href="#" class="menu-link px-5" data-bs-toggle="modal" data-bs-target="#upgradePackageModal">Upgrade to Premium</a>
