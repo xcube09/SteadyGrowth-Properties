@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteadyGrowth.Web.Data;
 
@@ -11,9 +12,11 @@ using SteadyGrowth.Web.Data;
 namespace SteadyGrowth.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251216071937_AddPendingRegistrationTable")]
+    partial class AddPendingRegistrationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -425,134 +428,6 @@ namespace SteadyGrowth.Web.Data.Migrations
                     b.HasIndex("CurrencyId", "EffectiveDate");
 
                     b.ToTable("CurrencyExchangeRates");
-                });
-
-            modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.FreelancerApplication", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AcceptedTermsAndDeclaration")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("AdminNotes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("ApplicantSignature")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("Availability")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CurrentResidentialAddress")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("LanguagesSpoken")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Nationality")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("PreviousFirmsOrAgencies")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("RecentSalesOrCampaignResults")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReviewedByUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("SignatureDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("SkillClientProspecting")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SkillMarketKnowledge")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SkillPropertyViewing")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SocialMediaLinks")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("SpecCommercialProperties")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SpecLeadGeneration")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SpecOffPlanProjectMarketing")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SpecOthers")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SpecOthersDescription")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<bool>("SpecResidentialSales")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SpecSocialMediaAdvertising")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("WillingToWorkOnCommission")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("YearsOfExperience")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("Email");
-
-                    b.HasIndex("Status");
-
-                    b.ToTable("FreelancerApplications");
                 });
 
             modelBuilder.Entity("SteadyGrowth.Web.Models.Entities.KYCDocument", b =>

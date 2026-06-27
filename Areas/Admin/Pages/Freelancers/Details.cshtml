@@ -1,0 +1,520 @@
+@page "{id:int}"
+@model SteadyGrowth.Web.Areas.Admin.Pages.Freelancers.DetailsModel
+@using SteadyGrowth.Web.Models.Enums
+@{
+    ViewData["Title"] = "Freelancer Application Details";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (Model.Application != null)
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Personal Information -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Personal Information</h3>
+                    </div>
+                    <div class="card-toolbar">
+                        <span class="badge @GetStatusBadgeClass(Model.Application.Status) fw-bold fs-6">@GetStatusDisplayName(Model.Application.Status)</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Full Name</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800">@Model.Application.FullName</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Email</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.Email</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Phone Number</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.PhoneNumber</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Nationality</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.Nationality</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Residential Address</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.CurrentResidentialAddress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Background -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Professional Background</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Years of Experience</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@(Model.Application.YearsOfExperience?.ToString() ?? "Not specified") years</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Previous Firms/Agencies</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@(Model.Application.PreviousFirmsOrAgencies ?? "Not specified")</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Languages Spoken</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@(Model.Application.LanguagesSpoken ?? "Not specified")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Areas of Specialization -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Areas of Specialization</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (Model.Application.SpecResidentialSales)
+                        {
+                            <span class="badge badge-light-primary fs-7 fw-semibold">Residential Sales</span>
+                        }
+                        @if (Model.Application.SpecCommercialProperties)
+                        {
+                            <span class="badge badge-light-primary fs-7 fw-semibold">Commercial Properties</span>
+                        }
+                        @if (Model.Application.SpecOffPlanProjectMarketing)
+                        {
+                            <span class="badge badge-light-primary fs-7 fw-semibold">Off-Plan Project Marketing</span>
+                        }
+                        @if (Model.Application.SpecLeadGeneration)
+                        {
+                            <span class="badge badge-light-primary fs-7 fw-semibold">Lead Generation</span>
+                        }
+                        @if (Model.Application.SpecSocialMediaAdvertising)
+                        {
+                            <span class="badge badge-light-primary fs-7 fw-semibold">Social Media Advertising</span>
+                        }
+                        @if (Model.Application.SpecOthers && !string.IsNullOrEmpty(Model.Application.SpecOthersDescription))
+                        {
+                            <span class="badge badge-light-secondary fs-7 fw-semibold">@Model.Application.SpecOthersDescription</span>
+                        }
+                        @if (!Model.Application.SpecResidentialSales && !Model.Application.SpecCommercialProperties &&
+                             !Model.Application.SpecOffPlanProjectMarketing && !Model.Application.SpecLeadGeneration &&
+                             !Model.Application.SpecSocialMediaAdvertising && !Model.Application.SpecOthers)
+                        {
+                            <span class="text-muted">No specializations selected</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills & Competencies -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Skills & Competencies</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (Model.Application.SkillClientProspecting)
+                        {
+                            <span class="badge badge-light-success fs-7 fw-semibold">Client Prospecting</span>
+                        }
+                        @if (Model.Application.SkillPropertyViewing)
+                        {
+                            <span class="badge badge-light-success fs-7 fw-semibold">Property Viewing</span>
+                        }
+                        @if (Model.Application.SkillMarketKnowledge)
+                        {
+                            <span class="badge badge-light-success fs-7 fw-semibold">Market Knowledge</span>
+                        }
+                        @if (!Model.Application.SkillClientProspecting && !Model.Application.SkillPropertyViewing && !Model.Application.SkillMarketKnowledge)
+                        {
+                            <span class="text-muted">No skills selected</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability & Work Structure -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Availability & Work Structure</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Availability</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800">@GetAvailabilityDisplayName(Model.Application.Availability)</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Willing to Work on Commission</label>
+                        <div class="col-lg-8">
+                            @if (Model.Application.WillingToWorkOnCommission)
+                            {
+                                <span class="badge badge-light-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-light-danger">No</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Portfolio</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Social Media Links</label>
+                        <div class="col-lg-8">
+                            @if (!string.IsNullOrEmpty(Model.Application.SocialMediaLinks))
+                            {
+                                <span class="fw-semibold fs-6 text-gray-800" style="white-space: pre-wrap;">@Model.Application.SocialMediaLinks</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not provided</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Recent Sales/Campaign Results</label>
+                        <div class="col-lg-8">
+                            @if (!string.IsNullOrEmpty(Model.Application.RecentSalesOrCampaignResults))
+                            {
+                                <span class="fw-semibold fs-6 text-gray-800" style="white-space: pre-wrap;">@Model.Application.RecentSalesOrCampaignResults</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not provided</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Declaration & Signature -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Declaration & Signature</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Terms Accepted</label>
+                        <div class="col-lg-8">
+                            @if (Model.Application.AcceptedTermsAndDeclaration)
+                            {
+                                <span class="badge badge-light-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-light-danger">No</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Applicant Signature</label>
+                        <div class="col-lg-8">
+                            <span class="fw-bold fs-6 text-gray-800 fst-italic">@Model.Application.ApplicantSignature</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Signature Date</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.SignatureDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                    </div>
+                    <div class="row mb-7">
+                        <label class="col-lg-4 fw-semibold text-muted">Application Submitted</label>
+                        <div class="col-lg-8">
+                            <span class="fw-semibold fs-6 text-gray-800">@Model.Application.CreatedAt.ToString("MMMM dd, yyyy 'at' HH:mm")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Review Info (if reviewed) -->
+            @if (Model.Application.ReviewedAt.HasValue)
+            {
+                <div class="card card-flush mb-6">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="fw-bold m-0">Admin Review</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-semibold text-muted">Reviewed At</label>
+                            <div class="col-lg-8">
+                                <span class="fw-semibold fs-6 text-gray-800">@Model.Application.ReviewedAt.Value.ToString("MMMM dd, yyyy 'at' HH:mm")</span>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Application.AdminNotes))
+                        {
+                            <div class="row mb-7">
+                                <label class="col-lg-4 fw-semibold text-muted">Admin Notes</label>
+                                <div class="col-lg-8">
+                                    <span class="fw-semibold fs-6 text-gray-800" style="white-space: pre-wrap;">@Model.Application.AdminNotes</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Actions Card -->
+            <div class="card card-flush mb-6">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Actions</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    @if (Model.Application.Status == FreelancerApplicationStatus.Pending || Model.Application.Status == FreelancerApplicationStatus.UnderReview)
+                    {
+                        <div class="d-flex flex-column gap-5">
+                            <!-- Approve Button -->
+                            <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                <i class="ki-duotone ki-check fs-2 me-2"></i>
+                                Approve Application
+                            </button>
+
+                            <!-- Mark Under Review Button (only if Pending) -->
+                            @if (Model.Application.Status == FreelancerApplicationStatus.Pending)
+                            {
+                                <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#underReviewModal">
+                                    <i class="ki-duotone ki-time fs-2 me-2"></i>
+                                    Mark Under Review
+                                </button>
+                            }
+
+                            <!-- Reject Button -->
+                            <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="ki-duotone ki-cross fs-2 me-2"></i>
+                                Reject Application
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="ki-duotone ki-information-5 fs-3x text-muted mb-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <p class="text-muted">This application has already been processed.</p>
+                        </div>
+                    }
+
+                    <div class="separator my-7"></div>
+
+                    <div class="d-flex flex-column gap-3">
+                        <a asp-page="./Index" class="btn btn-light w-100">
+                            <i class="ki-duotone ki-arrow-left fs-2 me-2"></i>
+                            Back to All Applications
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Summary Card -->
+            <div class="card card-flush">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="fw-bold m-0">Quick Summary</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-4">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Application ID</span>
+                            <span class="fw-bold">#@Model.Application.Id</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Experience</span>
+                            <span class="fw-bold">@(Model.Application.YearsOfExperience?.ToString() ?? "N/A") years</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Availability</span>
+                            <span class="fw-bold">@GetAvailabilityDisplayName(Model.Application.Availability)</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Commission Work</span>
+                            <span class="fw-bold">@(Model.Application.WillingToWorkOnCommission ? "Yes" : "No")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approve Modal -->
+    <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="approveModalLabel">Approve Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-page-handler="Approve">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="@Model.Application.Id" />
+                        <p>Are you sure you want to approve the application from <strong>@Model.Application.FullName</strong>?</p>
+                        <div class="mb-3">
+                            <label for="approveNotes" class="form-label">Admin Notes (Optional)</label>
+                            <textarea class="form-control" id="approveNotes" name="adminNotes" rows="3" placeholder="Add any notes about this approval..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Approve Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Under Review Modal -->
+    <div class="modal fade" id="underReviewModal" tabindex="-1" aria-labelledby="underReviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="underReviewModalLabel">Mark Under Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-page-handler="MarkUnderReview">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="@Model.Application.Id" />
+                        <p>Mark the application from <strong>@Model.Application.FullName</strong> as under review?</p>
+                        <div class="mb-3">
+                            <label for="reviewNotes" class="form-label">Admin Notes (Optional)</label>
+                            <textarea class="form-control" id="reviewNotes" name="adminNotes" rows="3" placeholder="Add any notes about this review..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-info">Mark Under Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-page-handler="Reject">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="@Model.Application.Id" />
+                        <p>Are you sure you want to reject the application from <strong>@Model.Application.FullName</strong>?</p>
+                        <div class="mb-3">
+                            <label for="rejectNotes" class="form-label">Rejection Reason (Optional)</label>
+                            <textarea class="form-control" id="rejectNotes" name="adminNotes" rows="3" placeholder="Provide a reason for rejection..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center py-10">
+        <div class="text-center px-4">
+            <img class="mw-100 mh-300px" alt="" src="~/themes/metronic/v8_2/assets/media/illustrations/sketchy-1/18.png">
+        </div>
+        <div class="text-center px-4">
+            <h3 class="fs-2hx fw-bold mb-4">Application Not Found</h3>
+            <div class="fw-semibold fs-6 text-gray-500 mb-7">The freelancer application you're looking for doesn't exist or has been removed.</div>
+            <div class="mb-3">
+                <a asp-page="./Index" class="btn btn-primary">Back to All Applications</a>
+            </div>
+        </div>
+    </div>
+}
+
+@functions {
+    private string GetStatusBadgeClass(FreelancerApplicationStatus status) => status switch
+    {
+        FreelancerApplicationStatus.Pending => "badge-light-warning",
+        FreelancerApplicationStatus.UnderReview => "badge-light-info",
+        FreelancerApplicationStatus.Approved => "badge-light-success",
+        FreelancerApplicationStatus.Rejected => "badge-light-danger",
+        _ => "badge-light-secondary"
+    };
+
+    private string GetStatusDisplayName(FreelancerApplicationStatus status) => status switch
+    {
+        FreelancerApplicationStatus.Pending => "Pending",
+        FreelancerApplicationStatus.UnderReview => "Under Review",
+        FreelancerApplicationStatus.Approved => "Approved",
+        FreelancerApplicationStatus.Rejected => "Rejected",
+        _ => status.ToString()
+    };
+
+    private string GetAvailabilityDisplayName(FreelancerAvailability availability) => availability switch
+    {
+        FreelancerAvailability.FullTimeFreelance => "Full-Time Freelance",
+        FreelancerAvailability.PartTimeFreelance => "Part-Time Freelance",
+        FreelancerAvailability.ProjectBased => "Project-Based",
+        _ => availability.ToString()
+    };
+}

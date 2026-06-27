@@ -1,0 +1,391 @@
+@page
+@model FreelancerApplicationModel
+@{
+    ViewData["Title"] = "Agent and Marketers Freelancers Registration Form";
+}
+
+<!-- FREELANCER APPLICATION FORM START -->
+<div class="ltn__contact-message-area mb-120 mt-90">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ltn__form-box contact-form-box box-shadow white-bg">
+                    <h4 class="title-2">Join Our Team of Freelance Agents and Marketers</h4>
+                    <p class="mb-30">Fill out the form below to apply as a freelance real estate agent or marketer. Fields marked with * are required.</p>
+
+                    <form asp-page="/FreelancerApplication" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- SECTION 1: PERSONAL INFORMATION -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-user me-2"></i>1. Personal Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-item input-item-name ltn__custom-icon">
+                                        <input asp-for="Application.FullName" type="text" placeholder="Full Name *" />
+                                        <span asp-validation-for="Application.FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item ltn__custom-icon">
+                                        <input asp-for="Application.Nationality" type="text" placeholder="Nationality *" />
+                                        <span asp-validation-for="Application.Nationality" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item input-item-phone ltn__custom-icon">
+                                        <input asp-for="Application.PhoneNumber" type="text" placeholder="Phone Number (WhatsApp Preferred) *" />
+                                        <span asp-validation-for="Application.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item input-item-email ltn__custom-icon">
+                                        <input asp-for="Application.Email" type="email" placeholder="Email Address *" />
+                                        <span asp-validation-for="Application.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="input-item input-item-textarea ltn__custom-icon">
+                                        <textarea asp-for="Application.CurrentResidentialAddress" rows="2" placeholder="Current Residential Address *"></textarea>
+                                        <span asp-validation-for="Application.CurrentResidentialAddress" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: PROFESSIONAL BACKGROUND -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-briefcase me-2"></i>2. Professional Background</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-item">
+                                        <input asp-for="Application.YearsOfExperience" type="number" min="0" max="100" placeholder="Years of Experience in Real Estate/Marketing" />
+                                        <span asp-validation-for="Application.YearsOfExperience" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item">
+                                        <input asp-for="Application.LanguagesSpoken" type="text" placeholder="Languages Spoken (e.g., English, Hausa, Yoruba)" />
+                                        <span asp-validation-for="Application.LanguagesSpoken" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="input-item">
+                                        <input asp-for="Application.PreviousFirmsOrAgencies" type="text" placeholder="Previous Firms or Agencies Worked With" />
+                                        <span asp-validation-for="Application.PreviousFirmsOrAgencies" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-20">
+                                <label class="mb-15"><strong>Areas of Specialization (Select all that apply):</strong></label>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecResidentialSales" type="checkbox" />
+                                            <span class="checkmark"></span>
+                                            Residential Sales
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecCommercialProperties" type="checkbox" />
+                                            <span class="checkmark"></span>
+                                            Commercial Properties
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecOffPlanProjectMarketing" type="checkbox" />
+                                            <span class="checkmark"></span>
+                                            Off-Plan Project Marketing
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecLeadGeneration" type="checkbox" />
+                                            <span class="checkmark"></span>
+                                            Lead Generation
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecSocialMediaAdvertising" type="checkbox" />
+                                            <span class="checkmark"></span>
+                                            Social Media Advertising
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <label class="checkbox-item">
+                                            <input asp-for="Application.SpecOthers" type="checkbox" id="specOthersCheckbox" />
+                                            <span class="checkmark"></span>
+                                            Others
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row mt-10" id="specOthersDescriptionContainer" style="display: none;">
+                                    <div class="col-md-12">
+                                        <div class="input-item">
+                                            <input asp-for="Application.SpecOthersDescription" type="text" placeholder="Please specify other areas of specialization" />
+                                            <span asp-validation-for="Application.SpecOthersDescription" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3: SKILLS AND COMPETENCIES -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-tools me-2"></i>3. Skills and Competencies</h5>
+                            <label class="mb-15"><strong>Select the skills you possess:</strong></label>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6">
+                                    <label class="checkbox-item">
+                                        <input asp-for="Application.SkillClientProspecting" type="checkbox" />
+                                        <span class="checkmark"></span>
+                                        Client Prospecting and Networking
+                                    </label>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <label class="checkbox-item">
+                                        <input asp-for="Application.SkillPropertyViewing" type="checkbox" />
+                                        <span class="checkmark"></span>
+                                        Property Viewing and Tours
+                                    </label>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <label class="checkbox-item">
+                                        <input asp-for="Application.SkillMarketKnowledge" type="checkbox" />
+                                        <span class="checkmark"></span>
+                                        Local Market Knowledge
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 4: AVAILABILITY AND WORK STRUCTURE -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-clock me-2"></i>4. Availability and Work Structure</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="mb-15"><strong>Availability:</strong></label>
+                                    <div class="mb-3">
+                                        <label class="radio-item">
+                                            <input asp-for="Application.Availability" type="radio" value="0" />
+                                            <span class="radiomark"></span>
+                                            Full-Time Freelance
+                                        </label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="radio-item">
+                                            <input asp-for="Application.Availability" type="radio" value="1" />
+                                            <span class="radiomark"></span>
+                                            Part-Time Freelance
+                                        </label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="radio-item">
+                                            <input asp-for="Application.Availability" type="radio" value="2" />
+                                            <span class="radiomark"></span>
+                                            Project-Based
+                                        </label>
+                                    </div>
+                                    <span asp-validation-for="Application.Availability" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="mb-15"><strong>Are you willing to work on a commission-only basis?</strong></label>
+                                    <div class="mb-3">
+                                        <label class="radio-item">
+                                            <input type="radio" name="Application.WillingToWorkOnCommission" value="true" @(Model.Application.WillingToWorkOnCommission ? "checked" : "") />
+                                            <span class="radiomark"></span>
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="radio-item">
+                                            <input type="radio" name="Application.WillingToWorkOnCommission" value="false" @(!Model.Application.WillingToWorkOnCommission ? "checked" : "") />
+                                            <span class="radiomark"></span>
+                                            No
+                                        </label>
+                                    </div>
+                                    <span asp-validation-for="Application.WillingToWorkOnCommission" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 5: PORTFOLIO -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-folder-open me-2"></i>5. Portfolio (Optional)</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-item input-item-textarea ltn__custom-icon">
+                                        <textarea asp-for="Application.SocialMediaLinks" rows="3" placeholder="Social Media Links / Personal Website (one per line)"></textarea>
+                                        <span asp-validation-for="Application.SocialMediaLinks" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="input-item input-item-textarea ltn__custom-icon">
+                                        <textarea asp-for="Application.RecentSalesOrCampaignResults" rows="4" placeholder="Brief Description of Recent Sales/Campaign Results"></textarea>
+                                        <span asp-validation-for="Application.RecentSalesOrCampaignResults" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 6: COMMISSION POLICY -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-money-bill-wave me-2"></i>6. Commission Policy (Information)</h5>
+                            <div class="ltn__feature-item ltn__feature-item-7 section-bg-1 p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-10"><i class="fas fa-gift text-success me-2"></i>What We Offer:</h6>
+                                        <ul class="list-item-marker">
+                                            <li>Competitive commission rates</li>
+                                            <li>Access to exclusive property listings</li>
+                                            <li>Marketing support and materials</li>
+                                            <li>Training and development opportunities</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-10"><i class="fas fa-tasks text-info me-2"></i>Your Role:</h6>
+                                        <ul class="list-item-marker">
+                                            <li>Generate leads and client referrals</li>
+                                            <li>Conduct property viewings</li>
+                                            <li>Assist in property marketing</li>
+                                            <li>Maintain professional client relationships</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6 mt-20">
+                                        <h6 class="mb-10"><i class="fas fa-check-circle text-warning me-2"></i>Requirements:</h6>
+                                        <ul class="list-item-marker">
+                                            <li>Professional communication skills</li>
+                                            <li>Reliable and self-motivated</li>
+                                            <li>Knowledge of local real estate market</li>
+                                            <li>Access to smartphone and internet</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6 mt-20">
+                                        <h6 class="mb-10"><i class="fas fa-chart-line text-primary me-2"></i>Performance-Based Growth:</h6>
+                                        <ul class="list-item-marker">
+                                            <li>Commission increases based on performance</li>
+                                            <li>Bonuses for top performers</li>
+                                            <li>Opportunities for advancement</li>
+                                            <li>Recognition and awards</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 7: DECLARATION & AGREEMENT -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-file-signature me-2"></i>7. Declaration & Agreement</h5>
+                            <div class="section-bg-1 p-4 mb-20">
+                                <p class="mb-0">
+                                    I hereby declare that the information provided in this application is true and accurate to the best of my knowledge.
+                                    I understand that any false information may result in the rejection of my application or termination of any future engagement.
+                                    I agree to work on a commission-based structure as outlined by SteadyGrowth Properties and understand that my earnings will be directly
+                                    linked to my performance and successful transactions.
+                                </p>
+                            </div>
+                            <div class="mb-20">
+                                <label class="checkbox-item">
+                                    <input asp-for="Application.AcceptedTermsAndDeclaration" type="checkbox" />
+                                    <span class="checkmark"></span>
+                                    <strong>I accept the terms and declaration above *</strong>
+                                </label>
+                                <span asp-validation-for="Application.AcceptedTermsAndDeclaration" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 8: APPLICANT SIGNATURE -->
+                        <div class="mb-30">
+                            <h5 class="ltn__secondary-color mb-20"><i class="fas fa-signature me-2"></i>8. Applicant Signature</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-item">
+                                        <input asp-for="Application.ApplicantSignature" type="text" placeholder="Type Your Full Name as Digital Signature *" />
+                                        <span asp-validation-for="Application.ApplicantSignature" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item">
+                                        <input type="text" value="@DateTime.Now.ToString("MMMM dd, yyyy")" readonly class="bg-light" />
+                                        <small class="text-muted">Date (Auto-filled)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUBMIT BUTTON -->
+                        <div class="btn-wrapper mt-30">
+                            <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FREELANCER APPLICATION FORM END -->
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Custom validation for AcceptedTermsAndDeclaration checkbox
+        $.validator.addMethod("mustbetrue", function (value, element) {
+            return element.checked;
+        });
+        $.validator.unobtrusive.adapters.addBool("mustbetrue");
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var specOthersCheckbox = document.getElementById('specOthersCheckbox');
+            var specOthersContainer = document.getElementById('specOthersDescriptionContainer');
+
+            function toggleOthersDescription() {
+                if (specOthersCheckbox && specOthersContainer) {
+                    specOthersContainer.style.display = specOthersCheckbox.checked ? 'block' : 'none';
+                }
+            }
+
+            if (specOthersCheckbox) {
+                specOthersCheckbox.addEventListener('change', toggleOthersDescription);
+                toggleOthersDescription();
+            }
+        });
+    </script>
+    <style>
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .checkbox-item input[type="checkbox"],
+        .radio-item input[type="radio"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .list-item-marker {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .list-item-marker li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .section-bg-1 {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        h5.ltn__secondary-color {
+            border-bottom: 2px solid #ff5a3c;
+            padding-bottom: 10px;
+        }
+    </style>
+}

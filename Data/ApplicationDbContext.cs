@@ -38,6 +38,8 @@ namespace SteadyGrowth.Web.Data
         public DbSet<PropertyCommission> PropertyCommissions { get; set; }
         public DbSet<ReferralCommissionLevel> ReferralCommissionLevels { get; set; }
         public DbSet<ReferralCommission> ReferralCommissions { get; set; }
+        public DbSet<PendingRegistration> PendingRegistrations { get; set; }
+        public DbSet<FreelancerApplication> FreelancerApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -343,6 +345,63 @@ namespace SteadyGrowth.Web.Data
                       .OnDelete(DeleteBehavior.SetNull);
                 entity.HasIndex(e => e.BeneficiaryUserId);
                 entity.HasIndex(e => e.SourceUserId);
+                entity.HasIndex(e => e.CreatedAt);
+            });
+
+            // PendingRegistration configurations
+            builder.Entity<PendingRegistration>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
+                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.ReferralCode).HasMaxLength(8);
+                entity.Property(e => e.ProcessedByUserId).HasMaxLength(450);
+                entity.Property(e => e.Notes).HasMaxLength(500);
+                entity.Property(e => e.CreatedUserId).HasMaxLength(450);
+
+                entity.HasOne(e => e.SelectedPackage)
+                      .WithMany()
+                      .HasForeignKey(e => e.SelectedPackageId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.ProcessedByUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.ProcessedByUserId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(e => e.CreatedUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.CreatedUserId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasIndex(e => e.Email);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.HasIndex(e => e.CreatedAt);
+            });
+
+            // FreelancerApplication configurations
+            builder.Entity<FreelancerApplication>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.FullName).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
+                entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(30);
+                entity.Property(e => e.Nationality).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.CurrentResidentialAddress).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.ApplicantSignature).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.PreviousFirmsOrAgencies).HasMaxLength(500);
+                entity.Property(e => e.LanguagesSpoken).HasMaxLength(200);
+                entity.Property(e => e.SpecOthersDescription).HasMaxLength(300);
+                entity.Property(e => e.SocialMediaLinks).HasMaxLength(1000);
+                entity.Property(e => e.RecentSalesOrCampaignResults).HasMaxLength(2000);
+                entity.Property(e => e.AdminNotes).HasMaxLength(1000);
+                entity.Property(e => e.ReviewedByUserId).HasMaxLength(450);
+                entity.HasIndex(e => e.Email);
+                entity.HasIndex(e => e.Status);
                 entity.HasIndex(e => e.CreatedAt);
             });
         }
